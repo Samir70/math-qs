@@ -1,6 +1,6 @@
 <script setup>
 import { shortAnswerPaths } from 'math-q-factory';
-import CourseCard from './components/CourseCard.vue';
+import ChapterCard from './components/ChapterCard.vue';
 console.log(shortAnswerPaths)
 let chapterSet = new Set(Object.keys(shortAnswerPaths))
 console.log(chapterSet)
@@ -10,9 +10,16 @@ console.log(chapterSet)
 </script>
 
 <template>
-<div>
-  <CourseCard v-for="chapter in chapterSet" v-bind:title="chapter" v-bind:contents="shortAnswerPaths[chapter]" />
-</div>
+  <div>
+    <h1>Maths - Qs</h1>
+    <div class="card-list">
+      <ChapterCard
+        v-for="chapter in chapterSet"
+        v-bind:title="chapter"
+        v-bind:contents="shortAnswerPaths[chapter]"
+      />
+    </div>
+  </div>
 </template>
 
 <style>
@@ -22,6 +29,10 @@ console.log(chapterSet)
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+.card-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 </style>
