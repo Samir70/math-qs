@@ -3,15 +3,17 @@ import { computed } from '@vue/reactivity';
 
 const props = defineProps({
     title: String,
-    contents: Object
+    contents: Object,
+    totalQs: Number
 })
 const sections = computed(() => Object.keys(props.contents));
-console.log({chapter:props.title, sections:sections.value})
+// console.log({chapter:props.title, sections:sections.value})
 </script>
 
 <template>
     <div class="chapter-card">
         <h2>{{ props.title }}</h2>
+        <p>Completed 0/{{props.totalQs}} questions</p>
         <p>{{ sections.join(', ') }}</p>
     </div>
 </template>

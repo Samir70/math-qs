@@ -1,5 +1,5 @@
 <script setup>
-import { shortAnswerPaths } from 'math-q-factory';
+import { shortAnswerPaths, totalQs } from 'math-q-factory';
 import ChapterCard from './components/ChapterCard.vue';
 console.log(shortAnswerPaths)
 let chapterSet = new Set(Object.keys(shortAnswerPaths))
@@ -17,6 +17,7 @@ console.log(chapterSet)
         v-for="chapter in chapterSet"
         v-bind:title="chapter"
         v-bind:contents="shortAnswerPaths[chapter]"
+        v-bind:totalQs="totalQs[chapter] || 0"
       />
     </div>
   </div>
