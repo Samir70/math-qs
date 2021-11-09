@@ -6,6 +6,7 @@ const props = defineProps({
     contents: Object,
     totalQs: Number
 })
+const emits = defineEmits(['review-chapter', 'learn-chapter'])
 const sections = computed(() => Object.keys(props.contents));
 // console.log({chapter:props.title, sections:sections.value})
 </script>
@@ -15,6 +16,8 @@ const sections = computed(() => Object.keys(props.contents));
         <h2>{{ props.title }}</h2>
         <p>Completed 0/{{props.totalQs}} questions</p>
         <p>{{ sections.join(', ') }}</p>
+        <button v-on:click="$emit('review-chapter', props.title)">Review</button>
+        <button v-on:click="$emit('learn-chapter', props.title)">Learn</button>
     </div>
 </template>
 

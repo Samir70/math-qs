@@ -4,9 +4,12 @@ import ChapterCard from './components/ChapterCard.vue';
 console.log(shortAnswerPaths)
 let chapterSet = new Set(Object.keys(shortAnswerPaths))
 console.log(chapterSet)
-// const chapterSet = computed(() => {
-
-// })
+const setReviewChapter = (title) => {
+  console.log('user wants to review', title)
+}
+const setLearnChapter = (title) => {
+  console.log('user wants to learn', title)
+}
 </script>
 
 <template>
@@ -18,6 +21,8 @@ console.log(chapterSet)
         v-bind:title="chapter"
         v-bind:contents="shortAnswerPaths[chapter]"
         v-bind:totalQs="totalQs[chapter] || 0"
+        v-on:review-chapter="setReviewChapter"
+        v-on:learn-chapter="setLearnChapter"
       />
     </div>
   </div>
