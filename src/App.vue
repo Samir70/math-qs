@@ -10,6 +10,7 @@ const chosenChapter = ref('');
 const qPathList = ref([]);
 const qNumber = ref(0);
 const currentQ = ref({});
+const qHint = ref([0, '']);
 const setReviewChapter = (title) => {
   console.log('user wants to review', title)
 }
@@ -18,9 +19,9 @@ const setLearnChapter = (title) => {
   chosenChapter.value = title
   qPathList.value = topicsToTest.filter(t => t[0] === title)
   currentQ.value = getMathsQs(...qPathList.value[0])
+  qHint.value = [0, '']
   console.log(currentQ.value);
 }
-const qHint = ref([0, '']);
 const respondToAns = (ans) => {
   console.log('Need to respond to answer:', ans);
   qNumber.value = (qNumber.value + 1) % qPathList.value.length
@@ -28,7 +29,6 @@ const respondToAns = (ans) => {
   qHint.value = [0, '']
 }
 const showHint = () => {
-  console.log(currentQ.value)
   qHint.value = qHint.value[0] === 0 ? [1, currentQ.value.hint] : [2, currentQ.value.giveAway]
 }
 const qTypes = {
