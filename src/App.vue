@@ -20,10 +20,16 @@ const setLearnChapter = (title) => {
   currentQ.value = getMathsQs(...qPathList.value[0])
   console.log(currentQ.value);
 }
+const qHint = ref([0, '']);
 const respondToAns = (ans) => {
   console.log('Need to respond to answer:', ans);
   qNumber.value = (qNumber.value + 1) % qPathList.value.length
   currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+  qHint.value = [0, '']
+}
+const showHint = () => {
+  console.log(currentQ.value)
+  qHint.value = qHint.value[0] === 0 ? [1, currentQ.value.hint] : [2, currentQ.value.giveAway]
 }
 const qTypes = {
   // match: MatchQ,
@@ -52,6 +58,16 @@ const qTypes = {
         v-bind:key="currentQ.qType + qNumber"
         v-on:user-answered="respondToAns"
       />
+      <div v-if="qHint[0] > 0">
+        <p>{{ qHint[1] }}</p>
+      </div>
+      <div id="options-box">
+        <button v-on:click="chosenChapter = ''">Back to course list</button>
+        <button
+          v-if="qHint[0] < 2"
+          v-on:click="showHint"
+        >{{ qHint[0] === 0 ? 'Show Hint' : 'Show bigger hint' }}</button>
+      </div>
     </div>
   </div>
 </template>
@@ -68,5 +84,10 @@ const qTypes = {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+#options-box {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px;
 }
 </style>
