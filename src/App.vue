@@ -9,6 +9,7 @@ console.log(chapterSet)
 const chosenChapter = ref('');
 const qPathList = ref([]);
 const qNumber = ref(0);
+const qKey = ref(0);
 const currentQ = ref({});
 const qHint = ref([0, '']);
 const setReviewChapter = (title) => {
@@ -24,9 +25,15 @@ const setLearnChapter = (title) => {
 }
 const respondToAns = (ans) => {
   console.log('Need to respond to answer:', ans);
-  qNumber.value = (qNumber.value + 1) % qPathList.value.length
-  currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
-  qHint.value = [0, '']
+  if (ans.userWasCorrect) {
+    qNumber.value = (qNumber.value + 1) % qPathList.value.length
+    currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+    qHint.value = [0, '']
+  } else {
+    qHint.value = [2, `${currentQ.value.giveAway}...   ${currentQ.value.qFeedback || ''}`]
+    // currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+  }
+  qKey.value++
 }
 const showHint = () => {
   qHint.value = qHint.value[0] === 0 ? [1, currentQ.value.hint] : [2, currentQ.value.giveAway]
@@ -55,10 +62,10 @@ const qTypes = {
       <component
         v-bind:is="qTypes[currentQ.qType]"
         v-bind:qData="currentQ"
-        v-bind:key="currentQ.qType + qNumber"
+        v-bind:key="qKey"
         v-on:user-answered="respondToAns"
       />
-      <div v-if="qHint[0] > 0">
+      <div v-if="qHint[1] !== ''">
         <p>{{ qHint[1] }}</p>
       </div>
       <div id="options-box">
@@ -79,6 +86,7 @@ const qTypes = {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  white-space: pre-wrap;
 }
 .card-list {
   display: flex;
