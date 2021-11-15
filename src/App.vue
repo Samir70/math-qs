@@ -12,20 +12,24 @@ const qNumber = ref(0);
 const qKey = ref(0);
 const currentQ = ref({});
 const qHint = ref([0, '']);
+const userProgress = ref({});
 const setReviewChapter = (title) => {
   console.log('user wants to review', title)
 }
 const setLearnChapter = (title) => {
   console.log('user wants to learn', title)
   chosenChapter.value = title
+  if (userProgress.value[title] === undefined) {userProgress.value[title] = 0}
+  qNumber.value = userProgress.value[title]
   qPathList.value = topicsToTest.filter(t => t[0] === title)
-  currentQ.value = getMathsQs(...qPathList.value[0])
+  currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
   qHint.value = [0, '']
   console.log(currentQ.value);
 }
 const respondToAns = (ans) => {
   console.log('Need to respond to answer:', ans);
   if (ans.userWasCorrect) {
+    userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
     qNumber.value = (qNumber.value + 1) % qPathList.value.length
     currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
     qHint.value = [0, '']
@@ -34,6 +38,7 @@ const respondToAns = (ans) => {
     // currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
   }
   qKey.value++
+  console.log({userProg: userProgress.value})
 }
 const showHint = () => {
   qHint.value = qHint.value[0] === 0 ? [1, currentQ.value.hint] : [2, currentQ.value.giveAway]
@@ -53,6 +58,7 @@ const qTypes = {
         v-for="chapter in chapterSet"
         v-bind:title="chapter"
         v-bind:contents="shortAnswerPaths[chapter]"
+        v-bind:completedQs="userProgress[chapter] || 0"
         v-bind:totalQs="totalQs[chapter] || 0"
         v-on:review-chapter="setReviewChapter"
         v-on:learn-chapter="setLearnChapter"

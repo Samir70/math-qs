@@ -4,17 +4,19 @@ import { computed } from '@vue/reactivity';
 const props = defineProps({
     title: String,
     contents: Object,
-    totalQs: Number
+    totalQs: Number,
+    completedQs: Number
 })
 const emits = defineEmits(['review-chapter', 'learn-chapter'])
 const sections = computed(() => Object.keys(props.contents));
 // console.log({chapter:props.title, sections:sections.value})
+console.log(props)
 </script>
 
 <template>
     <div class="chapter-card">
         <h2>{{ props.title }}</h2>
-        <p>Completed 0/{{ props.totalQs }} questions</p>
+        <p>Completed {{ props.completedQs }}/{{ props.totalQs }} questions</p>
         <p>{{ sections.join(', ') }}</p>
         <button v-on:click="$emit('review-chapter', props.title)" class="button review">Review</button>
         <button v-on:click="$emit('learn-chapter', props.title)" class="button learn">Learn</button>
