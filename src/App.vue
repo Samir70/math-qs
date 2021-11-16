@@ -34,8 +34,8 @@ const respondToAns = (ans) => {
     currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
     qHint.value = [0, '']
   } else {
-    qHint.value = [2, `${currentQ.value.giveAway}...   ${currentQ.value.qFeedback || ''}`]
-    // currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+    qHint.value = [0, `In the previous question: \n${currentQ.value.q}\n   ${currentQ.value.qFeedback || ''}`]
+    currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
   }
   qKey.value++
   console.log({userProg: userProgress.value})
