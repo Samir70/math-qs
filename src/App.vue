@@ -3,6 +3,7 @@ import { shortAnswerPaths, totalQs, topicsToTest, getMathsQs } from 'math-q-fact
 import { ShortAnswerQ } from "q-show";
 import { ref } from 'vue';
 import ChapterCard from './components/ChapterCard.vue';
+import { worksheets } from './assets/worksheets';
 // console.log(shortAnswerPaths)
 let chapterSet = new Set(Object.keys(shortAnswerPaths))
 console.log(chapterSet)
@@ -13,13 +14,15 @@ const qKey = ref(0);
 const currentQ = ref({});
 const qHint = ref([0, '']);
 const userProgress = ref({});
+const toShow = ref('options')
 const setReviewChapter = (title) => {
   console.log('user wants to review', title)
 }
 const setLearnChapter = (title) => {
   console.log('user wants to learn', title)
+  toShow.value = 'question'
   chosenChapter.value = title
-  if (userProgress.value[title] === undefined) {userProgress.value[title] = 0}
+  if (userProgress.value[title] === undefined) { userProgress.value[title] = 0 }
   qNumber.value = userProgress.value[title]
   qPathList.value = topicsToTest.filter(t => t[0] === title)
   currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
@@ -38,7 +41,14 @@ const respondToAns = (ans) => {
     currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
   }
   qKey.value++
-  console.log({userProg: userProgress.value})
+  console.log({ userProg: userProgress.value })
+}
+const chooseWorkSheet = (ws) => {
+  qPathList.value = ws.topicList.map(q => getMathsQs(...q.split('-')).q)
+  toShow.value = 'worksheet'
+}
+const copyWS = () => {
+  navigator.clipboard.writeText(qPathList.value.join('\n\n'))
 }
 const showHint = () => {
   qHint.value = qHint.value[0] === 0 ? [1, currentQ.value.hint] : [2, currentQ.value.giveAway]
@@ -53,18 +63,36 @@ const qTypes = {
 <template>
   <div>
     <h1>Maths - Qs</h1>
-    <div v-if="chosenChapter === ''" class="card-list">
+    <button v-if="toShow === 'options'" v-on:click="toShow = 'worksheets'">Choose a worksheet</button>
+    <div v-if="toShow === 'worksheets'" id="worksheet-list">
+      <p
+        v-for="ws of worksheets"
+        class="worksheet-title"
+        v-on:click="chooseWorkSheet(ws)"
+      >{{ ws.name }}</p>
+      <button v-on:click="toShow = 'options'">Back to course list</button>
+    </div>
+    <div v-if="toShow === 'worksheet'" id="ws-box">
+      <div id="worksheet">
+        <div v-for="q of qPathList">
+          <p>{{ q }}</p>
+          <br />
+        </div>
+      </div>
+      <button v-on:click="toShow = 'worksheets'">Back to choose a worksheet</button>
+      <button v-on:click="copyWS">Copy to clipboard</button>
+    </div>
+    <div v-if="toShow === 'options'" class="card-list">
       <ChapterCard
         v-for="chapter in chapterSet"
         v-bind:title="chapter"
         v-bind:contents="shortAnswerPaths[chapter]"
         v-bind:completedQs="userProgress[chapter] || 0"
         v-bind:totalQs="totalQs[chapter] || 0"
-        v-on:review-chapter="setReviewChapter"
-        v-on:learn-chapter="setLearnChapter"
+        v-on:click="setLearnChapter(chapter)"
       />
     </div>
-    <div v-else>
+    <div v-if="toShow === 'question'">
       <component
         v-bind:is="qTypes[currentQ.qType]"
         v-bind:qData="currentQ"
@@ -75,7 +103,7 @@ const qTypes = {
         <p>{{ qHint[1] }}</p>
       </div>
       <div id="options-box">
-        <button v-on:click="chosenChapter = ''">Back to course list</button>
+        <button v-on:click="toShow = 'options'">Back to course list</button>
         <button
           v-if="qHint[0] < 2"
           v-on:click="showHint"
@@ -103,5 +131,15 @@ const qTypes = {
   display: flex;
   justify-content: space-around;
   margin: 10px;
+}
+.worksheet-title {
+  text-decoration: underline;
+}
+.worksheet-title:hover {
+  background: violet;
+}
+#worksheet {
+  background: whitesmoke;
+  text-align: left;
 }
 </style>
