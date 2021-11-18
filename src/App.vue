@@ -43,8 +43,11 @@ const respondToAns = (ans) => {
   qKey.value++
   console.log({ userProg: userProgress.value })
 }
+const chosenWorkSheet = ({})
+const workSheetQs = ref([])
 const chooseWorkSheet = (ws) => {
-  qPathList.value = ws.topicList.map(q => getMathsQs(...q.split('-')).q)
+  chosenWorkSheet.value = ws
+  workSheetQs.value = ws.topicList.map(q => getMathsQs(...q.split('-')))
   toShow.value = 'worksheet'
 }
 const copyWS = () => {
@@ -73,14 +76,15 @@ const qTypes = {
       <button v-on:click="toShow = 'options'">Back to course list</button>
     </div>
     <div v-if="toShow === 'worksheet'" id="ws-box">
+      <button v-on:click="toShow = 'worksheets'">Back to choose a worksheet</button>
+      <button v-on:click="copyWS">Copy to clipboard</button>
+      <button v-on:click="chooseWorkSheet(chosenWorkSheet.value)">Change all qs</button>
       <div id="worksheet">
-        <div v-for="q of qPathList">
-          <p>{{ q }}</p>
+        <div v-for="q of workSheetQs">
+          <p>{{ q.q }}</p>
           <br />
         </div>
       </div>
-      <button v-on:click="toShow = 'worksheets'">Back to choose a worksheet</button>
-      <button v-on:click="copyWS">Copy to clipboard</button>
     </div>
     <div v-if="toShow === 'options'" class="card-list">
       <ChapterCard
