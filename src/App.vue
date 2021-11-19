@@ -80,6 +80,7 @@ const qTypes = {
       <button v-on:click="copyWS">Copy to clipboard</button>
       <button v-on:click="chooseWorkSheet(chosenWorkSheet.value)">Change all qs</button>
       <div id="worksheet">
+        <h2>{{chosenWorkSheet.value.name}}</h2>
         <div v-for="q of workSheetQs">
           <p>{{ q.q }}</p>
           <br />
