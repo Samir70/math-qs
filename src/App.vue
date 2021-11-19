@@ -45,8 +45,10 @@ const respondToAns = (ans) => {
 }
 const chosenWorkSheet = ({})
 const workSheetQs = ref([])
+const showAnswers = ref(false);
 const chooseWorkSheet = (ws) => {
   chosenWorkSheet.value = ws
+  showAnswers.value = false;
   workSheetQs.value = ws.topicList.map(q => getMathsQs(...q.split('-')))
   toShow.value = 'worksheet'
 }
@@ -79,10 +81,11 @@ const qTypes = {
       <button v-on:click="toShow = 'worksheets'">Back to choose a worksheet</button>
       <button v-on:click="copyWS">Copy to clipboard</button>
       <button v-on:click="chooseWorkSheet(chosenWorkSheet.value)">Change all qs</button>
+      <button v-on:click="showAnswers = !showAnswers">Show answers</button>
       <div id="worksheet">
         <h2>{{chosenWorkSheet.value.name}}</h2>
         <div v-for="q of workSheetQs">
-          <p>{{ q.q }}</p>
+          <p>{{ q.q }} <span v-if="showAnswers" class="answer">....{{q.a}}</span></p>
           <br />
         </div>
       </div>
@@ -131,6 +134,9 @@ const qTypes = {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+.answer {
+  color: red;
 }
 #options-box {
   display: flex;
