@@ -56,10 +56,11 @@ const chooseWorkSheet = (ws) => {
   // get ready in case user wants to display as quiz
   chosenChapter.value = ws.name;
   if (userProgress.value[ws.name] === undefined) { userProgress.value[ws.name] = 0 }
-  qNumber.value = userProgress.value[ws.name]
   qPathList.value = ws.topicList.map(t => t.split('-'))
+  qNumber.value = userProgress.value[ws.name] % qPathList.value.length;
   currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
   qHint.value = [0, '']
+  waitForNext.value = false;
   console.log(currentQ.value);
 }
 const copyWS = () => {
