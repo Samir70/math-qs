@@ -15,9 +15,7 @@ const currentQ = ref({});
 const qHint = ref([0, '']);
 const userProgress = ref({});
 const toShow = ref('options')
-const setReviewChapter = (title) => {
-  console.log('user wants to review', title)
-}
+const waitForNext = ref(false);
 const setLearnChapter = (title) => {
   console.log('user wants to learn', title)
   toShow.value = 'question'
@@ -34,23 +32,36 @@ const respondToAns = (ans) => {
   if (ans.userWasCorrect) {
     userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
     qNumber.value = (qNumber.value + 1) % qPathList.value.length
-    currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
-    qHint.value = [0, '']
   } else {
-    qHint.value = [0, `In the previous question: \n${currentQ.value.q}\n   ${currentQ.value.qFeedback || ''}`]
-    currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+    qHint.value = [0, `Answer:   ${currentQ.value.qFeedback || currentQ.value.a}`]
   }
-  qKey.value++
+  waitForNext.value = true;
   console.log({ userProg: userProgress.value })
+}
+const nextQ = () => {
+  currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+  qHint.value = [0, '']
+  qKey.value++
+  waitForNext.value = false;
 }
 const chosenWorkSheet = ({})
 const workSheetQs = ref([])
 const showAnswers = ref(false);
 const chooseWorkSheet = (ws) => {
+  console.log('user wants to do worksheet:', ws.name)
   chosenWorkSheet.value = ws
   showAnswers.value = false;
   workSheetQs.value = ws.topicList.map(q => getMathsQs(...q.split('-')))
   toShow.value = 'worksheet'
+  // get ready in case user wants to display as quiz
+  chosenChapter.value = ws.name;
+  if (userProgress.value[ws.name] === undefined) { userProgress.value[ws.name] = 0 }
+  qPathList.value = ws.topicList.map(t => t.split('-'))
+  qNumber.value = userProgress.value[ws.name] % qPathList.value.length;
+  currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+  qHint.value = [0, '']
+  waitForNext.value = false;
+  console.log(currentQ.value);
 }
 const copyWS = () => {
   navigator.clipboard.writeText(qPathList.value.join('\n\n'))
@@ -82,6 +93,7 @@ const qTypes = {
       <button v-on:click="copyWS">Copy to clipboard</button>
       <button v-on:click="chooseWorkSheet(chosenWorkSheet.value)">Change all qs</button>
       <button v-on:click="showAnswers = !showAnswers">Show answers</button>
+      <button v-on:click="toShow = 'question'">Show as quiz</button>
       <div id="worksheet">
         <h2>{{chosenWorkSheet.value.name}}</h2>
         <div v-for="q of workSheetQs">
@@ -107,6 +119,7 @@ const qTypes = {
         v-bind:key="qKey"
         v-on:user-answered="respondToAns"
       />
+      <button v-if="waitForNext" v-on:click="nextQ">Next Q</button>
       <div v-if="qHint[1] !== ''">
         <p>{{ qHint[1] }}</p>
       </div>
