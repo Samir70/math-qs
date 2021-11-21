@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "math-q-factory": "^1.11.6",
-    "q-show": "^2.0.0",
+    "q-show": "^3.0.0",
     "vue": "^3.2.16"
   },
   "devDependencies": {
