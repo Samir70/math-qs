@@ -48,10 +48,19 @@ const chosenWorkSheet = ({})
 const workSheetQs = ref([])
 const showAnswers = ref(false);
 const chooseWorkSheet = (ws) => {
+  console.log('user wants to do worksheet:', ws.name)
   chosenWorkSheet.value = ws
   showAnswers.value = false;
   workSheetQs.value = ws.topicList.map(q => getMathsQs(...q.split('-')))
   toShow.value = 'worksheet'
+  // get ready in case user wants to display as quiz
+  chosenChapter.value = ws.name;
+  if (userProgress.value[ws.name] === undefined) { userProgress.value[ws.name] = 0 }
+  qNumber.value = userProgress.value[ws.name]
+  qPathList.value = ws.topicList.map(t => t.split('-'))
+  currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+  qHint.value = [0, '']
+  console.log(currentQ.value);
 }
 const copyWS = () => {
   navigator.clipboard.writeText(qPathList.value.join('\n\n'))
@@ -83,6 +92,7 @@ const qTypes = {
       <button v-on:click="copyWS">Copy to clipboard</button>
       <button v-on:click="chooseWorkSheet(chosenWorkSheet.value)">Change all qs</button>
       <button v-on:click="showAnswers = !showAnswers">Show answers</button>
+      <button v-on:click="toShow = 'question'">Show as quiz</button>
       <div id="worksheet">
         <h2>{{chosenWorkSheet.value.name}}</h2>
         <div v-for="q of workSheetQs">
