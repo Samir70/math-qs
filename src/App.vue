@@ -1,6 +1,6 @@
 <script setup>
 import { shortAnswerPaths, totalQs, topicsToTest, getMathsQs } from 'math-q-factory';
-import { ShortAnswerQ } from "q-show";
+import { ShortAnswerQ, MultipleChoiceQ } from "q-show";
 import { ref } from 'vue';
 import ChapterCard from './components/ChapterCard.vue';
 import { worksheets } from './assets/worksheets';
@@ -71,7 +71,7 @@ const showHint = () => {
 }
 const qTypes = {
   // match: MatchQ,
-  // multiChoice: MultipleChoiceQ,
+  multiChoice: MultipleChoiceQ,
   shortAnswer: ShortAnswerQ
 }
 </script>
