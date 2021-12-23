@@ -12,7 +12,7 @@ const qPathList = ref([]);
 const qNumber = ref(0);
 const qKey = ref(0);
 const currentQ = ref({});
-const qHint = ref([0, '']);
+const qHints = ref([]);
 const userProgress = ref({});
 const toShow = ref('options')
 const waitForNext = ref(false);
@@ -24,7 +24,7 @@ const setLearnChapter = (title) => {
   qNumber.value = userProgress.value[title]
   qPathList.value = topicsToTest.filter(t => t.path[0] === title)
   currentQ.value = getMathsQs(...qPathList.value[qNumber.value].path)
-  qHint.value = [0, '']
+  qHints.value = []
   console.log(currentQ.value);
 }
 const respondToAns = (ans) => {
@@ -33,14 +33,14 @@ const respondToAns = (ans) => {
     userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
     qNumber.value = (qNumber.value + 1) % qPathList.value.length
   } else {
-    qHint.value = [0, `Answer:   ${currentQ.value.qFeedback || currentQ.value.a}`]
+    qHints.value = [...qHints.value, `Answer:   ${currentQ.value.qFeedback || currentQ.value.a}`]
   }
   waitForNext.value = true;
   console.log({ userProg: userProgress.value })
 }
 const nextQ = () => {
   currentQ.value = getMathsQs(...qPathList.value[qNumber.value].path)
-  qHint.value = [0, '']
+  qHints.value = []
   qKey.value++
   waitForNext.value = false;
 }
@@ -61,7 +61,7 @@ const chooseWorkSheet = (ws) => {
   })
   qNumber.value = userProgress.value[ws.name] % qPathList.value.length;
   currentQ.value = getMathsQs(...qPathList.value[qNumber.value].path)
-  qHint.value = [0, '']
+  qHints.value = []
   waitForNext.value = false;
   console.log(currentQ.value);
 }
@@ -69,7 +69,7 @@ const copyWS = () => {
   navigator.clipboard.writeText(qPathList.value.join('\n\n'))
 }
 const showHint = () => {
-  qHint.value = qHint.value[0] === 0 ? [1, currentQ.value.hint] : [2, currentQ.value.giveAway]
+  qHints.value = currentQ.value.hints.slice(0, qHints.value.length+1)
 }
 const qTypes = {
   // match: MatchQ,
@@ -117,7 +117,7 @@ const qTypes = {
         v-on:click="setLearnChapter(chapter)"
       />
     </div>
-    <div v-if="toShow === 'question'">
+    <div v-if="toShow === 'question'" id="question-box">
       <component
         v-bind:is="qTypes[currentQ.qType]"
         v-bind:qData="currentQ"
@@ -125,15 +125,15 @@ const qTypes = {
         v-on:user-answered="respondToAns"
       />
       <button v-if="waitForNext" v-on:click="nextQ">Next Q</button>
-      <div v-if="qHint[1] !== ''">
-        <p>{{ qHint[1] }}</p>
+      <div v-for="hint of qHints" id="hint-box">
+        <p>{{ hint }}</p>
       </div>
       <div id="options-box">
         <button v-on:click="toShow = 'options'">Back to course list</button>
         <button
-          v-if="qHint[0] < 2"
+          v-if="qHints.length < currentQ.hints.length"
           v-on:click="showHint"
-        >{{ qHint[0] === 0 ? 'Show Hint' : 'Show bigger hint' }}</button>
+        >{{ qHints.length === 0 ? 'Show Hint' : 'Show another hint' }}</button>
       </div>
     </div>
   </div>
@@ -170,5 +170,11 @@ const qTypes = {
 #worksheet {
   background: whitesmoke;
   text-align: left;
+}
+#hint-box {
+  border: 1px solid blue;
+  padding: 3px;
+  width: 90vw;
+  max-width: 480px;
 }
 </style>
