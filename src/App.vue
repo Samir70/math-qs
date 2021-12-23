@@ -1,11 +1,11 @@
 <script setup>
-import { shortAnswerPaths, totalQs, topicsToTest, getMathsQs } from 'math-q-factory';
+import { totalQs, topicsToTest, getMathsQs } from 'math-q-factory';
 import { ShortAnswerQ, MultipleChoiceQ } from "q-show";
 import { ref } from 'vue';
 import ChapterCard from './components/ChapterCard.vue';
 import { worksheets } from './assets/worksheets';
 // console.log(shortAnswerPaths)
-let chapterSet = new Set(Object.keys(shortAnswerPaths))
+let chapterSet = new Set(Object.keys(totalQs))
 console.log(chapterSet)
 const chosenChapter = ref('');
 const qPathList = ref([]);
@@ -22,8 +22,8 @@ const setLearnChapter = (title) => {
   chosenChapter.value = title
   if (userProgress.value[title] === undefined) { userProgress.value[title] = 0 }
   qNumber.value = userProgress.value[title]
-  qPathList.value = topicsToTest.filter(t => t[0] === title)
-  currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+  qPathList.value = topicsToTest.filter(t => t.path[0] === title)
+  currentQ.value = getMathsQs(...qPathList.value[qNumber.value].path)
   qHint.value = [0, '']
   console.log(currentQ.value);
 }
@@ -39,7 +39,7 @@ const respondToAns = (ans) => {
   console.log({ userProg: userProgress.value })
 }
 const nextQ = () => {
-  currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+  currentQ.value = getMathsQs(...qPathList.value[qNumber.value].path)
   qHint.value = [0, '']
   qKey.value++
   waitForNext.value = false;
@@ -56,9 +56,11 @@ const chooseWorkSheet = (ws) => {
   // get ready in case user wants to display as quiz
   chosenChapter.value = ws.name;
   if (userProgress.value[ws.name] === undefined) { userProgress.value[ws.name] = 0 }
-  qPathList.value = ws.topicList.map(t => t.split('-'))
+  qPathList.value = ws.topicList.map(t => {
+    return { path: t.split('-') }
+  })
   qNumber.value = userProgress.value[ws.name] % qPathList.value.length;
-  currentQ.value = getMathsQs(...qPathList.value[qNumber.value])
+  currentQ.value = getMathsQs(...qPathList.value[qNumber.value].path)
   qHint.value = [0, '']
   waitForNext.value = false;
   console.log(currentQ.value);
@@ -95,18 +97,21 @@ const qTypes = {
       <button v-on:click="showAnswers = !showAnswers">Show answers</button>
       <button v-on:click="toShow = 'question'">Show as quiz</button>
       <div id="worksheet">
-        <h2>{{chosenWorkSheet.value.name}}</h2>
+        <h2>{{ chosenWorkSheet.value.name }}</h2>
         <div v-for="q of workSheetQs">
-          <p>{{ q.q }} <span v-if="showAnswers" class="answer">....{{q.a}}</span></p>
+          <p>
+            {{ q.q }}
+            <span v-if="showAnswers" class="answer">....{{ q.a }}</span>
+          </p>
           <br />
         </div>
       </div>
     </div>
     <div v-if="toShow === 'options'" class="card-list">
+      <!-- Chapter card no longer making use of contents attribute, which used to list sections -->
       <ChapterCard
         v-for="chapter in chapterSet"
         v-bind:title="chapter"
-        v-bind:contents="shortAnswerPaths[chapter]"
         v-bind:completedQs="userProgress[chapter] || 0"
         v-bind:totalQs="totalQs[chapter] || 0"
         v-on:click="setLearnChapter(chapter)"
