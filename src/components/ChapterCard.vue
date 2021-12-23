@@ -3,20 +3,20 @@ import { computed } from '@vue/reactivity';
 
 const props = defineProps({
     title: String,
-    contents: Object,
+    // contents: Object,
     totalQs: Number,
     completedQs: Number
 })
-const sections = computed(() => Object.keys(props.contents));
+// const sections = computed(() => Object.keys(props.contents));
 // console.log({chapter:props.title, sections:sections.value})
-console.log(props)
+// console.log(props)
 </script>
 
 <template>
     <div class="chapter-card">
         <h2>{{ props.title }}</h2>
         <p>Completed {{ props.completedQs }}/{{ props.totalQs }} questions</p>
-        <p>{{ sections.join(', ') }}</p>
+        <!-- <p>{{ sections.join(', ') }}</p> -->
     </div>
 </template>
 
