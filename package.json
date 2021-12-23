@@ -11,7 +11,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "math-q-factory": "^1.14.2",
+    "math-q-factory": "^2.0.1",
     "q-show": "^3.0.0",
     "vue": "^3.2.16"
   },
