@@ -1,6 +1,6 @@
 <script setup>
 import { totalQs, topicsToTest, getMathsQs } from 'math-q-factory';
-import { ShortAnswerQ, MultipleChoiceQ } from "q-show";
+import { ShortAnswerQ, MultipleChoiceQ, SortQ } from "q-show";
 import { ref } from 'vue';
 import ChapterCard from './components/ChapterCard.vue';
 import { worksheets } from './assets/worksheets';
@@ -72,9 +72,11 @@ const showHint = () => {
   qHints.value = currentQ.value.hints.slice(0, qHints.value.length+1)
 }
 const qTypes = {
+  // classify: ClassifyQ,
   // match: MatchQ,
   multiChoice: MultipleChoiceQ,
-  shortAnswer: ShortAnswerQ
+  shortAnswer: ShortAnswerQ,
+  sort: SortQ
 }
 </script>
 
