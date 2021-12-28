@@ -8,7 +8,9 @@ export const store = createStore({
             user: 'Unknown',
             loggedIn: false,
             chosenQs: topicsToTest.map(t => t.path),
-            chosenWorksheet: worksheets[0]
+            chosenWorksheet: worksheets[0],
+            userProgress: { none: 0 },
+            chosenChapter: 'none'
         }
     },
     mutations: {
@@ -26,6 +28,9 @@ export const store = createStore({
         },
         setWorksheet(state, newWorksheet) {
             state.chosenWorksheet = newWorksheet
+        },
+        setChapter(state, newChapter) {
+            state.chosenChapter = newChapter
         }
     }
 });
