@@ -17,3 +17,14 @@ const router = useRouter();
   <button v-if="loggedIn" v-on:click="store.commit('logout')">Log out</button>
   <router-view></router-view>
 </template>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  white-space: pre-wrap;
+}
+</style>
