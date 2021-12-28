@@ -10,7 +10,7 @@ const router = useRouter();
 <template>
   <h1>Maths Qs</h1>
   <NavBar />
-  <p>Hello {{ store.state.user }}. You are {{ loggedIn ? '' : 'not' }} logged in.</p>
+  <p>Hello {{ store.state.userName }}. You are {{ loggedIn ? '' : 'not' }} logged in.</p>
   <p v-if="!loggedIn">
     <router-link to="/login">Login</router-link>, please, if you want to save progress
   </p>

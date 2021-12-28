@@ -5,7 +5,7 @@ import { worksheets } from './assets/worksheets';
 export const store = createStore({
     state() {
         return {
-            user: 'Unknown',
+            userName: 'Unknown User',
             loggedIn: false,
             chosenQs: topicsToTest.map(t => t.path),
             chosenWorksheet: worksheets[0],
@@ -21,7 +21,7 @@ export const store = createStore({
             state.loggedIn = false
         },
         changeUser(state, newUser) {
-            state.user = newUser
+            state.userName = newUser
         },
         setQList(state, newQList) {
             state.chosenQs = newQList

@@ -3,7 +3,7 @@ import ChooseChapter from "./components/ChooseChapter.vue";
 import ShowWorksheet from './components/ShowWorksheet.vue';
 import ShowQuestion from "./components/ShowQuestion.vue";
 import Login from './components/Login.vue';
-import Questions from './components/Questions.vue';
+import Dashboard from './components/Dashboard.vue';
 
 export const routes = [
     { path: '/login', name: 'Login', component: Login },
@@ -11,5 +11,5 @@ export const routes = [
     { path: '/choose_chapter', name: 'ChooseChapter', component: ChooseChapter },
     { path: '/show_worksheet', name: 'ShowWorksheet', component: ShowWorksheet },
     { path: '/show_question', name: 'ShowQuestion', component: ShowQuestion },
-    { path: '/', name: 'Questions', component: Questions }
+    { path: '/', name: 'Dashboard', component: Dashboard }
 ];
