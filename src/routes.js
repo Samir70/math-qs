@@ -4,6 +4,6 @@ import Questions from './components/Questions.vue';
 
 export const routes = [
     { path: '/login', name: 'Login', component: Login },
-    { path: '/choose_work_sheet', name: 'Worksheet List', component: ChooseWorkSheet },
+    { path: '/choose_worksheet', name: 'Worksheet List', component: ChooseWorkSheet },
     { path: '/', name: 'Questions', component: Questions }
 ];
