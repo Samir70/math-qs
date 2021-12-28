@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import { createRouter, createWebHashHistory } from 'vue-router';
+import { store } from './store';
 import App from './App.vue';
 
 // components for different routes
@@ -17,7 +18,13 @@ const router = createRouter({
     routes
 });
 
-createApp(App).use(router).mount('#app');
+
+// console.log('From main:', store.state)
+// store.commit('login')
+// // store.commit('changeUser', 'Guest')
+// console.log('From main, after login:', store.state)
+
+createApp(App).use(store).use(router).mount('#app');
 
 // const app = createApp(Home)
 // app.use(router)

@@ -1,23 +1,17 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-const loggedIn = ref(false)
-const loggingIn = ref(false)
+import { store } from './store';
+const loggedIn = computed(() => store.state.loggedIn)
 const router = useRouter();
-const onLogin = () => {
-  console.log('user logged in')
-  loggedIn.value = true
-  loggingIn.value = false
-  router.push('/')
-}
 </script>
 
 <template>
   <h1>Maths Qs</h1>
-  <p v-if="!loggedIn && !loggingIn">
-    You are not logged in.
-    <router-link to="/login" v-on:click="loggingIn = true">Login</router-link> if you want to save progress
+  <p>Hello {{store.state.user}}. You are {{loggedIn ? '': 'not'}} logged in.</p>
+  <p v-if="!loggedIn">
+    <router-link to="/login" v-on:click="loggingIn = true">Login</router-link>, please, if you want to save progress
   </p>
-  <button v-if="loggedIn" v-on:click="loggedIn = false">Log out</button>
-  <router-view v-on:login="onLogin" ></router-view>
+  <button v-if="loggedIn" v-on:click="store.commit('logout')">Log out</button>
+  <router-view></router-view>
 </template>
