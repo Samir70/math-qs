@@ -1,12 +1,75 @@
 <script setup>
 import { store } from "../store";
+import { getMathsQs } from 'math-q-factory';
+import { ShortAnswerQ, MultipleChoiceQ, SortQ } from "q-show";
+import { ref } from 'vue';
+const qTypes = {
+    // classify: ClassifyQ,
+    // match: MatchQ,
+    multiChoice: MultipleChoiceQ,
+    shortAnswer: ShortAnswerQ,
+    sort: SortQ
+}
+const currentQ = ref(getMathsQs(...store.state.chosenQs[0]));
+const qNumber = ref(0);
+const qKey = ref(0);
+const qHints = ref([]);
+const waitForNext = ref(false);
 
+const respondToAns = (ans) => {
+  console.log('Need to respond to answer:', ans);
+  if (ans.userWasCorrect) {
+    // userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
+    qNumber.value = (qNumber.value + 1) % store.state.chosenQs.length
+  } else {
+    qHints.value = [...qHints.value, `Answer:   ${currentQ.value.qFeedback || currentQ.value.a}`]
+  }
+  waitForNext.value = true;
+//   console.log({ userProg: userProgress.value })
+}
+const nextQ = () => {
+  currentQ.value = getMathsQs(...store.state.chosenQs[qNumber.value])
+  qHints.value = []
+  qKey.value++
+  waitForNext.value = false;
+}
+const showHint = () => {
+  qHints.value = currentQ.value.hints.slice(0, qHints.value.length+1)
+}
 </script>
 
 <template>
-    <h2>Showing questions</h2>
-    <p>{{store.state.chosenQs}}</p>
+    <div id="question-box">
+        <component
+            v-bind:is="qTypes[currentQ.qType]"
+            v-bind:qData="currentQ"
+            v-bind:key="qKey"
+            v-on:user-answered="respondToAns"
+        />
+        <button v-if="waitForNext" v-on:click="nextQ">Next Q</button>
+        <div v-for="hint of qHints" id="showq-hint-box">
+            <p>{{ hint }}</p>
+        </div>
+        <div id="showq-options-box">
+            <button
+                v-if="qHints.length < currentQ.hints.length"
+                v-on:click="showHint"
+            >{{ qHints.length === 0 ? 'Show Hint' : 'Show another hint' }}</button>
+        </div>
+    </div>
 </template>
 
 <style>
+#showq-options-box {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px;
+}
+
+#showq-hint-box {
+  border: 1px solid blue;
+  padding: 3px;
+  width: 90vw;
+  max-width: 480px;
+}
 </style>
