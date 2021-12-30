@@ -8,11 +8,10 @@ console.log('ChooseChapter:', chapterSet);
 const router = useRouter();
 
 const setLearnChapter = (title) => {
-  console.log('user wants to learn', title);
-  store.commit('setChapter', title);
-  if (store.state.userProgress[title] === undefined) { store.state.userProgress[title] = 0 }
-  store.commit('setQList', topicsToTest.map(t=>t.path).filter(t => t[0] === title)); 
-  router.push('/show_question')
+    console.log('user wants to learn', title);
+    store.commit('setChapter', title);
+    store.commit('setQList', topicsToTest.map(t => t.path).filter(t => t[0] === title));
+    router.push('/show_question')
 }
 </script>
 
@@ -23,7 +22,7 @@ const setLearnChapter = (title) => {
         <ChapterCard
             v-for="chapter in chapterSet"
             v-bind:title="chapter"
-            v-bind:completedQs="store.state.userProgress[chapter] || 0"
+            v-bind:completedQs="store.state.userProgress[chapter] === undefined ? 0 : store.state.userProgress[chapter].size"
             v-bind:totalQs="totalQs[chapter] || 0"
             v-on:click="setLearnChapter(chapter)"
         />

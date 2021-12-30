@@ -9,7 +9,7 @@ export const store = createStore({
             loggedIn: false,
             chosenQs: topicsToTest.map(t => t.path),
             chosenWorksheet: worksheets[0],
-            userProgress: { none: 0 },
+            userProgress: { none: new Set() },
             chosenChapter: 'none'
         }
     },
@@ -31,6 +31,16 @@ export const store = createStore({
         },
         setChapter(state, newChapter) {
             state.chosenChapter = newChapter
+        },
+        initChapterProgress(state, chapter) {
+            state.userProgress = { ...state.userProgress, [chapter]: new Set() }
+        },
+        updateChapterProgress(state, path) {
+            console.log('updateChapterprogress', [state.userProgress[path[0]], path])
+            state.userProgress = {
+                ...state.userProgress,
+                [path[0]]: new Set(state.userProgress[path[0]] === undefined ? [path.join('-')] : [...state.userProgress[path[0]], path.join('-')])
+            }
         }
     }
 });
