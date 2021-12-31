@@ -1,26 +1,61 @@
 <script setup>
-import { store } from '../store';
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import firebase from 'firebase/compat/app';
+import * as firebaseui from 'firebaseui';
+import "firebaseui/dist/firebaseui.css";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
+
 const router = useRouter();
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_apiKey,
-  authDomain: "maths-qs.firebaseapp.com",
-  projectId: "maths-qs",
-  storageBucket: "maths-qs.appspot.com",
-  messagingSenderId: import.meta.env.VITE_messagingSenderId,
-  appId: import.meta.env.VITE_appId,
-  measurementId: import.meta.env.VITE_measurementId,
-  guest:'Guest'
+
+const auth = getAuth();
+connectAuthEmulator(auth, "http://localhost:9099");
+
+// Initialize the FirebaseUI Widget using Firebase.
+var ui = firebaseui.auth.AuthUI.getInstance() ? firebaseui.auth.AuthUI.getInstance() : new firebaseui.auth.AuthUI(firebase.auth());
+var uiConfig = {
+  callbacks: {
+    signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+      // User successfully signed in.
+      // Return type determines whether we continue the redirect automatically
+      // or whether we leave that to developer to handle.
+      router.push('/')
+      return false;
+    },
+    uiShown: function () {
+      // The widget is rendered.
+      // Hide the loader.
+      document.getElementById('loader').style.display = 'none';
+    }
+  },
+  // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+  signInFlow: 'popup',
+  signInSuccessUrl: './',
+  signInOptions: [
+    { provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID },
+    {
+      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      requireDisplayName: true
+    },
+    { provider: firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID }
+    // TODO: autoUpgradeAnonymousUsers 
+  ],
+  // Terms of service url.
+  tosUrl: '<your-tos-url>',
+  // Privacy policy url.
+  privacyPolicyUrl: '<your-privacy-policy-url>'
 };
-// console.log('From Login: ', firebaseConfig)
-const login = () => {
-    store.commit('login')
-    store.commit('changeUser', firebaseConfig.guest)
-    router.push('/')
-}
+
+// The start method will wait until the DOM is loaded. Or so the docs say. 
+// it does when Login is the first page, but when reached via router it doesn't 
+// find the div with required id.
+// so I used onMounted
+onMounted(() => {
+  ui.start('#firebaseui-auth-container', uiConfig);
+})
 </script>
 
 <template>
-    <h1>Login Page</h1>
-    <button v-on:click="login">Log in</button>
+  <div id="firebaseui-auth-container"></div>
+  <div id="loader">Loading... Waiting for the firebase magic!</div>
 </template>
