@@ -7,9 +7,13 @@ import "firebaseui/dist/firebaseui.css";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 
 const router = useRouter();
-
-const auth = getAuth();
-connectAuthEmulator(auth, "http://localhost:9099");
+if (import.meta.env.MODE === 'development') {
+  console.log('Login: meta.env says we are in production')
+  const auth = getAuth();
+  connectAuthEmulator(auth, "http://localhost:9099");
+} else {
+  console.log('Login: in prod mode')
+}
 
 // Initialize the FirebaseUI Widget using Firebase.
 var ui = firebaseui.auth.AuthUI.getInstance() ? firebaseui.auth.AuthUI.getInstance() : new firebaseui.auth.AuthUI(firebase.auth());
