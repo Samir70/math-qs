@@ -8,7 +8,7 @@ import { getAuth, connectAuthEmulator } from "firebase/auth";
 
 const router = useRouter();
 if (import.meta.env.MODE === 'development') {
-  console.log('Login: meta.env says we are in production')
+  console.log('Login: in dev mode')
   const auth = getAuth();
   connectAuthEmulator(auth, "http://localhost:9099");
 } else {
