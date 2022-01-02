@@ -1,20 +1,31 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import firebase from 'firebase/compat/app';
 import { store } from './store';
 import NavBar from './components/NavBar.vue';
-const loggedIn = computed(() => store.state.loggedIn)
-const router = useRouter();
+firebase.initializeApp({
+  apiKey: import.meta.env.VITE_apiKey,
+  authDomain: "maths-qs.firebaseapp.com",
+  projectId: "maths-qs",
+  storageBucket: "maths-qs.appspot.com",
+  messagingSenderId: import.meta.env.VITE_messagingSenderId,
+  appId: import.meta.env.VITE_appId,
+  measurementId: import.meta.env.VITE_measurementId,
+});
+firebase.auth().onAuthStateChanged(user => {
+  console.log('from onAuthStateChanged', user) 
+  if (user) {
+    store.commit('login');
+    store.commit('changeUser', user.displayName || 'Guest')
+  }
+  console.log('from onAuthStateChanged:', store.state.userName)
+})
 </script>
 
 <template>
   <h1>Maths Qs</h1>
   <NavBar />
-  <p>Hello {{ store.state.userName }}. You are {{ loggedIn ? '' : 'not' }} logged in.</p>
-  <p v-if="!loggedIn">
-    <router-link to="/login">Login</router-link>, please, if you want to save progress
-  </p>
-  <button v-if="loggedIn" v-on:click="store.commit('logout')">Log out</button>
   <router-view></router-view>
 </template>
 

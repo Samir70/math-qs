@@ -11,6 +11,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "firebase": "^9.6.1",
+    "firebaseui": "^6.0.0",
     "math-q-factory": "^2.0.2",
     "q-show": "^3.0.0",
     "vue": "^3.2.16",
