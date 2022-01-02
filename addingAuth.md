@@ -18,7 +18,11 @@ But you can still find the key, as above, in the init.js file of the firebase fo
 So, even if I don't put it into the webpage, they will.
 
 ## Adding firebase
-The docs on the firebase google site don't give the correct import statements. Some people suggested upgrading to Vite 2.7.x, which helped with some of the imports. But I found the [github page for firebaseui](https://github.com/firebase/firebaseui-web) which suggests using:
+I won't add everything I did here. You can see the code in the repo. App.vue and Login.vue should give you everything you need. There were a couple of hiccups, though.
+
+The docs on the firebase google site don't give the correct import statements. Some people suggested upgrading to Vite 2.7.x
+
+But I found the [github page for firebaseui](https://github.com/firebase/firebaseui-web) which suggests using:
 
 ```
 > npm install firebase firebaseui --save
@@ -30,36 +34,55 @@ import "firebaseui/dist/firebaseui.css";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 ```
 
-Then all the various docs agree on what to do next:
+I also had to consider people coming and going and returning to the Login page. To avoid getting more than one instance of firebaseui:
 
 ```
-firebase.initializeApp({
-  apiKey: import.meta.env.VITE_apiKey,
-  authDomain: "maths-qs.firebaseapp.com",
-  projectId: "maths-qs",
-  storageBucket: "maths-qs.appspot.com",
-  messagingSenderId: import.meta.env.VITE_messagingSenderId,
-  appId: import.meta.env.VITE_appId,
-  measurementId: import.meta.env.VITE_measurementId,
-});
-firebase.auth().onAuthStateChanged(user => {
-  console.log('from onAuthStateChanged', user) 
-  if (user) {
-    store.commit('login');
-    store.commit('changeUser', user.displayName || 'Guest')
-  }
-  console.log('from onAuthStateChanged:', store.state.userName)
+var ui = firebaseui.auth.AuthUI.getInstance() ? firebaseui.auth.AuthUI.getInstance() : new firebaseui.auth.AuthUI(firebase.auth());
+```
+
+Then I found that, if the Login page was reached via router, the script didn't always find the div with required id until I used:
+
+```
+onMounted(() => {
+  ui.start('#firebaseui-auth-container', uiConfig);
 })
 ```
 
-Yes: I used .env anyway. None of those variables will be hidden from the browser. But, as above, it seems to be the way firebase wants it.
+## Using the emulator
+You can use any old key you like with the emulator. It still worked for me. In fact, you are recommended not to use the real ones. 
 
-BTW: With Vite, I don't need to install dotenv, or use process.env, I just have to prefix the variables I want pulled into the app with VITE_
+[Docs for firebase emulator](https://firebase.google.com/docs/emulator-suite/connect_and_prototype?database=Firestore)
 
-so I ended up with .env being:
+> firebase init
+
+Follow the instructions. I selected just the emulator. And, in the emulator options, I selected authentication. 
+
+> firebase emulators:start
+
+You get a nice output:
 ```
-VITE_apiKey="..."
-VITE_messagingSenderId=".."
-VITE_appId="..."
-VITE_measurementId="..."
+i  emulators: Starting emulators: auth
+i  ui: Emulator UI logging to ui-debug.log
+
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://localhost:4000                │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI        │
+├────────────────┼────────────────┼────────────────────────────┤
+│ Authentication │ localhost:9099 │ http://localhost:4000/auth │
+└────────────────┴────────────────┴────────────────────────────┘
+```
+You get a locally served dashboard at the given address to monitor users logging in. Port 9099 is the path to access the emulator. You only need it in dev mode.
+
+```
+if (import.meta.env.MODE === 'development') {
+  console.log('Login: in dev mode')
+  const auth = getAuth();
+  connectAuthEmulator(auth, "http://localhost:9099");
+} else {
+  console.log('Login: in prod mode')
+}
 ```
