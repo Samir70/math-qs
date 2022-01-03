@@ -20,6 +20,7 @@ const logout = () => {
 
 <style>
 .navbar-item {
+    display: inline-block;
     margin: 2px;
     padding: 3px 8px;
     background: cadetblue;
