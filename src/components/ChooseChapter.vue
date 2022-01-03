@@ -1,7 +1,8 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { store } from '../store';
-import { totalQs, topicsToTest } from 'math-q-factory';
+import { totalQs } from 'math-q-factory';
+import { qPaths } from '../assets/topicsToTest';
 import ChapterCard from './ChapterCard.vue';
 let chapterSet = new Set(Object.keys(totalQs))
 console.log('ChooseChapter:', chapterSet);
@@ -10,7 +11,7 @@ const router = useRouter();
 const setLearnChapter = (title) => {
     console.log('user wants to learn', title);
     store.commit('setChapter', title);
-    store.commit('setQList', topicsToTest.map(t => t.path).filter(t => t[0] === title));
+    store.commit('setQList', qPaths.filter(t => t[0] === title));
     router.push('/show_question')
 }
 </script>

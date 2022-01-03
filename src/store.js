@@ -1,13 +1,13 @@
 import { createStore } from 'vuex';
-import { topicsToTest } from 'math-q-factory';
 import { worksheets } from './assets/worksheets';
+import { qPaths } from './assets/topicsToTest';
 
 export const store = createStore({
     state() {
         return {
             userName: 'Unknown User',
             loggedIn: false,
-            chosenQs: topicsToTest.map(t => t.path),
+            chosenQs: qPaths,
             chosenWorksheet: worksheets[0],
             userProgress: { none: new Set() },
             chosenChapter: 'none'
