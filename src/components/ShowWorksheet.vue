@@ -27,7 +27,7 @@ const displayableQ = question => {
     }
     return question
 }
-const workSheetQs = ref(store.state.chosenQs.map(q => getMathsQs(...q)).map(displayableQ))
+const workSheetQs = ref(store.state.chosenWorksheet.topicList.map(path => getMathsQs(...path.split('-'))).map(displayableQ))
 const showAnswers = ref(false);
 const copyWS = () => {
     navigator.clipboard.writeText(workSheetQs.value.map(q => q.q).join('\n\n'))
