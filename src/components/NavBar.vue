@@ -13,8 +13,9 @@ const logout = () => {
 <template>
     <router-link to="/" class="navbar-item">Home</router-link>
     <router-link v-if="!loggedIn" to="/login" class="navbar-item">Login</router-link>
-    <button v-else  v-on:click="logout" >Log Out</button>
+    <button v-else v-on:click="logout">Log Out</button>
     <router-link to="/choose_worksheet" class="navbar-item">Choose a worksheet</router-link>
+    <router-link to="/make_worksheet" class="navbar-item">Make a worksheet</router-link>
     <router-link to="/choose_chapter" class="navbar-item">Choose a chapter</router-link>
 </template>
 
