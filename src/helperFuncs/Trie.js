@@ -16,14 +16,12 @@ export class Trie {
 
     insert(word, qPath) {
         var current = this.head;
-        console.log('Trie: adding', word)
         for (var w of word) {
             if (current.children[w] === undefined) {
                 current.children[w] = new trieNode(w, [qPath])
             } else {
                 current.children[w].qList.add(qPath)
             }
-            console.log('Trie: on ', w, 'list:', current.children[w].qList)
             current = current.children[w]
         }
     }
