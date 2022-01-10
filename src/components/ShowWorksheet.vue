@@ -28,7 +28,6 @@ const displayableQ = question => {
     return question
 }
 const workSheetQs = ref(store.state.chosenWorksheet.topicList.map(path => getMathsQs(...path.split('-'))).map(displayableQ))
-const showAnswers = ref(false);
 const copyWS = () => {
     navigator.clipboard.writeText(workSheetQs.value.map(q => q.q).join('\n\n'))
 }
@@ -46,9 +45,6 @@ const copyWS = () => {
             <button
                 v-on:click="workSheetQs = store.state.chosenQs.map(q => getMathsQs(...q))"
             >Change all qs</button>
-            <button
-                v-on:click="showAnswers = !showAnswers"
-            >{{ showAnswers ? 'Hide' : 'Show' }} answers</button>
             <button v-on:click="router.push('/show_question')">Show as quiz</button>
         </div>
         <div id="worksheet">
@@ -58,11 +54,6 @@ const copyWS = () => {
                     v-bind:key="i"
                     v-bind:class="i % 2 ? 'wsq wsq-blue' : 'wsq wsq-green'"
                 />
-                <!-- <p>
-                    {{ q.q }}
-                    <span v-if="showAnswers" class="worksheet-answer">....{{ q.a }}</span>
-                </p>
-                <br />-->
             </div>
         </div>
         <p>.</p>
