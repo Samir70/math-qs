@@ -29,7 +29,7 @@ export class Trie {
     search(word) {
         var current = this.head;
         for (var w of word) {
-            if (current.children[w] === undefined) { return []}
+            if (current.children[w] === undefined) { return new Set()}
             current = current.children[w]
         }
         return current.qList;
