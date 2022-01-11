@@ -5,15 +5,13 @@ export const qPaths = topicsToTest.map(t => [...t.path, t.rating]);
 
 export const qTrie = new Trie()
 
-for (let qp of qPaths) {
-    let slug = qp.join('-');
-    for (let word of qp.slice(0, 3)) {
-        if (word === '') { continue }
-        qTrie.insert(word, slug)
+let seenWords = new Set();
+for (let topic of topicsToTest) {
+    if (!['shortAnswer', 'multiChoice', 'sort'].includes(topic.qType)) {continue}
+    let slug = topic.path.join('-');
+    for (let word of topic.path) {
+        if (seenWords.has(word) || word === '') { continue }
+        seenWords.add(word);
+        qTrie.insert(word, slug);
     }
 }
-
-// qTrie.insert('data', 'data-mean-findmissing-10')
-// qTrie.insert('data', 'data-mode-findmissing-10')
-// qTrie.insert('mean', 'data-mean-findmissing-10')
-// qTrie.insert('findmissing', 'data-mean-findmissing-10')
