@@ -47,9 +47,10 @@ const showHint = () => {
       v-bind:qData="currentQ"
       v-bind:key="qKey"
       v-on:user-answered="respondToAns"
+      class="showq-qblock"
     />
     <button v-if="waitForNext" v-on:click="nextQ">Next Q</button>
-    <div v-for="hint of qHints" id="showq-hint-box">
+    <div v-for="hint of qHints" class="showq-hint-box">
       <p>{{ hint }}</p>
     </div>
     <div id="showq-options-box">
@@ -65,13 +66,17 @@ const showHint = () => {
 #showq-options-box {
   display: flex;
   justify-content: space-around;
-  margin: 10px;
+  margin: auto;
 }
 
-#showq-hint-box {
+.showq-hint-box {
   border: 1px solid blue;
   padding: 3px;
   width: 90vw;
   max-width: 480px;
+  margin: auto;
+}
+.showq-qblock {
+  margin: auto;
 }
 </style>
