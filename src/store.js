@@ -29,6 +29,18 @@ export const store = createStore({
         setWorksheet(state, newWorksheet) {
             state.chosenWorksheet = newWorksheet
         },
+        addToWorksheet(state, newItem) {
+            state.chosenWorksheet = {
+                name: state.chosenWorksheet.name,
+                topicList: [...state.chosenWorksheet.topicList, newItem]
+            }
+        },
+        removeFromWorksheet(state, index) {
+            state.chosenWorksheet = {
+                name: state.chosenWorksheet.name,
+                topicList: state.chosenWorksheet.topicList.filter((t, i) => i !== index)
+            }
+        },
         setChapter(state, newChapter) {
             state.chosenChapter = newChapter
         },
