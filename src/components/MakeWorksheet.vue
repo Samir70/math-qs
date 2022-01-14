@@ -40,6 +40,13 @@ const clearWorksheet = () => {
     store.commit('setWorksheet', {name: 'New Worksheet', topicList: []})
     currentWS.value = store.state.chosenWorksheet.topicList
 }
+const copyTopiclist = () => {
+    console.log('makeWS: Copying topiclist to clipboard');
+    navigator.clipboard.writeText(JSON.stringify({
+        name: 'New Worksheet',
+        topicList: currentWS.value
+    }, null, '\t'))
+}
 </script>
 
 <template>
@@ -49,7 +56,7 @@ const clearWorksheet = () => {
         v-if="foundQs.length === 0"
     >{{ searchTerm === '' ? 'Enter a search term' : `No Qs found for '${searchTerm}'` }}</p>
     <div id="makeWS-options-box">
-        <button>Copy list to clipboard</button>
+        <button v-on:click="copyTopiclist">Copy topic list to clipboard</button>
         <button v-on:click="clearWorksheet">Empty current worksheet</button>
         <button v-on:click="viewWorkSheet">View workheet</button>
     </div>
