@@ -35,6 +35,11 @@ const viewWorkSheet = () => {
     store.commit('setQList', currentWS.value.map(t => t.split('-')))
     router.push('/show_worksheet')
 }
+const clearWorksheet = () => {
+    console.log('makeWS: clearing worksheet');
+    store.commit('setWorksheet', {name: 'New Worksheet', topicList: []})
+    currentWS.value = store.state.chosenWorksheet.topicList
+}
 </script>
 
 <template>
@@ -43,6 +48,11 @@ const viewWorkSheet = () => {
     <p
         v-if="foundQs.length === 0"
     >{{ searchTerm === '' ? 'Enter a search term' : `No Qs found for '${searchTerm}'` }}</p>
+    <div id="makeWS-options-box">
+        <button>Copy list to clipboard</button>
+        <button v-on:click="clearWorksheet">Empty current worksheet</button>
+        <button v-on:click="viewWorkSheet">View workheet</button>
+    </div>
     <div id="ws-lists">
         <div class="ws-list">
             <h3>Click to add to worksheet</h3>
@@ -52,7 +62,6 @@ const viewWorkSheet = () => {
         </div>
         <div class="ws-list">
             <h3>Current worksheet</h3>
-            <button v-on:click="viewWorkSheet">View workheet</button>
             <ul>
                 <li
                     v-for="i in currentWS.length"
@@ -74,5 +83,10 @@ li {
 li:hover {
     text-decoration: underline;
     background: violet;
+}
+#makeWS-options-box {
+  display: flex;
+  justify-content: center;
+  margin: auto;
 }
 </style>
