@@ -10,6 +10,6 @@ for (let topic of topicsToTest) {
     let slug = topic.path.join('-') + '-' + topic.rating;
     for (let word of topic.path) {
         if (word === '') { continue }
-        qTrie.insert(word, slug);
+        qTrie.insert(word.toLowerCase(), slug);
     }
 }

@@ -9,7 +9,7 @@ const searchTerm = ref('');
 const foundQs = ref([])
 const currentWS = ref(store.state.chosenWorksheet.topicList)
 watch(searchTerm, (newVal, oldval) => {
-    let words = newVal.split(' ')
+    let words = newVal.toLowerCase().split(' ')
     // console.log('MWS: searching for', words)
     let toList = words[0] ? [...qTrie.search(words[0])] : []
     // console.log('MWS: found', toList)
