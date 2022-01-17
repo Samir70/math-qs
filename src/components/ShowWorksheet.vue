@@ -1,6 +1,6 @@
 <script setup>
 import { store } from '../store';
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { getMathsQs } from 'math-q-factory';
 import WorksheetQ from './WorksheetQ.vue';
@@ -31,6 +31,10 @@ const workSheetQs = ref(store.state.chosenWorksheet.topicList.map(path => getMat
 const copyWS = () => {
     navigator.clipboard.writeText(workSheetQs.value.map(q => q.q).join('\n\n'))
 }
+const changeAllQs = () => {
+    workSheetQs.value = store.state.chosenQs.map(q => getMathsQs(...q))
+    nextTick(() => MathJax.typeset())
+}
 </script>
 
 <template>
@@ -42,9 +46,7 @@ const copyWS = () => {
         </h2>
         <div id="action-buttons">
             <button v-on:click="copyWS">Copy to clipboard</button>
-            <button
-                v-on:click="workSheetQs = store.state.chosenQs.map(q => getMathsQs(...q))"
-            >Change all qs</button>
+            <button v-on:click="changeAllQs">Change all qs</button>
             <button v-on:click="router.push('/show_question')">Show as quiz</button>
         </div>
         <div id="worksheet">

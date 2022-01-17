@@ -2,7 +2,7 @@
 import { store } from "../store";
 import { getMathsQs } from 'math-q-factory';
 import { ShortAnswerQ, MultipleChoiceQ, SortQ } from "q-show";
-import { ref } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 const qTypes = {
   // classify: ClassifyQ,
   // match: MatchQ,
@@ -23,11 +23,11 @@ const respondToAns = (ans) => {
     store.commit('updateChapterProgress', [...store.state.chosenQs[qNumber.value]])
     // userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
     qNumber.value = (qNumber.value + 1) % store.state.chosenQs.length
-  } else {
-    qHints.value = [...qHints.value, `Answer:   ${currentQ.value.qFeedback || currentQ.value.a}`]
   }
+  qHints.value = [`${currentQ.value.qFeedback || currentQ.value.a}`, ...qHints.value]
   waitForNext.value = true;
   //   console.log({ userProg: userProgress.value })
+  nextTick(() => MathJax.typeset())
 }
 const nextQ = () => {
   currentQ.value = getMathsQs(...store.state.chosenQs[qNumber.value])
@@ -38,6 +38,9 @@ const nextQ = () => {
 const showHint = () => {
   qHints.value = currentQ.value.hints.slice(0, qHints.value.length + 1)
 }
+onMounted(() => {
+  MathJax.typeset()
+})
 </script>
 
 <template>
