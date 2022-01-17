@@ -13,7 +13,7 @@
   "dependencies": {
     "firebase": "^9.6.1",
     "firebaseui": "^6.0.0",
-    "math-q-factory": "^2.1.0",
+    "math-q-factory": "^2.2.0",
     "q-show": "^3.0.0",
     "vue": "^3.2.16",
     "vue-router": "^4.0.12",
