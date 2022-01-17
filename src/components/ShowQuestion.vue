@@ -2,7 +2,7 @@
 import { store } from "../store";
 import { getMathsQs } from 'math-q-factory';
 import { ShortAnswerQ, MultipleChoiceQ, SortQ } from "q-show";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 const qTypes = {
   // classify: ClassifyQ,
   // match: MatchQ,
@@ -28,6 +28,7 @@ const respondToAns = (ans) => {
   }
   waitForNext.value = true;
   //   console.log({ userProg: userProgress.value })
+  nextTick(() => MathJax.typeset())
 }
 const nextQ = () => {
   currentQ.value = getMathsQs(...store.state.chosenQs[qNumber.value])
