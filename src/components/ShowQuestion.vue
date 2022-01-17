@@ -24,7 +24,7 @@ const respondToAns = (ans) => {
     // userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
     qNumber.value = (qNumber.value + 1) % store.state.chosenQs.length
   }
-  qHints.value = [...qHints.value, `${currentQ.value.qFeedback || currentQ.value.a}`]
+  qHints.value = [`${currentQ.value.qFeedback || currentQ.value.a}`, ...qHints.value]
   waitForNext.value = true;
   //   console.log({ userProg: userProgress.value })
   nextTick(() => MathJax.typeset())
