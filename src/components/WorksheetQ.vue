@@ -1,16 +1,25 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 const props = defineProps({
     question: Object
 });
 const showAns = ref(false)
+const showHideAns = () => {
+    showAns.value = !showAns.value
+    nextTick(() => {
+        MathJax.typeset()
+    })
+}
+onMounted(() => {
+    MathJax.typeset()
+})
 </script>
 
 <template>
     <div class="wsq-box">
         <div class="wsq-qbox">{{ question.q }}</div>
-        <div v-if="showAns" class="wsq-abox" v-on:click="showAns = !showAns">{{ question.a }}</div>
-        <button v-else class="reveal-button" v-on:click="showAns = !showAns">Show Answer</button>
+        <div v-if="showAns" class="wsq-abox" v-on:click="showHideAns">{{ question.a }}</div>
+        <button v-else class="reveal-button" v-on:click="showHideAns">Show Answer</button>
     </div>
 </template>
 

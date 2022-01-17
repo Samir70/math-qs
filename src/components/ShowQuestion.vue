@@ -2,7 +2,7 @@
 import { store } from "../store";
 import { getMathsQs } from 'math-q-factory';
 import { ShortAnswerQ, MultipleChoiceQ, SortQ } from "q-show";
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 const qTypes = {
   // classify: ClassifyQ,
   // match: MatchQ,
@@ -38,6 +38,9 @@ const nextQ = () => {
 const showHint = () => {
   qHints.value = currentQ.value.hints.slice(0, qHints.value.length + 1)
 }
+onMounted(() => {
+  MathJax.typeset()
+})
 </script>
 
 <template>
