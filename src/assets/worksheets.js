@@ -12,17 +12,28 @@ const gcseIA = {
 }
 
 const starter1 = {
-	name: "2022/01/17 starter",
+	name: "2022/01/17a starter",
 	topicList: [
 		"number-multiplying-ab*c.d-110",
 		"number-busStop-noRemainder-150",
 		"fraction-ofAmount-manySlices-120",
 		"fraction-compare-sameNumer-180",
 		"ratio-simplify-withUnits-150",
-		"vocab-circles-tangent-100"
+		"vocab-circles--100"
+	]
+}
+
+const starter2 = {
+	name: "2022/01/17b starter",
+	topicList: [
+		"fraction-add-diffDenomChangeBoth-230",
+		"fraction-ofAmount-mixedNumber-190",
+		"algebra01-solveLinear-unknownBothSides-300",
+		"data-mean-anyAnswer-135",
+		"sequences-linear-useFormula1to5-180"
 	]
 }
 
 export const worksheets = [
-	gcseIA, starter1
+	gcseIA, starter1, starter2
 ]
