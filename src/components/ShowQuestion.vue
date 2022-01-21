@@ -34,6 +34,7 @@ const nextQ = () => {
   qHints.value = []
   qKey.value++
   waitForNext.value = false;
+  nextTick(() => MathJax.typeset())
 }
 const showHint = () => {
   qHints.value = currentQ.value.hints.slice(0, qHints.value.length + 1)
