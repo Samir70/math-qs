@@ -32,7 +32,7 @@ const copyWS = () => {
     navigator.clipboard.writeText(workSheetQs.value.map(q => q.q).join('\n\n'))
 }
 const changeAllQs = () => {
-    workSheetQs.value = store.state.chosenQs.map(q => getMathsQs(...q))
+    workSheetQs.value = store.state.chosenQs.map(q => getMathsQs(...q)).map(displayableQ)
     nextTick(() => MathJax.typeset())
 }
 </script>
