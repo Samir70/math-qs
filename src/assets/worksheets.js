@@ -34,6 +34,28 @@ const starter2 = {
 	]
 }
 
+const starter3 = {
+	name: "2022/01/24a starter",
+	topicList: [
+		"powers-simplify-times-130",
+		"decimal-order--100",
+		"fraction-add-mixedNumbers-250",
+		"number-negNums-add-80",
+		"ratio-share-givenDiff-300"
+	]
+}
+
+const starter4 = {
+	name: "2022/01/24b starter",
+	topicList: [
+		"data-range--90",
+		"percent-ofAmount-multiplesOf5%-100",
+		"powers-simplify-brackets-140",
+		"number-busStop-withRemainder-180",
+		"vocab-angles-rnd-50"
+	]
+}
+
 export const worksheets = [
-	gcseIA, starter1, starter2
+	gcseIA, starter1, starter2, starter3, starter4
 ]
