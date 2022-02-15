@@ -73,11 +73,11 @@ const changeAllQs = () => {
     font-weight: bolder;
 }
 .wsq-blue {
-    background: cadetblue;
+    background: rgb(201, 243, 245);
     border-left: 5px solid darkblue;
 }
 .wsq-green {
-    background: lightgreen;
+    background: rgb(184, 235, 184);
     border-left: 5px solid darkgreen;
 }
 </style>
