@@ -7,6 +7,11 @@ import "firebaseui/dist/firebaseui.css";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 
 const router = useRouter();
+let nextPage = '/'
+if (router.currentRoute.value.query) {
+  nextPage = router.currentRoute.value.query.page || '/'
+}
+console.log(router.currentRoute.value.query)
 if (import.meta.env.MODE === 'development') {
   console.log('Login: in dev mode')
   const auth = getAuth();
@@ -23,7 +28,7 @@ var uiConfig = {
       // User successfully signed in.
       // Return type determines whether we continue the redirect automatically
       // or whether we leave that to developer to handle.
-      router.push('/')
+      router.push(nextPage)
       return false;
     },
     uiShown: function () {

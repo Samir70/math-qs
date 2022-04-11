@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { store } from '../store';
 import { useRouter } from 'vue-router';
 import { qTrie } from '../assets/topicsToTest';
@@ -8,6 +8,7 @@ const router = useRouter();
 const searchTerm = ref('');
 const foundQs = ref([])
 const currentWS = ref(store.state.chosenWorksheet.topicList)
+const loggedIn = computed(() => store.state.loggedIn);
 watch(searchTerm, (newVal, oldval) => {
     let words = newVal.toLowerCase().split(' ')
     // console.log('MWS: searching for', words)
@@ -56,6 +57,8 @@ const copyTopiclist = () => {
         v-if="foundQs.length === 0"
     >{{ searchTerm === '' ? 'Enter a search term' : `No Qs found for '${searchTerm}'` }}</p>
     <div id="makeWS-options-box">
+        <button v-if="loggedIn" v-on:click="saveWS">Save worksheet</button>
+        <button v-if="!loggedIn" v-on:click="router.push('/login?page=make_worksheet')">Log in to save worksheet</button>
         <button v-on:click="copyTopiclist">Copy topic list to clipboard</button>
         <button v-on:click="clearWorksheet">Empty current worksheet</button>
         <button v-on:click="viewWorkSheet">View workheet</button>
