@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import { qTrie } from '../assets/topicsToTest';
 // console.log(JSON.stringify(qTrie))
 const router = useRouter();
+const emits = defineEmits(['save-worksheet'])
 const searchTerm = ref('');
 const foundQs = ref([])
 const currentWS = ref(store.state.chosenWorksheet.topicList)
@@ -51,7 +52,7 @@ const saveTopiclist = () => {
         topicList: currentWS.value
     };
     navigator.clipboard.writeText(JSON.stringify(wsDoc, null, '\t'));
-    
+    emits('save-worksheet', wsDoc)
 }
 </script>
 

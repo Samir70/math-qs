@@ -1,9 +1,20 @@
 <script setup>
 import firebase from 'firebase/compat/app';
 import { firebaseConfig } from './firebaseConfig';
+import {
+  getFirestore, connectFirestoreEmulator,
+  collection, getDocs, addDoc
+} from "firebase/firestore";
 import { store } from './store';
 import NavBar from './components/NavBar.vue';
-firebase.initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
+const db = getFirestore(app);
+if (import.meta.env.MODE === 'development') {
+  console.log('fireStore: in dev mode')
+  connectFirestoreEmulator(db, 'localhost', 8080);
+} else {
+  console.log('fireStore: in prod mode')
+}
 firebase.auth().onAuthStateChanged(user => {
   console.log('from onAuthStateChanged', user)
   if (user) {
@@ -12,12 +23,22 @@ firebase.auth().onAuthStateChanged(user => {
   }
   console.log('from onAuthStateChanged:', store.state.userName)
 })
+
+async function saveWorksheet(ws) {
+  console.log('need to save a worksheet', ws)
+  try {
+    const docRef = await addDoc(collection(db, "worksheets"), ws);
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+}
 </script>
 
 <template>
   <h1>Maths Qs</h1>
   <NavBar />
-  <router-view></router-view>
+  <router-view v-on:save-worksheet="saveWorksheet"></router-view>
 </template>
 
 <style>
