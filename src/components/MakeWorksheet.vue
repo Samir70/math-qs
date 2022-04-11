@@ -8,6 +8,7 @@ const router = useRouter();
 const searchTerm = ref('');
 const foundQs = ref([])
 const currentWS = ref(store.state.chosenWorksheet.topicList)
+const nameNewWS = ref('');
 const loggedIn = computed(() => store.state.loggedIn);
 watch(searchTerm, (newVal, oldval) => {
     let words = newVal.toLowerCase().split(' ')
@@ -41,12 +42,16 @@ const clearWorksheet = () => {
     store.commit('setWorksheet', {name: 'New Worksheet', topicList: []})
     currentWS.value = store.state.chosenWorksheet.topicList
 }
-const copyTopiclist = () => {
+const saveTopiclist = () => {
     console.log('makeWS: Copying topiclist to clipboard');
-    navigator.clipboard.writeText(JSON.stringify({
-        name: 'New Worksheet',
+    let d = new Date()
+    let wsDoc = {
+        name: nameNewWS.value || `Unnamed worksheet ${d.toDateString()}`,
+        creator: store.state.userName,
         topicList: currentWS.value
-    }, null, '\t'))
+    };
+    navigator.clipboard.writeText(JSON.stringify(wsDoc, null, '\t'));
+    
 }
 </script>
 
@@ -57,9 +62,8 @@ const copyTopiclist = () => {
         v-if="foundQs.length === 0"
     >{{ searchTerm === '' ? 'Enter a search term' : `No Qs found for '${searchTerm}'` }}</p>
     <div id="makeWS-options-box">
-        <button v-if="loggedIn" v-on:click="saveWS">Save worksheet</button>
+        <button v-if="loggedIn" v-on:click="saveTopiclist">Save worksheet</button>
         <button v-if="!loggedIn" v-on:click="router.push('/login?page=make_worksheet')">Log in to save worksheet</button>
-        <button v-on:click="copyTopiclist">Copy topic list to clipboard</button>
         <button v-on:click="clearWorksheet">Empty current worksheet</button>
         <button v-on:click="viewWorkSheet">View workheet</button>
     </div>
@@ -71,7 +75,7 @@ const copyTopiclist = () => {
             </ul>
         </div>
         <div class="ws-list">
-            <h3>Current worksheet</h3>
+            <h3><input type="text" v-model="nameNewWS" placeholder="Name of Worksheet" /></h3>
             <ul>
                 <li
                     v-for="i in currentWS.length"
