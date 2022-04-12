@@ -15,6 +15,16 @@ if (import.meta.env.MODE === 'development') {
 } else {
   console.log('fireStore: in prod mode')
 }
+// get list of worksheets from firestore
+const getWSheets = async () => {
+  const docs = await getDocs(collection(db, "worksheets"));
+  docs.forEach(d => {
+    let { creator, name, topicList } = d.data()
+    store.commit('importWorksheet', { creator, name, topicList })
+  })
+  // console.log('store.worksheetList', store.state.worksheetList)
+}
+getWSheets();
 firebase.auth().onAuthStateChanged(user => {
   console.log('from onAuthStateChanged', user)
   if (user) {
