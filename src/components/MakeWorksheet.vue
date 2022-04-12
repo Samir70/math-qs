@@ -9,7 +9,7 @@ const router = useRouter();
 const searchTerm = ref('');
 const foundQs = ref([])
 const currentWS = ref(store.state.chosenWorksheet.topicList)
-const nameNewWS = ref('');
+const nameNewWS = ref(store.state.chosenWorksheet.name);
 const loggedIn = computed(() => store.state.loggedIn);
 watch(searchTerm, (newVal, oldval) => {
     let words = newVal.toLowerCase().split(' ')
@@ -41,7 +41,8 @@ const viewWorkSheet = () => {
 const clearWorksheet = () => {
     console.log('makeWS: clearing worksheet');
     store.commit('setWorksheet', { name: 'New Worksheet', topicList: [] })
-    currentWS.value = store.state.chosenWorksheet.topicList
+    currentWS.value = store.state.chosenWorksheet.topicList;
+    nameNewWS.value = ''
 }
 const saveTopiclist = () => {
     console.log('makeWS: Copying topiclist to clipboard');
@@ -76,7 +77,9 @@ const saveTopiclist = () => {
             </ul>
         </div>
         <div class="ws-list">
-            <h3><input type="text" v-model="nameNewWS" placeholder="Name of Worksheet" /></h3>
+            <h3>
+                <input class="ws-name" type="text" v-model="nameNewWS" placeholder="Name of Worksheet" />
+            </h3>
             <ul>
                 <li v-for="i in currentWS.length" v-on:click="removeItem(i - 1)">{{ currentWS[i - 1] }}</li>
             </ul>
@@ -88,6 +91,11 @@ const saveTopiclist = () => {
 #ws-lists {
     display: flex;
     justify-content: space-between;
+}
+.ws-name {
+    width: 90%;
+    padding: 5px;
+    background-color: inherit;
 }
 
 li {
