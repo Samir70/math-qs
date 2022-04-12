@@ -3,9 +3,9 @@ import { ref, watch, computed } from 'vue';
 import { store } from '../store';
 import { useRouter } from 'vue-router';
 import { qTrie } from '../assets/topicsToTest';
-// console.log(JSON.stringify(qTrie))
+import { emitActions } from '../helperFuncs/globalConsts';
+const emits = defineEmits(emitActions)
 const router = useRouter();
-const emits = defineEmits(['save-worksheet'])
 const searchTerm = ref('');
 const foundQs = ref([])
 const currentWS = ref(store.state.chosenWorksheet.topicList)
@@ -40,7 +40,7 @@ const viewWorkSheet = () => {
 }
 const clearWorksheet = () => {
     console.log('makeWS: clearing worksheet');
-    store.commit('setWorksheet', {name: 'New Worksheet', topicList: []})
+    store.commit('setWorksheet', { name: 'New Worksheet', topicList: [] })
     currentWS.value = store.state.chosenWorksheet.topicList
 }
 const saveTopiclist = () => {
@@ -59,12 +59,12 @@ const saveTopiclist = () => {
 <template>
     <h2>Make a worksheet</h2>
     <input type="text" placeholder="Search for..." v-model="searchTerm" />
-    <p
-        v-if="foundQs.length === 0"
-    >{{ searchTerm === '' ? 'Enter a search term' : `No Qs found for '${searchTerm}'` }}</p>
+    <p v-if="foundQs.length === 0">{{ searchTerm === '' ? 'Enter a search term' : `No Qs found for '${searchTerm}'` }}
+    </p>
     <div id="makeWS-options-box">
         <button v-if="loggedIn" v-on:click="saveTopiclist">Save worksheet</button>
-        <button v-if="!loggedIn" v-on:click="router.push('/login?page=make_worksheet')">Log in to save worksheet</button>
+        <button v-if="!loggedIn" v-on:click="router.push('/login?page=make_worksheet')">Log in to save
+            worksheet</button>
         <button v-on:click="clearWorksheet">Empty current worksheet</button>
         <button v-on:click="viewWorkSheet">View workheet</button>
     </div>
@@ -78,10 +78,7 @@ const saveTopiclist = () => {
         <div class="ws-list">
             <h3><input type="text" v-model="nameNewWS" placeholder="Name of Worksheet" /></h3>
             <ul>
-                <li
-                    v-for="i in currentWS.length"
-                    v-on:click="removeItem(i - 1)"
-                >{{ currentWS[i - 1] }}</li>
+                <li v-for="i in currentWS.length" v-on:click="removeItem(i - 1)">{{ currentWS[i - 1] }}</li>
             </ul>
         </div>
     </div>
@@ -92,16 +89,19 @@ const saveTopiclist = () => {
     display: flex;
     justify-content: space-between;
 }
+
 li {
     padding: 3px;
 }
+
 li:hover {
     text-decoration: underline;
     background: violet;
 }
+
 #makeWS-options-box {
-  display: flex;
-  justify-content: center;
-  margin: auto;
+    display: flex;
+    justify-content: center;
+    margin: auto;
 }
 </style>

@@ -3,6 +3,8 @@ import { store } from "../store";
 import { getMathsQs } from 'math-q-factory';
 import { ShortAnswerQ, MultipleChoiceQ, SortQ } from "q-show";
 import { ref, onMounted, nextTick } from 'vue';
+import { emitActions } from '../helperFuncs/globalConsts';
+const emits = defineEmits(emitActions)
 const qTypes = {
   // classify: ClassifyQ,
   // match: MatchQ,

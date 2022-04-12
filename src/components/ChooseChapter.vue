@@ -4,6 +4,8 @@ import { store } from '../store';
 import { totalQs } from 'math-q-factory';
 import { qPaths } from '../assets/topicsToTest';
 import ChapterCard from './ChapterCard.vue';
+import { emitActions } from '../helperFuncs/globalConsts';
+const emits = defineEmits(emitActions)
 let chapterSet = new Set(Object.keys(totalQs))
 console.log('ChooseChapter:', chapterSet);
 const router = useRouter();

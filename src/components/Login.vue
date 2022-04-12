@@ -5,6 +5,8 @@ import firebase from 'firebase/compat/app';
 import * as firebaseui from 'firebaseui';
 import "firebaseui/dist/firebaseui.css";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { emitActions } from '../helperFuncs/globalConsts';
+const emits = defineEmits(emitActions)
 
 const router = useRouter();
 let nextPage = '/'

@@ -4,6 +4,8 @@ import { ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { getMathsQs } from 'math-q-factory';
 import WorksheetQ from './WorksheetQ.vue';
+import { emitActions } from '../helperFuncs/globalConsts';
+const emits = defineEmits(emitActions)
 const router = useRouter();
 const displayableQ = question => {
     // shortAnswer, multiChoice Qs can be asked without modification

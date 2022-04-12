@@ -1,5 +1,7 @@
 <script setup>
 import { store } from '../store';
+import { emitActions } from '../helperFuncs/globalConsts';
+const emits = defineEmits(emitActions)
 </script>
 
 <template>
