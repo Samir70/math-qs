@@ -78,7 +78,7 @@ const saveTopiclist = () => {
         </div>
         <div class="ws-list">
             <h3>
-                <input class="ws-name" type="text" v-model="nameNewWS" placeholder="Name of Worksheet" />
+                <input class="ws-name" type="text" v-model="nameNewWS" placeholder="Type in a name of the new Worksheet" />
             </h3>
             <ul>
                 <li v-for="i in currentWS.length" v-on:click="removeItem(i - 1)">{{ currentWS[i - 1] }}</li>
@@ -96,6 +96,9 @@ const saveTopiclist = () => {
     width: 90%;
     padding: 5px;
     background-color: inherit;
+}
+.ws-name:focus {
+    background-color: white;
 }
 
 li {
