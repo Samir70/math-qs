@@ -30,8 +30,11 @@ const displayableQ = question => {
     return question
 }
 const workSheetQs = ref(store.state.chosenWorksheet.topicList.map(path => getMathsQs(...path.split('-'))).map(displayableQ))
-const copyWS = () => {
+const copyQs = () => {
     navigator.clipboard.writeText(workSheetQs.value.map(q => q.q).join('\n\n'))
+}
+const copyWS = () => {
+    navigator.clipboard.writeText(JSON.stringify(store.state.chosenWorksheet, null, 2));
 }
 const changeAllQs = () => {
     workSheetQs.value = store.state.chosenQs.map(q => getMathsQs(...q)).map(displayableQ)
@@ -47,7 +50,8 @@ const changeAllQs = () => {
             {{ store.state.chosenWorksheet.name }}
         </h2>
         <div id="action-buttons">
-            <button v-on:click="copyWS">Copy to clipboard</button>
+            <button v-on:click="copyQs">Copy Qs to clipboard</button>
+            <button v-on:click="copyWS">Copy worksheet to clipboard</button>
             <button v-on:click="changeAllQs">Change all qs</button>
             <button v-on:click="router.push('/show_question')">Show as quiz</button>
         </div>
