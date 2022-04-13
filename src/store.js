@@ -10,6 +10,7 @@ export const store = createStore({
             chosenQs: qPaths,
             chosenWorksheet: worksheets[0],
             worksheetList: worksheets,
+            downloadedWSThisSession: false,
             userProgress: { none: new Set() },
             chosenChapter: 'none'
         }
@@ -29,6 +30,9 @@ export const store = createStore({
         },
         importWorksheet(state, newWSheet) {
             state.worksheetList = [...state.worksheetList, newWSheet]
+        },
+        noteDownloadOfWS(state) {
+            state.downloadedWSThisSession = true
         },
         setWorksheet(state, newWorksheet) {
             state.chosenWorksheet = newWorksheet

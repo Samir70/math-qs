@@ -29,7 +29,10 @@ firebase.auth().onAuthStateChanged(user => {
   if (user) {
     store.commit('login');
     store.commit('changeUser', user.displayName || 'Guest')
-    getWSheets();
+    if (!store.state.downloadedWSThisSession) {
+      getWSheets();
+      store.commit('noteDownloadOfWS')
+    }
   }
   console.log('from onAuthStateChanged:', store.state.userName)
 })
