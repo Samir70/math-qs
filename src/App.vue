@@ -39,10 +39,13 @@ async function saveWorksheet(ws) {
   try {
     const docRef = await addDoc(collection(db, "worksheets"), ws);
     console.log("Document written with ID: ", docRef.id);
-    store.commit('importWorksheet', ws)
   } catch (e) {
     console.error("Error adding document: ", e);
+    if (store.state.userName === 'Guest') {
+      alert('Guests cannot save worksheets in the database, but your worksheet is saved on the app until you close this window')
+    }
   }
+  store.commit('importWorksheet', ws)
 }
 </script>
 
