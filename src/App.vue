@@ -24,12 +24,12 @@ const getWSheets = async () => {
   })
   // console.log('store.worksheetList', store.state.worksheetList)
 }
-getWSheets();
 firebase.auth().onAuthStateChanged(user => {
   console.log('from onAuthStateChanged', user)
   if (user) {
     store.commit('login');
     store.commit('changeUser', user.displayName || 'Guest')
+    getWSheets();
   }
   console.log('from onAuthStateChanged:', store.state.userName)
 })
