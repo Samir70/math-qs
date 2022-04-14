@@ -1,5 +1,6 @@
 <script setup>
 import firebase from 'firebase/compat/app';
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { firebaseConfig } from './firebaseConfig';
 import {
   getFirestore, connectFirestoreEmulator,
@@ -8,6 +9,17 @@ import {
 import { store } from './store';
 import NavBar from './components/NavBar.vue';
 const app = firebase.initializeApp(firebaseConfig);
+// Pass your reCAPTCHA v3 site key (public key) to activate(). Make sure this
+// key is the counterpart to the secret key you set in the Firebase console.
+try {
+  const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider('6LflBHMfAAAAAHhbPe56MzKaUaCWZuOkVbei-Epm'),
+    // Optional argument. If true, the SDK automatically refreshes App Check tokens as needed.
+    isTokenAutoRefreshEnabled: true
+  });
+} catch (err) {
+  console.log(err)
+}
 const db = getFirestore(app);
 if (import.meta.env.MODE === 'development') {
   console.log('fireStore: in dev mode')

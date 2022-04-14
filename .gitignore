@@ -10,3 +10,4 @@ firestore.rules
 firestore.indexes.json
 .firebase
 ui-debug.log
+temp.js
