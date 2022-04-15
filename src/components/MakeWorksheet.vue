@@ -38,22 +38,31 @@ const viewWorkSheet = () => {
     store.commit('setQList', currentWS.value.map(t => t.split('-')))
     router.push('/show_worksheet')
 }
+const defaultName = () => {
+    let d = new Date()
+    return `Unnamed worksheet ${d.toDateString()}`
+}
 const clearWorksheet = () => {
     console.log('makeWS: clearing worksheet');
-    store.commit('setWorksheet', { name: 'New Worksheet', topicList: [] })
+    store.commit('setWorksheet', { name: defaultName(), topicList: [] })
     currentWS.value = store.state.chosenWorksheet.topicList;
-    nameNewWS.value = ''
+    nameNewWS.value = store.state.chosenWorksheet.name
 }
 const saveTopiclist = () => {
-    console.log('makeWS: Copying topiclist to clipboard');
-    let d = new Date()
     let wsDoc = {
-        name: nameNewWS.value || `Unnamed worksheet ${d.toDateString()}`,
+        name: nameNewWS.value || defaultName(),
         creator: store.state.userName,
         topicList: currentWS.value
     };
+    console.log('makeWS: Copying topiclist to clipboard');
     navigator.clipboard.writeText(JSON.stringify(wsDoc, null, '\t'));
-    emits('save-worksheet', wsDoc)
+    if (store.state.customWorksheets.length < store.state.maxCustomWorksheets) {
+        store.commit('addCustomWorksheet', wsDoc)
+    } else {
+        alert(`You have already saved ${store.state.maxCustomWorksheets} custom worksheets. \nThat is as many as you can save. \nDelete one of your saved worksheets to save this one.`)
+    }
+    // old-way saved individual worksheets to firestore
+    // emits('save-worksheet', wsDoc)
 }
 </script>
 
@@ -63,7 +72,7 @@ const saveTopiclist = () => {
     <p v-if="foundQs.length === 0">{{ searchTerm === '' ? 'Enter a search term' : `No Qs found for '${searchTerm}'` }}
     </p>
     <div id="makeWS-options-box">
-        <button v-if="loggedIn" v-on:click="saveTopiclist">Save worksheet</button>
+        <button v-if="!loggedIn" v-on:click="saveTopiclist">Save worksheet</button>
         <button v-if="!loggedIn" v-on:click="router.push('/login?page=make_worksheet')">Log in to save
             worksheet</button>
         <button v-on:click="clearWorksheet">Empty current worksheet</button>
@@ -78,7 +87,8 @@ const saveTopiclist = () => {
         </div>
         <div class="ws-list">
             <h3>
-                <input class="ws-name" type="text" v-model="nameNewWS" placeholder="Type in a name of the new Worksheet" />
+                <input class="ws-name" type="text" v-model="nameNewWS"
+                    placeholder="Type in a name of the new Worksheet" />
             </h3>
             <ul>
                 <li v-for="i in currentWS.length" v-on:click="removeItem(i - 1)">{{ currentWS[i - 1] }}</li>
@@ -92,11 +102,14 @@ const saveTopiclist = () => {
     display: flex;
     justify-content: space-between;
 }
+
 .ws-name {
     width: 90%;
+    min-width: 250px;
     padding: 5px;
     background-color: inherit;
 }
+
 .ws-name:focus {
     background-color: white;
 }
