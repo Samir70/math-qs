@@ -15,8 +15,8 @@ const emits = defineEmits(emitActions)
             <p>You haven't saved any worksheets</p>
         </div>
         <div v-else>
-            <div v-for="ws in store.state.customWorksheets">
-                <dashboardCWSrow v-bind:cws="ws" />
+            <div v-for="i in store.state.customWorksheets.length">
+                <dashboardCWSrow v-bind:cws="store.state.customWorksheets[i - 1]" v-bind:index="i-1" v-bind:key="i" />
             </div>
         </div>
     </div>
