@@ -36,9 +36,8 @@ const getCWS = async () => {
   }
 }
 firebase.auth().onAuthStateChanged(user => {
-  console.log('from onAuthStateChanged', user)
   if (user) {
-    console.log(JSON.stringify(user))
+    // console.log(JSON.stringify(user))
     store.commit('login');
     store.commit('changeUser', {
       name: user.displayName || 'Guest',
@@ -49,7 +48,7 @@ firebase.auth().onAuthStateChanged(user => {
     store.commit('changeUser', { name: 'Unknown User', id: null })
     store.commit('setCustomWorksheets', [])
   }
-  console.log('from onAuthStateChanged:', store.state.userName)
+  console.log('from onAuthStateChanged:', store.state.user.name)
 })
 
 async function saveCWS() {
