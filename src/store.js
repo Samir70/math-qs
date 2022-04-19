@@ -35,6 +35,9 @@ export const store = createStore({
         deleteCustomWorksheet(state, index) {
             state.customWorksheets = state.customWorksheets.filter((w, i) => i !== index)
         },
+        setCustomWorksheets(state, cwsList) {
+            state.customWorksheets = cwsList
+        },
         setMaxCustomWorksheets(state, newVal) {
             state.maxCustomWorksheets = newVal
         },

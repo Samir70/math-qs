@@ -4,7 +4,7 @@ import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { firebaseConfig } from './firebaseConfig';
 import {
   getFirestore, connectFirestoreEmulator,
-  collection, getDocs, addDoc, doc, setDoc
+  collection, getDoc, addDoc, doc, setDoc
 } from "firebase/firestore";
 import { store } from './store';
 import NavBar from './components/NavBar.vue';
@@ -29,10 +29,11 @@ if (import.meta.env.MODE === 'development') {
 }
 // get list of worksheets from firestore
 const getCWS = async () => {
-  const docs = await getDocs(collection(db, "worksheets"));
-  docs.forEach(d => {
-    let { creator, name, topicList } = d.data()
-  })
+  const userCWS = await getDoc(doc(db, "worksheets", store.state.user.uid));
+  if (userCWS.exists()) {
+    console.log('getCWS: managed to retrieve user\'s custom worksheets', userCWS.data())
+    store.commit('setCustomWorksheets', userCWS.data().worksheets)
+  }
 }
 firebase.auth().onAuthStateChanged(user => {
   console.log('from onAuthStateChanged', user)
@@ -43,6 +44,7 @@ firebase.auth().onAuthStateChanged(user => {
       name: user.displayName || 'Guest',
       uid: user.uid || 'hjkl'
     })
+    getCWS();
   } else {
     store.commit('changeUser', { name: 'Unknown User', id: null })
   }
