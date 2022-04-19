@@ -65,7 +65,7 @@ async function saveCWS() {
     console.log("Document written: ", userData);
   } catch (e) {
     console.error("Error adding document: ", e);
-    if (store.state.userName === 'Guest') {
+    if (store.state.user.name === 'Guest') {
       alert('Guests cannot save worksheets in the database, but your worksheet is saved on the app until you close this window')
     }
   }
