@@ -51,7 +51,7 @@ const clearWorksheet = () => {
 const saveTopiclist = () => {
     let wsDoc = {
         name: nameNewWS.value || defaultName(),
-        creator: store.state.userName,
+        creator: store.state.user.name,
         topicList: currentWS.value
     };
     console.log('makeWS: Copying topiclist to clipboard');
@@ -61,8 +61,6 @@ const saveTopiclist = () => {
     } else {
         alert(`You have already saved ${store.state.maxCustomWorksheets} custom worksheets. \nThat is as many as you can save. \nDelete one of your saved worksheets to save this one.`)
     }
-    // old-way saved individual worksheets to firestore
-    // emits('save-worksheet', wsDoc)
 }
 </script>
 
@@ -72,7 +70,7 @@ const saveTopiclist = () => {
     <p v-if="foundQs.length === 0">{{ searchTerm === '' ? 'Enter a search term' : `No Qs found for '${searchTerm}'` }}
     </p>
     <div id="makeWS-options-box">
-        <button v-if="!loggedIn" v-on:click="saveTopiclist">Save worksheet</button>
+        <button v-if="loggedIn" v-on:click="saveTopiclist">Add to custom worksheet list</button>
         <button v-if="!loggedIn" v-on:click="router.push('/login?page=make_worksheet')">Log in to save
             worksheet</button>
         <button v-on:click="clearWorksheet">Empty current worksheet</button>

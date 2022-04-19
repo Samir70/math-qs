@@ -5,7 +5,7 @@ import { qPaths } from './assets/topicsToTest';
 export const store = createStore({
     state() {
         return {
-            userName: 'Unknown User',
+            user: { name: 'Unknown User', uid: null },
             loggedIn: false,
             chosenQs: qPaths,
             chosenWorksheet: worksheets[0],
@@ -25,7 +25,7 @@ export const store = createStore({
             state.loggedIn = false
         },
         changeUser(state, newUser) {
-            state.userName = newUser
+            state.user = newUser;
         },
         setQList(state, newQList) {
             state.chosenQs = newQList

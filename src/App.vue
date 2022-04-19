@@ -4,7 +4,7 @@ import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import { firebaseConfig } from './firebaseConfig';
 import {
   getFirestore, connectFirestoreEmulator,
-  collection, getDocs, addDoc
+  collection, getDocs, addDoc, doc, setDoc
 } from "firebase/firestore";
 import { store } from './store';
 import NavBar from './components/NavBar.vue';
@@ -39,35 +39,47 @@ const getWSheets = async () => {
 firebase.auth().onAuthStateChanged(user => {
   console.log('from onAuthStateChanged', user)
   if (user) {
+    console.log(JSON.stringify(user))
     store.commit('login');
-    store.commit('changeUser', user.displayName || 'Guest')
-    if (!store.state.downloadedWSThisSession) {
-      getWSheets();
-      store.commit('noteDownloadOfWS')
-    }
+    store.commit('changeUser', {
+      name: user.displayName || 'Guest',
+      uid: user.uid || 'hjkl'
+    })
+    // if (!store.state.downloadedWSThisSession) {
+    //   getWSheets();
+    //   store.commit('noteDownloadOfWS')
+    // }
+  } else {
+    store.commit('changeUser', { name: 'Unknown User', id: null })
   }
   console.log('from onAuthStateChanged:', store.state.userName)
 })
 
-async function saveWorksheet(ws) {
-  console.log('need to save a worksheet', ws)
+async function saveCWS() {
+  let cws = []
+  const userData = {
+    creator: store.state.user.name,
+    data: new Date(),
+    worksheets: store.state.customWorksheets
+  }
+  console.log('syncing user data', userData)
   try {
-    const docRef = await addDoc(collection(db, "worksheets"), ws);
-    console.log("Document written with ID: ", docRef.id);
+    await setDoc(doc(db, "worksheets", store.state.user.uid), userData);
+    console.log("Document written: ", userData);
   } catch (e) {
     console.error("Error adding document: ", e);
     if (store.state.userName === 'Guest') {
       alert('Guests cannot save worksheets in the database, but your worksheet is saved on the app until you close this window')
     }
   }
-  store.commit('importWorksheet', ws)
+  // store.commit('importWorksheet', ws)
 }
 </script>
 
 <template>
   <h1>Maths Qs</h1>
   <NavBar />
-  <router-view v-on:save-worksheet="saveWorksheet"></router-view>
+  <router-view v-on:save-cws="saveCWS"></router-view>
 </template>
 
 <style>
