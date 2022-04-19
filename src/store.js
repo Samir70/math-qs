@@ -12,7 +12,6 @@ export const store = createStore({
             worksheetList: worksheets,
             customWorksheets: [],
             maxCustomWorksheets: 5,
-            downloadedWSThisSession: false,
             userProgress: { none: new Set() },
             chosenChapter: 'none'
         }
@@ -38,9 +37,6 @@ export const store = createStore({
         },
         setMaxCustomWorksheets(state, newVal) {
             state.maxCustomWorksheets = newVal
-        },
-        noteDownloadOfWS(state) {
-            state.downloadedWSThisSession = true
         },
         setWorksheet(state, newWorksheet) {
             state.chosenWorksheet = newWorksheet

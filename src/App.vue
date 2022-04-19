@@ -28,7 +28,7 @@ if (import.meta.env.MODE === 'development') {
   console.log('fireStore: in prod mode')
 }
 // get list of worksheets from firestore
-const getWSheets = async () => {
+const getCWS = async () => {
   const docs = await getDocs(collection(db, "worksheets"));
   docs.forEach(d => {
     let { creator, name, topicList } = d.data()
@@ -43,10 +43,6 @@ firebase.auth().onAuthStateChanged(user => {
       name: user.displayName || 'Guest',
       uid: user.uid || 'hjkl'
     })
-    // if (!store.state.downloadedWSThisSession) {
-    //   getWSheets();
-    //   store.commit('noteDownloadOfWS')
-    // }
   } else {
     store.commit('changeUser', { name: 'Unknown User', id: null })
   }
