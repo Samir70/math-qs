@@ -32,9 +32,7 @@ const getWSheets = async () => {
   const docs = await getDocs(collection(db, "worksheets"));
   docs.forEach(d => {
     let { creator, name, topicList } = d.data()
-    store.commit('importWorksheet', { creator, name, topicList })
   })
-  // console.log('store.worksheetList', store.state.worksheetList)
 }
 firebase.auth().onAuthStateChanged(user => {
   console.log('from onAuthStateChanged', user)
@@ -72,7 +70,6 @@ async function saveCWS() {
       alert('Guests cannot save worksheets in the database, but your worksheet is saved on the app until you close this window')
     }
   }
-  // store.commit('importWorksheet', ws)
 }
 </script>
 

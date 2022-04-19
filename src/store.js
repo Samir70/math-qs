@@ -30,9 +30,6 @@ export const store = createStore({
         setQList(state, newQList) {
             state.chosenQs = newQList
         },
-        importWorksheet(state, newWSheet) {
-            state.worksheetList = [...state.worksheetList, newWSheet]
-        },
         addCustomWorksheet(state, ws) {
             state.customWorksheets = [...state.customWorksheets, ws]
         },
