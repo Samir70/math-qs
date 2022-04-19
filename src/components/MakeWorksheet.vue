@@ -58,6 +58,7 @@ const saveTopiclist = () => {
     navigator.clipboard.writeText(JSON.stringify(wsDoc, null, '\t'));
     if (store.state.customWorksheets.length < store.state.maxCustomWorksheets) {
         store.commit('addCustomWorksheet', wsDoc)
+        store.commit('noteChangesToCWS', true)
     } else {
         alert(`You have already saved ${store.state.maxCustomWorksheets} custom worksheets. \nThat is as many as you can save. \nDelete one of your saved worksheets to save this one.`)
     }

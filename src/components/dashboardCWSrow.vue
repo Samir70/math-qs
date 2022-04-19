@@ -17,6 +17,7 @@ const chooseWorkSheet = () => {
 const deleteWS = () => {
     console.log(`dashboardCWSrow: user wants to delete ws ${props.index}`)
     store.commit('deleteCustomWorksheet', props.index)
+    store.commit('noteChangesToCWS', true)
 }
 </script>
 

@@ -11,6 +11,7 @@ export const store = createStore({
             chosenWorksheet: worksheets[0],
             worksheetList: worksheets,
             customWorksheets: [],
+            haveUnsyncedCWSchanges: false,
             maxCustomWorksheets: 5,
             userProgress: { none: new Set() },
             chosenChapter: 'none'
@@ -37,6 +38,9 @@ export const store = createStore({
         },
         setCustomWorksheets(state, cwsList) {
             state.customWorksheets = cwsList
+        },
+        noteChangesToCWS(state, newState) {
+            state.haveUnsyncedCWSchanges = newState
         },
         setMaxCustomWorksheets(state, newVal) {
             state.maxCustomWorksheets = newVal

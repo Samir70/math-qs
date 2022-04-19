@@ -16,7 +16,7 @@ const emits = defineEmits(emitActions)
             <p>You haven't saved any worksheets</p>
         </div>
         <div v-else>
-            <button v-on:click="emits('save-cws')">save worksheets</button>
+            <button v-if="store.state.haveUnsyncedCWSchanges" v-on:click="emits('save-cws')">Sync changes to custom worksheets</button>
             <div v-for="i in store.state.customWorksheets.length">
                 <dashboardCWSrow v-bind:cws="store.state.customWorksheets[i - 1]" v-bind:index="i-1" v-bind:key="i" />
             </div>

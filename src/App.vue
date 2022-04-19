@@ -59,7 +59,8 @@ async function saveCWS() {
     data: new Date(),
     cws: store.state.customWorksheets
   }
-  console.log('syncing user data', userData)
+  console.log('syncing user data', userData);
+  store.commit('noteChangesToCWS', false);
   try {
     await setDoc(doc(db, "worksheets", store.state.user.uid), userData);
     console.log("Document written: ", userData);
