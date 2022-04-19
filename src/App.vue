@@ -56,7 +56,7 @@ async function saveCWS() {
   let cws = []
   const userData = {
     creator: store.state.user.name,
-    data: new Date(),
+    date: new Date(),
     cws: store.state.customWorksheets
   }
   console.log('syncing user data', userData);
