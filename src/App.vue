@@ -32,7 +32,7 @@ const getCWS = async () => {
   const userCWS = await getDoc(doc(db, "worksheets", store.state.user.uid));
   if (userCWS.exists()) {
     console.log('getCWS: managed to retrieve user\'s custom worksheets', userCWS.data())
-    store.commit('setCustomWorksheets', userCWS.data().worksheets)
+    store.commit('setCustomWorksheets', userCWS.data().cws)
   }
 }
 firebase.auth().onAuthStateChanged(user => {
@@ -47,6 +47,7 @@ firebase.auth().onAuthStateChanged(user => {
     getCWS();
   } else {
     store.commit('changeUser', { name: 'Unknown User', id: null })
+    store.commit('setCustomWorksheets', [])
   }
   console.log('from onAuthStateChanged:', store.state.userName)
 })
@@ -56,7 +57,7 @@ async function saveCWS() {
   const userData = {
     creator: store.state.user.name,
     data: new Date(),
-    worksheets: store.state.customWorksheets
+    cws: store.state.customWorksheets
   }
   console.log('syncing user data', userData)
   try {
