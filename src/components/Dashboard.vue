@@ -18,7 +18,7 @@ const emits = defineEmits(emitActions)
         <div v-else>
             <button v-if="store.state.haveUnsyncedCWSchanges" v-on:click="emits('save-cws')">Sync changes to custom worksheets</button>
             <div v-for="i in store.state.customWorksheets.length">
-                <dashboardCWSrow v-bind:cws="store.state.customWorksheets[i - 1]" v-bind:index="i-1" v-bind:key="i" />
+                <dashboardCWSrow class="cwsrow" v-bind:cws="store.state.customWorksheets[i - 1]" v-bind:index="i-1" v-bind:key="i" />
             </div>
         </div>
     </div>
@@ -30,4 +30,11 @@ const emits = defineEmits(emitActions)
 </template>
 
 <style>
+.cwsrow {
+    width: 90%;
+    margin: auto;
+}
+.cwsrow:hover {
+    background: violet;
+}
 </style>
