@@ -7,11 +7,12 @@ import { emitActions } from '../helperFuncs/globalConsts';
 const emits = defineEmits(emitActions)
 const bingoQs = ref([]);
 const bingoAnswers = ref([]);
-onMounted(() => {
+const maxQs = ref(25)
+const makeQs = () => {
     const ws = store.state.chosenWorksheet.topicList;
-    console.log('making a bingo game!', ws)
+    console.log('making a bingo game!', maxQs.value)
     let qList = [], q = 0
-    while (qList.length < 25) {
+    while (qList.length < maxQs.value) {
         if (q >= ws.length) { q = 0 }
         let [chapter, section, qName] = ws[q].split('-')
         let possQ = getMathsQs(chapter, section, qName);
@@ -27,17 +28,24 @@ onMounted(() => {
     bingoAnswers.value = shuffleFY(qList.map(q => q.a))
     bingoQs.value = qList
     nextTick(() => MathJax.typeset());
+}
+const redoQs = () => {
+    maxQs.value = maxQs.value === 25 ? 16 : 25
+    makeQs()
+}
+onMounted(() => {
+    makeQs()
 })
-
 </script>
 
 <template>
     <h2>Making a bingo game from {{ store.state.chosenWorksheet.name }}</h2>
     <h3>Pick 9 answers from this grid</h3>
+    <button v-on:click="redoQs">{{ maxQs === 25 ? 'Present only 16 answers' : 'Present 25 answers' }}</button>
     <div id="bingo-answerbox">
         <div v-for="a of bingoAnswers" class="bingo-answer">{{ a }}</div>
     </div>
-    <p>{{ bingoQs }}</p>
+    <!-- <p>{{ bingoQs }}</p> -->
 </template>
 
 <style>
