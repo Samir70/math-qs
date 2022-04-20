@@ -1,8 +1,12 @@
 <script setup>
+import { ref } from 'vue';
 import { store } from '../store';
 import { useRouter } from 'vue-router';
-import { worksheets } from '../assets/worksheets';
+import { emitActions } from '../helperFuncs/globalConsts';
+const emits = defineEmits(emitActions)
 const router = useRouter();
+
+const worksheets = ref(store.state.worksheetList)
 
 const chooseWorkSheet = (ws) => {
     console.log('ChooseWS: user wants to do worksheet:', ws.name)

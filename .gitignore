@@ -5,5 +5,9 @@ dist-ssr
 *.local
 .env
 firebase-debug.log
+firestore-debug.log
+firestore.rules
+firestore.indexes.json
 .firebase
 ui-debug.log
+temp.js

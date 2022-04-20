@@ -5,10 +5,14 @@ import { qPaths } from './assets/topicsToTest';
 export const store = createStore({
     state() {
         return {
-            userName: 'Unknown User',
+            user: { name: 'Unknown User', uid: null },
             loggedIn: false,
             chosenQs: qPaths,
             chosenWorksheet: worksheets[0],
+            worksheetList: worksheets,
+            customWorksheets: [],
+            haveUnsyncedCWSchanges: false,
+            maxCustomWorksheets: 5,
             userProgress: { none: new Set() },
             chosenChapter: 'none'
         }
@@ -21,10 +25,25 @@ export const store = createStore({
             state.loggedIn = false
         },
         changeUser(state, newUser) {
-            state.userName = newUser
+            state.user = newUser;
         },
         setQList(state, newQList) {
             state.chosenQs = newQList
+        },
+        addCustomWorksheet(state, ws) {
+            state.customWorksheets = [...state.customWorksheets, ws]
+        },
+        deleteCustomWorksheet(state, index) {
+            state.customWorksheets = state.customWorksheets.filter((w, i) => i !== index)
+        },
+        setCustomWorksheets(state, cwsList) {
+            state.customWorksheets = cwsList
+        },
+        noteChangesToCWS(state, newState) {
+            state.haveUnsyncedCWSchanges = newState
+        },
+        setMaxCustomWorksheets(state, newVal) {
+            state.maxCustomWorksheets = newVal
         },
         setWorksheet(state, newWorksheet) {
             state.chosenWorksheet = newWorksheet

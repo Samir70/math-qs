@@ -1,13 +1,16 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { store } from '../store';
 import { useRouter } from 'vue-router';
 import { qTrie } from '../assets/topicsToTest';
-// console.log(JSON.stringify(qTrie))
+import { emitActions } from '../helperFuncs/globalConsts';
+const emits = defineEmits(emitActions)
 const router = useRouter();
 const searchTerm = ref('');
 const foundQs = ref([])
 const currentWS = ref(store.state.chosenWorksheet.topicList)
+const nameNewWS = ref(store.state.chosenWorksheet.name);
+const loggedIn = computed(() => store.state.loggedIn);
 watch(searchTerm, (newVal, oldval) => {
     let words = newVal.toLowerCase().split(' ')
     // console.log('MWS: searching for', words)
@@ -35,28 +38,42 @@ const viewWorkSheet = () => {
     store.commit('setQList', currentWS.value.map(t => t.split('-')))
     router.push('/show_worksheet')
 }
+const defaultName = () => {
+    let d = new Date()
+    return `Unnamed worksheet ${d.toDateString()}`
+}
 const clearWorksheet = () => {
     console.log('makeWS: clearing worksheet');
-    store.commit('setWorksheet', {name: 'New Worksheet', topicList: []})
-    currentWS.value = store.state.chosenWorksheet.topicList
+    store.commit('setWorksheet', { name: defaultName(), topicList: [] })
+    currentWS.value = store.state.chosenWorksheet.topicList;
+    nameNewWS.value = store.state.chosenWorksheet.name
 }
-const copyTopiclist = () => {
-    console.log('makeWS: Copying topiclist to clipboard');
-    navigator.clipboard.writeText(JSON.stringify({
-        name: 'New Worksheet',
+const saveTopiclist = () => {
+    let wsDoc = {
+        name: nameNewWS.value || defaultName(),
+        creator: store.state.user.name,
         topicList: currentWS.value
-    }, null, '\t'))
+    };
+    console.log('makeWS: Copying topiclist to clipboard');
+    navigator.clipboard.writeText(JSON.stringify(wsDoc, null, '\t'));
+    if (store.state.customWorksheets.length < store.state.maxCustomWorksheets) {
+        store.commit('addCustomWorksheet', wsDoc)
+        store.commit('noteChangesToCWS', true)
+    } else {
+        alert(`You have already saved ${store.state.maxCustomWorksheets} custom worksheets. \nThat is as many as you can save. \nDelete one of your saved worksheets to save this one.`)
+    }
 }
 </script>
 
 <template>
     <h2>Make a worksheet</h2>
     <input type="text" placeholder="Search for..." v-model="searchTerm" />
-    <p
-        v-if="foundQs.length === 0"
-    >{{ searchTerm === '' ? 'Enter a search term' : `No Qs found for '${searchTerm}'` }}</p>
+    <p v-if="foundQs.length === 0">{{ searchTerm === '' ? 'Enter a search term' : `No Qs found for '${searchTerm}'` }}
+    </p>
     <div id="makeWS-options-box">
-        <button v-on:click="copyTopiclist">Copy topic list to clipboard</button>
+        <button v-if="loggedIn" v-on:click="saveTopiclist">Add to custom worksheet list</button>
+        <button v-if="!loggedIn" v-on:click="router.push('/login?page=make_worksheet')">Log in to save
+            worksheet</button>
         <button v-on:click="clearWorksheet">Empty current worksheet</button>
         <button v-on:click="viewWorkSheet">View workheet</button>
     </div>
@@ -68,12 +85,12 @@ const copyTopiclist = () => {
             </ul>
         </div>
         <div class="ws-list">
-            <h3>Current worksheet</h3>
+            <h3>
+                <input class="ws-name" type="text" v-model="nameNewWS"
+                    placeholder="Type in a name of the new Worksheet" />
+            </h3>
             <ul>
-                <li
-                    v-for="i in currentWS.length"
-                    v-on:click="removeItem(i - 1)"
-                >{{ currentWS[i - 1] }}</li>
+                <li v-for="i in currentWS.length" v-on:click="removeItem(i - 1)">{{ currentWS[i - 1] }}</li>
             </ul>
         </div>
     </div>
@@ -84,16 +101,30 @@ const copyTopiclist = () => {
     display: flex;
     justify-content: space-between;
 }
+
+.ws-name {
+    width: 90%;
+    min-width: 250px;
+    padding: 5px;
+    background-color: inherit;
+}
+
+.ws-name:focus {
+    background-color: white;
+}
+
 li {
     padding: 3px;
 }
+
 li:hover {
     text-decoration: underline;
     background: violet;
 }
+
 #makeWS-options-box {
-  display: flex;
-  justify-content: center;
-  margin: auto;
+    display: flex;
+    justify-content: center;
+    margin: auto;
 }
 </style>

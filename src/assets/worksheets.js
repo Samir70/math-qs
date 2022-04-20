@@ -1,5 +1,7 @@
+const admin = 'Samir Betmouni';
 const gcseIA = {
 	name: 'Initial assessment for GCSE at BCG',
+	creator: 'Bucks College Group',
 	topicList: [
 		"number-multiplying-ab*c-90", "number-multiplying-ab*cd-95", "number-multiplying-ab*c.d-110",
 		"number-dividing-tablesWithRemainder-80", "number-busStop-noCarry2-110", "number-busStop-noRemainder-150",
@@ -13,6 +15,7 @@ const gcseIA = {
 
 const starter1 = {
 	name: "2022/01/17a starter",
+	creator: admin,
 	topicList: [
 		"number-multiplying-ab*c.d-110",
 		"number-busStop-noRemainder-150",
@@ -25,6 +28,7 @@ const starter1 = {
 
 const starter2 = {
 	name: "2022/01/17b starter",
+	creator: admin,
 	topicList: [
 		"fraction-add-diffDenomChangeBoth-230",
 		"fraction-ofAmount-mixedNumber-190",
@@ -36,6 +40,7 @@ const starter2 = {
 
 const starter3 = {
 	name: "2022/01/24a starter",
+	creator: admin,
 	topicList: [
 		"powers-simplify-times-130",
 		"decimal-order--100",
@@ -47,6 +52,7 @@ const starter3 = {
 
 const starter4 = {
 	name: "2022/01/24b starter",
+	creator: admin,
 	topicList: [
 		"data-range--90",
 		"percent-ofAmount-multiplesOf5%-100",
