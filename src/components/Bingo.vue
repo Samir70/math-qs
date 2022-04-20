@@ -14,8 +14,15 @@ onMounted(() => {
     while (qList.length < 25) {
         if (q >= ws.length) { q = 0 }
         let [chapter, section, qName] = ws[q].split('-')
-        qList.push(getMathsQs(chapter, section, qName))
-        q++
+        let possQ = getMathsQs(chapter, section, qName);
+        q++;
+        // skip qs that don't have a good answer format for bingo
+        if (possQ.qType !== 'shortAnswer' && possQ.qType !== 'multiChoice') {
+            console.log('skipping q', q, possQ.qType)
+            continue
+        } else {
+            qList.push(possQ)
+        }
     }
     bingoAnswers.value = shuffleFY(qList.map(q => q.a))
     bingoQs.value = qList
@@ -30,7 +37,7 @@ onMounted(() => {
     <div id="bingo-answerbox">
         <div v-for="a of bingoAnswers" class="bingo-answer">{{ a }}</div>
     </div>
-    <!-- <p>{{bingoQs}}</p> -->
+    <p>{{ bingoQs }}</p>
 </template>
 
 <style>
@@ -42,6 +49,7 @@ onMounted(() => {
     font-weight: bolder;
     justify-content: center;
 }
+
 .bingo-answer {
     display: flex;
     align-items: center;
