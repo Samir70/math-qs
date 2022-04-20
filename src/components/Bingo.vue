@@ -28,16 +28,22 @@ const makeQs = () => {
             qList.push(possQ)
         }
     }
-    bingoAnswers.value = shuffleFY(qList.map(q => q.a))
+    bingoAnswers.value = shuffleFY([...Array(maxQs.value)].map((x, i) => i))
     bingoQs.value = qList
     nextTick(() => MathJax.typeset());
 }
 const redoQs = () => {
     maxQs.value = maxQs.value === 25 ? 16 : 25
+    curQ.value = 0;
     makeQs()
 }
 const nextQ = () => {
     curQ.value += 1
+    if (curQ.value === maxQs.value) {curQ.value = 0; showQs.value = false}
+    nextTick(() => MathJax.typeset());
+}
+const switchModes = () => {
+    showQs.value = !showQs.value;
     nextTick(() => MathJax.typeset());
 }
 onMounted(() => {
@@ -47,12 +53,12 @@ onMounted(() => {
 
 <template>
     <h2>Making a bingo game from {{ store.state.chosenWorksheet.name }}</h2>
-    <button v-on:click="showQs = !showQs">Show the {{ showQs ? 'answers' : 'questions' }}</button>
+    <button v-on:click="switchModes">Show the {{ showQs ? 'answers' : 'questions' }}</button>
     <div v-if="!showQs">
         <h3>Pick 9 answers from this grid</h3>
         <button v-on:click="redoQs">{{ maxQs === 25 ? 'Present only 16 answers' : 'Present 25 answers' }}</button>
         <div id="bingo-answerbox">
-            <div v-for="a of bingoAnswers" class="bingo-answer">{{ a }}</div>
+            <div v-for="a of bingoAnswers" v-bind:class="'bingo-answer ' + (a < curQ ? 'seen' : 'unseen')">{{ bingoQs[a].a }}</div>
         </div>
     </div>
     <div v-if="showQs">
@@ -81,7 +87,12 @@ onMounted(() => {
     width: auto;
     min-width: 18vw;
     padding: 3px;
+}
+.unseen {
     background: hsl(28, 87%, 67%);
+}
+.seen {
+    background: hwb(74 38% 4%);
 }
 
 .bingo-qablock {
