@@ -35,7 +35,9 @@ const removeItem = (i) => {
 const viewWorkSheet = () => {
     console.log('makeWS: user wants to do worksheet:')
     // need below in case user selects to do worksheet as quiz rather than just worksheet view
-    store.commit('setQList', currentWS.value.map(t => t.split('-')))
+    if (currentWS.value.length > 0) {
+        store.commit('setQList', currentWS.value.map(t => t.split('-')))
+    }
     router.push('/show_worksheet')
 }
 const defaultName = () => {
