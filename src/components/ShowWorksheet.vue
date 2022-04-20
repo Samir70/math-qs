@@ -54,6 +54,7 @@ const changeAllQs = () => {
             <button v-on:click="copyWS">Copy worksheet to clipboard</button>
             <button v-on:click="changeAllQs">Change all qs</button>
             <button v-on:click="router.push('/show_question')">Show as quiz</button>
+            <button v-on:click="router.push('/bingo')">Play as Bingo</button>
         </div>
         <div id="worksheet">
             <div v-for="i of workSheetQs.length">
