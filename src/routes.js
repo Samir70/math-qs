@@ -5,6 +5,7 @@ import ShowWorksheet from './components/ShowWorksheet.vue';
 import ShowQuestion from "./components/ShowQuestion.vue";
 import Login from './components/Login.vue';
 import Dashboard from './components/Dashboard.vue';
+import Bingo from './components/Bingo.vue';
 
 export const routes = [
     { path: '/login', name: 'Login', component: Login },
@@ -13,5 +14,6 @@ export const routes = [
     { path: '/make_worksheet', name: 'MakeWorksheet', component: MakeWorksheet },
     { path: '/show_worksheet', name: 'ShowWorksheet', component: ShowWorksheet },
     { path: '/show_question', name: 'ShowQuestion', component: ShowQuestion },
+    { path: '/bingo', name: 'BingoQs', component: Bingo },
     { path: '/', name: 'Dashboard', component: Dashboard }
 ];
