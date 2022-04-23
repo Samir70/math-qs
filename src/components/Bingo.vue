@@ -57,8 +57,8 @@ onMounted(() => {
     <h2>Making a bingo game from {{ store.state.chosenWorksheet.topicList.length === 0 ? 'Default worksheet' : store.state.chosenWorksheet.name }}</h2>
     <button v-on:click="switchModes">Show the {{ showQs ? 'answers' : 'questions' }}</button>
     <div v-if="!showQs">
-        <h3>Pick 9 answers from this grid</h3>
-        <button v-on:click="redoQs">{{ maxQs === 25 ? 'Present only 16 answers' : 'Present 25 answers' }}</button>
+        <h3>{{curQ === 0 ? 'Pick 9 answers from this grid' : 'Answers to previous questions are highlighted'}}</h3>
+        <button v-if="curQ === 0" v-on:click="redoQs">{{ maxQs === 25 ? 'Present only 16 answers' : 'Present 25 answers' }}</button>
         <div id="bingo-answerbox">
             <div v-for="a of bingoAnswers" v-bind:class="'bingo-answer ' + (a < curQ ? 'seen' : 'unseen')">{{
                 bingoQs[a].a
