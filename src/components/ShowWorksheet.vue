@@ -33,9 +33,6 @@ const workSheetQs = ref(store.state.chosenWorksheet.topicList.map(path => getMat
 const copyQs = () => {
     navigator.clipboard.writeText(workSheetQs.value.map(q => q.q).join('\n\n'))
 }
-const copyWS = () => {
-    navigator.clipboard.writeText(JSON.stringify(store.state.chosenWorksheet, null, 2));
-}
 const changeAllQs = () => {
     workSheetQs.value = store.state.chosenQs.map(q => getMathsQs(...q)).map(displayableQ)
     nextTick(() => MathJax.typeset())
@@ -51,7 +48,6 @@ const changeAllQs = () => {
         </h2>
         <div id="action-buttons">
             <button v-on:click="copyQs">Copy Qs to clipboard</button>
-            <button v-on:click="copyWS">Copy worksheet to clipboard</button>
             <button v-on:click="changeAllQs">Change all qs</button>
             <button v-on:click="router.push('/show_question')">Show as quiz</button>
             <button v-on:click="router.push('/bingo')">Play as Bingo</button>

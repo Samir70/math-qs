@@ -50,6 +50,9 @@ const clearWorksheet = () => {
     currentWS.value = store.state.chosenWorksheet.topicList;
     nameNewWS.value = store.state.chosenWorksheet.name
 }
+const copyWS = () => {
+    navigator.clipboard.writeText(JSON.stringify(store.state.chosenWorksheet, null, 2));
+}
 const saveTopiclist = () => {
     let wsDoc = {
         name: nameNewWS.value || defaultName(),
@@ -77,6 +80,7 @@ const saveTopiclist = () => {
         <button v-if="!loggedIn" v-on:click="router.push('/login?page=make_worksheet')">Log in to save
             worksheet</button>
         <button v-on:click="clearWorksheet">Empty current worksheet</button>
+        <button v-on:click="copyWS">Copy worksheet to clipboard</button>
         <button v-on:click="viewWorkSheet">View workheet</button>
     </div>
     <div id="ws-lists">
