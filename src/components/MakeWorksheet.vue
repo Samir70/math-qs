@@ -4,6 +4,7 @@ import { store } from '../store';
 import { useRouter } from 'vue-router';
 import { qTrie } from '../assets/topicsToTest';
 import { emitActions } from '../helperFuncs/globalConsts';
+import { makeBBList, getMathsQs } from 'math-q-factory';
 const emits = defineEmits(emitActions)
 const router = useRouter();
 const searchTerm = ref('');
@@ -50,6 +51,23 @@ const clearWorksheet = () => {
     currentWS.value = store.state.chosenWorksheet.topicList;
     nameNewWS.value = store.state.chosenWorksheet.name
 }
+const makeFromBBs = () => {
+    console.log(`user wants to make worksheet from ${currentWS.value[0]}`)
+    let temp = makeBBList(currentWS.value[0], getMathsQs)
+    temp.push(currentWS.value[0])
+    if (temp.length === 1) {
+        alert("This question doesn't seem to have building blocks. Sorry. You might find hints if you do this worksheet as a quiz.")
+    } else {
+        nameNewWS.value = `Worksheet for ${currentWS.value[0]}`
+        store.commit('setQList', currentWS.value.map(t => t.split('-')));
+        store.commit('setWorksheet', { name: nameNewWS.value, topicList: temp })
+        currentWS.value = store.state.chosenWorksheet.topicList
+    }
+    console.log(temp)
+}
+const copyWS = () => {
+    navigator.clipboard.writeText(JSON.stringify(store.state.chosenWorksheet, null, 2));
+}
 const saveTopiclist = () => {
     let wsDoc = {
         name: nameNewWS.value || defaultName(),
@@ -77,6 +95,7 @@ const saveTopiclist = () => {
         <button v-if="!loggedIn" v-on:click="router.push('/login?page=make_worksheet')">Log in to save
             worksheet</button>
         <button v-on:click="clearWorksheet">Empty current worksheet</button>
+        <button v-on:click="copyWS">Copy worksheet to clipboard</button>
         <button v-on:click="viewWorkSheet">View workheet</button>
     </div>
     <div id="ws-lists">
@@ -94,6 +113,8 @@ const saveTopiclist = () => {
             <ul>
                 <li v-for="i in currentWS.length" v-on:click="removeItem(i - 1)">{{ currentWS[i - 1] }}</li>
             </ul>
+            <button v-if="currentWS.length === 1" v-on:click="makeFromBBs">Make a worksheet from chosen question's
+                building blocks</button>
         </div>
     </div>
 </template>
