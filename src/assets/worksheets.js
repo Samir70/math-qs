@@ -13,55 +13,25 @@ const gcseIA = {
 	]
 }
 
-const starter1 = {
-	name: "2022/01/17a starter",
+const e3nonCalc = {
+	name: "Functional Skills E3 non-calculator",
 	creator: admin,
 	topicList: [
-		"number-multiplying-ab*c.d-110",
-		"number-busStop-noRemainder-150",
-		"fraction-ofAmount-manySlices-120",
-		"fraction-compare-sameNumer-180",
-		"ratio-simplify-withUnits-150",
-		"vocab-circles--100"
+		"wordy-findTotal-EdexcelSampleAQ01-30",
+		"wordy-divide-EdexcelSampleAQ02-200",
+		"wordy-multiply-EdexcelSampleAQ03-110",
+		"wordy-compareMetricUnits-EdexcelSampleAQ04-130"
 	]
 }
 
-const starter2 = {
-	name: "2022/01/17b starter",
+const fsl1ExamQs = {
+	name: "Functional skills L1 calculator",
 	creator: admin,
 	topicList: [
-		"fraction-add-diffDenomChangeBoth-230",
-		"fraction-ofAmount-mixedNumber-190",
-		"algebra01-solveLinear-unknownBothSides-300",
-		"data-mean-anyAnswer-135",
-		"sequences-linear-useFormula1to5-180"
-	]
-}
-
-const starter3 = {
-	name: "2022/01/24a starter",
-	creator: admin,
-	topicList: [
-		"powers-simplify-times-130",
-		"decimal-order--100",
-		"fraction-add-mixedNumbers-250",
-		"number-negNums-add-80",
-		"ratio-share-givenDiff-300"
-	]
-}
-
-const starter4 = {
-	name: "2022/01/24b starter",
-	creator: admin,
-	topicList: [
-		"data-range--90",
-		"percent-ofAmount-multiplesOf5%-100",
-		"powers-simplify-brackets-140",
-		"number-busStop-withRemainder-180",
-		"vocab-angles-rnd-50"
+		"examQs-bakeryQ-meanNoBags-210"
 	]
 }
 
 export const worksheets = [
-	gcseIA, starter1, starter2, starter3, starter4
+	gcseIA, e3nonCalc, fsl1ExamQs
 ]
