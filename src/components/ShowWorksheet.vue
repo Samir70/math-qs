@@ -37,6 +37,11 @@ const changeAllQs = () => {
     workSheetQs.value = store.state.chosenQs.map(q => getMathsQs(...q)).map(displayableQ)
     nextTick(() => MathJax.typeset())
 }
+const refreshQ = (path, i) => {
+    console.log('showWS wants to refresh Q', i, path)
+    let newQ = getMathsQs(...path.split('-'))
+    workSheetQs.value[i-1] = displayableQ(newQ)
+}
 </script>
 
 <template>
@@ -54,11 +59,8 @@ const changeAllQs = () => {
         </div>
         <div id="worksheet">
             <div v-for="i of workSheetQs.length">
-                <WorksheetQ
-                    v-bind:question="workSheetQs[i - 1]"
-                    v-bind:key="i"
-                    v-bind:class="i % 2 ? 'wsq wsq-blue' : 'wsq wsq-green'"
-                />
+                <WorksheetQ v-bind:question="workSheetQs[i - 1]" v-bind:qnum="i" v-bind:key="i"
+                    v-bind:class="i % 2 ? 'wsq wsq-blue' : 'wsq wsq-green'" v-on:refresh-q="refreshQ" />
             </div>
         </div>
         <p>.</p>
@@ -76,10 +78,12 @@ const changeAllQs = () => {
     justify-content: space-around;
     font-weight: bolder;
 }
+
 .wsq-blue {
     background: rgb(201, 243, 245);
     border-left: 5px solid darkblue;
 }
+
 .wsq-green {
     background: rgb(184, 235, 184);
     border-left: 5px solid darkgreen;

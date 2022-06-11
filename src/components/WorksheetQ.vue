@@ -1,9 +1,10 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue';
 const props = defineProps({
-    question: Object
+    question: Object,
+    qnum: Number
 });
-const emits = defineEmits(['refreshQ'])
+const emits = defineEmits(['refresh-q'])
 const showAns = ref(false)
 const showHideAns = () => {
     showAns.value = !showAns.value
@@ -15,9 +16,8 @@ onMounted(() => {
     MathJax.typeset()
 })
 const refreshQ = () => {
-    console.log('refreshing ', props.question.qPath)
     showAns.value = false;
-    emits('refreshQ', props.question.qPath)
+    emits('refresh-q', props.question.qPath, props.qnum)
 }
 </script>
 
