@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import { getMathsQs } from 'math-q-factory';
 import WorksheetQ from './WorksheetQ.vue';
 import { emitActions } from '../helperFuncs/globalConsts';
+import { qPaths } from '../assets/topicsToTest';
 const emits = defineEmits(emitActions)
 const router = useRouter();
 const displayableQ = question => {
@@ -45,7 +46,8 @@ const refreshQ = (path, i) => {
 const addBBs = (bbs, i) => {
     let newQs = bbs.map(path => getMathsQs(...path.split('-'))).map(displayableQ)
     workSheetQs.value.splice(i-1, 0, ...newQs)
-    console.log('Need to add', bbs, 'at Q', i)
+    console.log('Need to add these building blocks', bbs, 'at Q', i)
+    store.commit('setWorksheet', { name: store.state.chosenWorksheet.name + ' (edited)', topicList: workSheetQs.value.map(q => q.qPath) })
 }
 </script>
 
