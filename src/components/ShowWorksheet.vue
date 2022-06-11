@@ -63,6 +63,7 @@ const changeAllQs = () => {
         </div>
         <p>.</p>
     </div>
+    <a href="https://icons8.com/license">Icons downloaded from icons8.com</a>
 </template>
 
 <style>
