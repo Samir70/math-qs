@@ -10,7 +10,6 @@ const props = defineProps({
 const chooseWorkSheet = () => {
     console.log('dashboardCWSrow: user wants to do worksheet:', props.cws.name)
     // need both of these in case user selects to do worksheet as quiz or just worksheet view
-    store.commit('setQList', props.cws.topicList.map(t => t.split('-')))
     store.commit('setWorksheet', props.cws)
     router.push('/show_worksheet')
 }

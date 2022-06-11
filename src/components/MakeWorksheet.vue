@@ -35,11 +35,11 @@ const removeItem = (i) => {
 }
 const viewWorkSheet = () => {
     console.log('makeWS: user wants to do worksheet:')
-    // need below in case user selects to do worksheet as quiz rather than just worksheet view
     if (currentWS.value.length > 0) {
-        store.commit('setQList', currentWS.value.map(t => t.split('-')))
+        router.push('/show_worksheet')
+    } else {
+        alert('There are no questions in the worksheet!')
     }
-    router.push('/show_worksheet')
 }
 const defaultName = () => {
     let d = new Date()
@@ -59,7 +59,6 @@ const makeFromBBs = () => {
         alert("This question doesn't seem to have building blocks. Sorry. You might find hints if you do this worksheet as a quiz.")
     } else {
         nameNewWS.value = `Worksheet for ${currentWS.value[0]}`
-        store.commit('setQList', currentWS.value.map(t => t.split('-')));
         store.commit('setWorksheet', { name: nameNewWS.value, topicList: temp })
         currentWS.value = store.state.chosenWorksheet.topicList
     }

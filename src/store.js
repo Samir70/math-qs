@@ -1,13 +1,11 @@
 import { createStore } from 'vuex';
 import { worksheets } from './assets/worksheets';
-import { qPaths } from './assets/topicsToTest';
 
 export const store = createStore({
     state() {
         return {
             user: { name: 'Unknown User', uid: null },
             loggedIn: false,
-            chosenQs: qPaths,
             chosenWorksheet: worksheets[0],
             worksheetList: worksheets,
             customWorksheets: [],
@@ -26,9 +24,6 @@ export const store = createStore({
         },
         changeUser(state, newUser) {
             state.user = newUser;
-        },
-        setQList(state, newQList) {
-            state.chosenQs = newQList
         },
         addCustomWorksheet(state, ws) {
             state.customWorksheets = [...state.customWorksheets, ws]

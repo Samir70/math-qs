@@ -12,7 +12,8 @@ const qTypes = {
   shortAnswer: ShortAnswerQ,
   sort: SortQ
 }
-const currentQ = ref(getMathsQs(...store.state.chosenQs[0]));
+const qList = store.state.chosenWorksheet.topicList.map(t => t.split('-'));
+const currentQ = ref(getMathsQs(...qList[0]));
 const qNumber = ref(0);
 const qKey = ref(0);
 const qHints = ref([]);
@@ -21,10 +22,10 @@ const waitForNext = ref(false);
 const respondToAns = (ans) => {
   console.log('Need to respond to answer:', ans);
   if (ans.userWasCorrect) {
-    console.log('userwascorrect path:', ...store.state.chosenQs[qNumber.value])
-    store.commit('updateChapterProgress', [...store.state.chosenQs[qNumber.value]])
+    console.log('userwascorrect path:', qList[qNumber.value])
+    store.commit('updateChapterProgress', qList[qNumber.value])
     // userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
-    qNumber.value = (qNumber.value + 1) % store.state.chosenQs.length
+    qNumber.value = (qNumber.value + 1) % qList.length
   }
   qHints.value = [`${currentQ.value.qFeedback || currentQ.value.a}`, ...qHints.value]
   waitForNext.value = true;
@@ -32,7 +33,7 @@ const respondToAns = (ans) => {
   nextTick(() => MathJax.typeset())
 }
 const nextQ = () => {
-  currentQ.value = getMathsQs(...store.state.chosenQs[qNumber.value])
+  currentQ.value = getMathsQs(...qList[qNumber.value])
   qHints.value = []
   qKey.value++
   waitForNext.value = false;

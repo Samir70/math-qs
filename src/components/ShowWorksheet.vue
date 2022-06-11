@@ -35,7 +35,7 @@ const copyQs = () => {
     navigator.clipboard.writeText(workSheetQs.value.map(q => q.q).join('\n\n'))
 }
 const changeAllQs = () => {
-    workSheetQs.value = store.state.chosenQs.map(q => getMathsQs(...q)).map(displayableQ)
+    workSheetQs.value = workSheetQs.value.map(q => getMathsQs(...q.qPath.split('-'))).map(displayableQ)
     nextTick(() => MathJax.typeset())
 }
 const refreshQ = (path, i) => {

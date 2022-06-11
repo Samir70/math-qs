@@ -11,7 +11,6 @@ const worksheets = ref(store.state.worksheetList)
 const chooseWorkSheet = (ws) => {
     console.log('ChooseWS: user wants to do worksheet:', ws.name)
     // need both of these in case user selects to do worksheet as quiz or just worksheet view
-    store.commit('setQList', ws.topicList.map(t => t.split('-')))
     store.commit('setWorksheet', ws)
     router.push('/show_worksheet')
 }
@@ -26,7 +25,6 @@ const chooseWorkSheet = (ws) => {
             v-on:click="chooseWorkSheet(ws)"
             key="ws.name"
         >{{ ws.name }}</p>
-        <!-- <p>{{store.state.chosenQs}}</p> -->
     </div>
 </template>
 
