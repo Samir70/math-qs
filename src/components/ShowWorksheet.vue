@@ -42,6 +42,11 @@ const refreshQ = (path, i) => {
     let newQ = getMathsQs(...path.split('-'))
     workSheetQs.value[i-1] = displayableQ(newQ)
 }
+const addBBs = (bbs, i) => {
+    let newQs = bbs.map(path => getMathsQs(...path.split('-'))).map(displayableQ)
+    workSheetQs.value.splice(i-1, 0, ...newQs)
+    console.log('Need to add', bbs, 'at Q', i)
+}
 </script>
 
 <template>
@@ -60,7 +65,9 @@ const refreshQ = (path, i) => {
         <div id="worksheet">
             <div v-for="i of workSheetQs.length">
                 <WorksheetQ v-bind:question="workSheetQs[i - 1]" v-bind:qnum="i" v-bind:key="i"
-                    v-bind:class="i % 2 ? 'wsq wsq-blue' : 'wsq wsq-green'" v-on:refresh-q="refreshQ" />
+                    v-bind:class="i % 2 ? 'wsq wsq-blue' : 'wsq wsq-green'" 
+                    v-on:add-bbs="addBBs"
+                    v-on:refresh-q="refreshQ" />
             </div>
         </div>
         <p>.</p>

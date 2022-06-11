@@ -4,7 +4,7 @@ const props = defineProps({
     question: Object,
     qnum: Number
 });
-const emits = defineEmits(['refresh-q'])
+const emits = defineEmits(['refresh-q', 'add-bbs'])
 const showAns = ref(false)
 const showHideAns = () => {
     showAns.value = !showAns.value
@@ -19,6 +19,14 @@ const refreshQ = () => {
     showAns.value = false;
     emits('refresh-q', props.question.qPath, props.qnum)
 }
+const addBBs = () => {
+    let bbs = props.question.buildingBlocks
+    if (bbs === undefined || bbs.length === 0) {
+        alert('There are no building blocks for this question')
+    } else {
+        emits('add-bbs', bbs, props.qnum)
+    }
+}
 </script>
 
 <template>
@@ -30,7 +38,7 @@ const refreshQ = () => {
                 <button v-else class="reveal-button" v-on:click="showHideAns">Show Answer</button>
             </div>
             <div class="ws-button-box">
-                <button title="add the building blocks for this question"><img
+                <button title="add the building blocks for this question" v-on:click="addBBs"><img
                         src="../assets/icons/icons8-laying-bricks-48.png" /></button>
                 <button title="refresh this question" v-on:click="refreshQ"><img
                         src="../assets/icons/icons8-reset-48.png" /></button>
