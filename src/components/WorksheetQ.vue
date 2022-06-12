@@ -39,7 +39,8 @@ const addBBs = () => {
                 <button v-else class="reveal-button" v-on:click="showHideAns">Show Answer</button>
             </div>
             <div v-if="!isBingo" class="ws-button-box">
-                <button title="add the building blocks for this question" v-on:click="addBBs"><img
+                <button v-if="question.buildingBlocks !== undefined && question.buildingBlocks.length > 0"
+                    title="add the building blocks for this question" v-on:click="addBBs"><img
                         src="../assets/icons/icons8-laying-bricks-48.png" /></button>
                 <button title="refresh this question" v-on:click="refreshQ"><img
                         src="../assets/icons/icons8-reset-48.png" /></button>
