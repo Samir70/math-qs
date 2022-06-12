@@ -19,6 +19,9 @@ onMounted(() => {
 const refreshQ = () => {
     showAns.value = false;
     emits('refresh-q', props.question.qPath, props.qnum)
+    nextTick(() => {
+        MathJax.typeset()
+    })
 }
 const addBBs = () => {
     let bbs = props.question.buildingBlocks
