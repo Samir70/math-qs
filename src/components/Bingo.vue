@@ -1,5 +1,6 @@
 <script setup>
 import { nextTick, onMounted, ref } from 'vue';
+import { useRouter } from "vue-router";
 import { getMathsQs } from 'math-q-factory';
 import { shuffleFY } from "../helperFuncs/shuffle";
 import { store } from '../store';
@@ -7,6 +8,7 @@ import { worksheets } from '../assets/worksheets';
 import WorksheetQ from './WorksheetQ.vue';
 import { emitActions } from '../helperFuncs/globalConsts';
 const emits = defineEmits(emitActions)
+const router = useRouter();
 const bingoQs = ref([]);
 const bingoAnswers = ref([]);
 const maxQs = ref(25);
@@ -17,21 +19,26 @@ const makeQs = () => {
     if (ws.length === 0) { ws = worksheets[0].topicList}
     console.log('making a bingo game!', maxQs.value)
     let qList = [], q = 0
-    while (qList.length < maxQs.value) {
+    while (qList.length < maxQs.value && ws.length > 0) {
         if (q >= ws.length) { q = 0 }
         let [chapter, section, qName] = ws[q].split('-')
         let possQ = getMathsQs(chapter, section, qName);
-        q++;
         // skip qs that don't have a good answer format for bingo
         if (possQ.qType !== 'shortAnswer' && possQ.qType !== 'multiChoice') {
             console.log('skipping q', q, possQ.qType)
+            ws = ws.filter((x, i) => i !== q)
             continue
         } else {
             qList.push(possQ)
+            q++;
         }
     }
-    bingoAnswers.value = shuffleFY([...Array(maxQs.value)].map((x, i) => i))
+    if (ws.length === 0) {
+        alert('None of the questions in the current worksheet are of types suitable for bingo.\nTry to use questions with short-answers');
+        router.push('./make_worksheet')
+    }
     bingoQs.value = qList
+    bingoAnswers.value = shuffleFY([...Array(bingoQs.value.length)].map((x, i) => i))
     nextTick(() => MathJax.typeset());
 }
 const redoQs = () => {
