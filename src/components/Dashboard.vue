@@ -16,11 +16,21 @@ const emits = defineEmits(emitActions)
             <p>You haven't saved any worksheets</p>
         </div>
         <div v-else>
-            <button v-if="store.state.haveUnsyncedCWSchanges" v-on:click="emits('save-cws')">Sync changes to custom worksheets</button>
+            <button v-if="store.state.haveUnsyncedCWSchanges" v-on:click="emits('save-cws')">Sync changes to custom
+                worksheets</button>
             <div v-for="i in store.state.customWorksheets.length">
-                <dashboardCWSrow class="cwsrow" v-bind:cws="store.state.customWorksheets[i - 1]" v-bind:index="i-1" v-bind:key="i" />
+                <dashboardCWSrow class="cwsrow" v-bind:cws="store.state.customWorksheets[i - 1]" v-bind:index="i - 1"
+                    v-bind:key="i" />
             </div>
         </div>
+    </div>
+    <div>
+        <h3>Getting started!</h3>
+        <p>The easiest way is to click either the "Choose a Worksheet" or the "Choose a Chapter" button. <br />Then
+            select a worksheet or topic to work on. </p>
+        <p>Once you have chosen questions, you can either view as a list of questions with hidden answers (that you can
+            reveal), or do one question at a time by selecting "show as quiz". The bingo option is better in a
+            classroom, but you can have fun on your own too!</p>
     </div>
 
     <!-- <p
@@ -34,6 +44,7 @@ const emits = defineEmits(emitActions)
     width: 90%;
     margin: auto;
 }
+
 .cwsrow:hover {
     background: violet;
 }
