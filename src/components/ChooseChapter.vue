@@ -14,7 +14,7 @@ const setLearnChapter = (title) => {
     console.log('user wants to learn', title);
     store.commit('setChapter', title);
     store.commit('setWorksheet', {name:title, topicList: qPaths.filter(t => t[0] === title).map(t => t.join('-'))});
-    router.push('/show_question')
+    router.push('/show_worksheet')
 }
 </script>
 
