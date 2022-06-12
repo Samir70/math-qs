@@ -66,7 +66,7 @@ onMounted(() => {
         </div>
     </div>
     <div v-if="showQs">
-        <WorksheetQ v-bind:question="bingoQs[curQ]" class="bingo-qablock" v-bind:key="curQ" />
+        <WorksheetQ v-bind:question="bingoQs[curQ]" class="bingo-qablock" v-bind:key="curQ" is-bingo />
         <button v-on:click="nextQ">Show the next question</button>
     </div>
     <!-- <p>{{ bingoQs }}</p> -->

@@ -2,7 +2,8 @@
 import { ref, onMounted, nextTick } from 'vue';
 const props = defineProps({
     question: Object,
-    qnum: Number
+    qnum: Number,
+    isBingo: Boolean
 });
 const emits = defineEmits(['refresh-q', 'add-bbs'])
 const showAns = ref(false)
@@ -37,7 +38,7 @@ const addBBs = () => {
                 <div v-if="showAns" class="wsq-abox" v-on:click="showHideAns">{{ question.a }}</div>
                 <button v-else class="reveal-button" v-on:click="showHideAns">Show Answer</button>
             </div>
-            <div class="ws-button-box">
+            <div v-if="!isBingo" class="ws-button-box">
                 <button title="add the building blocks for this question" v-on:click="addBBs"><img
                         src="../assets/icons/icons8-laying-bricks-48.png" /></button>
                 <button title="refresh this question" v-on:click="refreshQ"><img
