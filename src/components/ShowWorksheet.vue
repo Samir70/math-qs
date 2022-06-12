@@ -47,7 +47,19 @@ const addBBs = (bbs, i) => {
     let newQs = bbs.map(path => getMathsQs(...path.split('-'))).map(displayableQ)
     workSheetQs.value.splice(i-1, 0, ...newQs)
     console.log('Need to add these building blocks', bbs, 'at Q', i)
-    store.commit('setWorksheet', { name: store.state.chosenWorksheet.name + ' (edited)', topicList: workSheetQs.value.map(q => q.qPath) })
+    let newName = store.state.chosenWorksheet.name
+    if (newName.indexOf('(edited)') === -1) {newName += ' (edited)'}
+    store.commit('setWorksheet', { name: newName, topicList: workSheetQs.value.map(q => q.qPath) })
+}
+const removeQ = (qPath, i) => {
+    console.log(`User wants to remove q ${i}, which has path ${qPath}`)
+    workSheetQs.value.splice(i-1, 1)
+    let newName = store.state.chosenWorksheet.name
+    if (newName.indexOf('(edited)') === -1) {newName += ' (edited)'}
+    store.commit('setWorksheet', { name: newName, topicList: workSheetQs.value.map(q => q.qPath) })
+    if (workSheetQs.value.length === 0) {
+        router.push('./make_worksheet')
+    }
 }
 </script>
 
@@ -69,7 +81,7 @@ const addBBs = (bbs, i) => {
                 <WorksheetQ v-bind:question="workSheetQs[i - 1]" v-bind:qnum="i" v-bind:key="i"
                     v-bind:class="i % 2 ? 'wsq wsq-blue' : 'wsq wsq-green'" 
                     v-on:add-bbs="addBBs"
-                    v-on:refresh-q="refreshQ" />
+                    v-on:refresh-q="refreshQ" v-on:remove-q="removeQ" />
             </div>
         </div>
         <p>.</p>

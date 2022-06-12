@@ -5,7 +5,7 @@ const props = defineProps({
     qnum: Number,
     isBingo: Boolean
 });
-const emits = defineEmits(['refresh-q', 'add-bbs'])
+const emits = defineEmits(['refresh-q', 'add-bbs', 'remove-q'])
 const showAns = ref(false)
 const showHideAns = () => {
     showAns.value = !showAns.value
@@ -44,6 +44,9 @@ const addBBs = () => {
                         src="../assets/icons/icons8-laying-bricks-48.png" /></button>
                 <button title="refresh this question" v-on:click="refreshQ"><img
                         src="../assets/icons/icons8-reset-48.png" /></button>
+                <button title="Remove this question from the worksheet"
+                    v-on:click="emits('remove-q', question.qPath, qnum)"><img
+                        src="../assets/icons/icons8-remove-48.png" /></button>
             </div>
         </div>
     </div>
