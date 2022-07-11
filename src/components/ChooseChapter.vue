@@ -26,7 +26,9 @@ const setLearnChapter = (title) => {
             v-for="chapter in chapterSet"
             v-bind:title="chapter"
             v-bind:completedQs="store.state.userProgress[chapter] === undefined ? 0 : store.state.userProgress[chapter].size"
-            v-bind:totalQs="totalQs[chapter] || 0"
+            v-bind:totalQs="totalQs[chapter].qCount || 0"
+            v-bind:minLevel="totalQs[chapter].min"
+            v-bind:maxLevel="totalQs[chapter].max"
             v-on:click="setLearnChapter(chapter)"
         />
     </div>
