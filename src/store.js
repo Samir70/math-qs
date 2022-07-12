@@ -5,6 +5,7 @@ export const store = createStore({
     state() {
         return {
             user: { name: 'Unknown User', uid: null },
+            userLevel: 'hello',//{ level: '', topics: [] },
             loggedIn: false,
             chosenWorksheet: worksheets[0],
             worksheetList: worksheets,
@@ -42,6 +43,9 @@ export const store = createStore({
         },
         setWorksheet(state, newWorksheet) {
             state.chosenWorksheet = newWorksheet
+        },
+        setUserLevel(state, newLevel) {
+            state.userLevel = newLevel
         },
         addToWorksheet(state, newItem) {
             state.chosenWorksheet = {

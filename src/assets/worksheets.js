@@ -1,3 +1,4 @@
+import { diagnostics } from "./diagnostics";
 const admin = 'Samir Betmouni';
 const gcseIA = {
 	name: 'Initial assessment for GCSE at BCG',
@@ -33,5 +34,5 @@ const fsl1ExamQs = {
 }
 
 export const worksheets = [
-	gcseIA, e3nonCalc, fsl1ExamQs
+	gcseIA, e3nonCalc, fsl1ExamQs//, ...diagnostics[1].topics
 ]
