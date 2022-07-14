@@ -50,7 +50,6 @@ class ChapterTracker {
         if (chapter !== this.chapterName) {
             return console.error(`ERROR: attempt to update ${this.parentChapter + '-' + this.sectionName} tracker with q: ${path}`);
         }
-        console.log(`${this.chapterName} is tracking ${path}`)
         this.numberOfQsAnswered++
         if (correct) {
             this.numberOfCorrectAnswers++
@@ -79,8 +78,42 @@ class ChapterTracker {
     }
 }
 // this class is intended so that it will store all user progress
-class ProgressTracker {
-
+export class ProgressTracker {
+    constructor(listOfChapters = {}, bestChapter = '', bestRating = 0, averageRating = 0) {
+        this.listOfChapters = listOfChapters;
+        this.bestChapter = bestChapter;
+        this.bestRating = bestRating;
+        this.averageRating = averageRating; // This is average over chapters, not over questions
+    }
+    trackNewQ(path = '', correct) {
+        let [chapter, section, qName, rating] = path.split('-');
+        rating = Number(rating);
+        let numOfChapters = Object.keys(this.listOfChapters).length
+        let totalOfChapterBests = this.averageRating * numOfChapters
+        if (this.listOfChapters[chapter] === undefined) {
+            this.listOfChapters[chapter] = new ChapterTracker(chapter)
+            numOfChapters++
+        } else {
+            totalOfChapterBests -= this.listOfChapters[chapter].highestRatingAnsweredCorrectly
+        }
+        this.listOfChapters[chapter].trackNewQ(path, correct)
+        totalOfChapterBests += this.listOfChapters[chapter].highestRatingAnsweredCorrectly
+        this.averageRating = totalOfChapterBests / numOfChapters;
+        if (correct && rating >= this.bestRating) {
+            this.bestRating = rating;
+            this.bestChapter = chapter;
+        } 
+    }
+    static from(obj) {
+        if (!(obj instanceof ProgressTracker)) {
+            return console.error('ERROR:: Cannot make a ProgressTracker from ', obj)
+        }
+        let newChapterList = {}
+        for (let chapter in obj.listOfChapters) {
+            newChapterList[chapter] = ChapterTracker.from(obj.listOfChapters[chapter])
+        }
+        return new ProgressTracker(newChapterList, obj.bestChapter, obj.averageRating)
+    }
 }
 
 // to be moved to another file eventually!!
@@ -93,17 +126,15 @@ let qList = [
     "number-multiplying-cubeDigit-65", "number-multiplying-squareEndIn5-70",
     "ratio-simplify-noUnits2-80", "ratio-simplify-withUnits-150", "ratio-share-givenTotal-200"
 ]
+let correct = [
+    1,1,1,1,0,1,
+    1,1,1,1,0,0,
+    1,0,0,0,1,1
+]
 
-let chapters = {}
-for (let q of qList) {
-    let chapter = q.split('-')[0]
-    if (chapters[chapter] === undefined) {
-        chapters[chapter] = new ChapterTracker(chapter)
-    }
-    chapters[chapter].trackNewQ(q, true)
+export const testProgTracker = new ProgressTracker()
+for (let i = 0; i < qList.length; i++) {
+    let q = qList[i], c = correct[i]
+    testProgTracker.trackNewQ(q, c)
 }
-let numCT = ChapterTracker.from(chapters['number'])
-numCT.trackNewQ('number-something-forTest-500', true)
-numCT.trackNewQ('number-dividing-forTest-300', true)
-console.log(JSON.stringify(chapters, null, 2))
-console.log(JSON.stringify(numCT, null, 2))
+// console.log(JSON.stringify(testProgTracker, null, 2))
