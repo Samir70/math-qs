@@ -5,12 +5,14 @@ import { emitActions } from '../helperFuncs/globalConsts';
 import dashboardCWSrow from './dashboardCWSrow.vue';
 import { diagnostics } from "../assets/diagnostics";
 let userLevel = ref(store.state.userLevel.level);
+let userProgress = store.state.userProgress;
+console.log(userProgress)
 let wantsToChangeLevel = ref(false);
 const emits = defineEmits(emitActions)
 const setLevel = (d) => {
-    console.log('setting user level', diagnostics[d-1].level, 'has', diagnostics[d-1].topics.length, 'worksheets')
-    store.commit('setUserLevel', diagnostics[d-1]);
-    userLevel.value = diagnostics[d-1].level;
+    console.log('setting user level', diagnostics[d - 1].level, 'has', diagnostics[d - 1].topics.length, 'worksheets')
+    store.commit('setUserLevel', diagnostics[d - 1]);
+    userLevel.value = diagnostics[d - 1].level;
     wantsToChangeLevel.value = false;
 }
 </script>
@@ -19,17 +21,25 @@ const setLevel = (d) => {
     <h1>{{ store.state.user.name }}'s Dashboard</h1>
     <div id="dashboard-user-progress">
         <div v-if="userLevel" id="level-statement-box">
-            <p>Your target level is: <span id="level-statement">{{ userLevel }}</span> </p>
+            <p>Your target level is: <span class="emphasis-bold">{{ userLevel }}</span> </p>
             <button v-on:click="wantsToChangeLevel = true">Change level</button>
         </div>
         <div v-if="!userLevel || wantsToChangeLevel">
             <h2>Pick a user level</h2>
             <div id="level-selection-box"></div>
-            <button v-for="d in diagnostics.length" key="d" class="level-selection-button"
-                v-on:click="setLevel(d)">{{ diagnostics[d-1].level }}</button>
+            <button v-for="d in diagnostics.length" key="d" class="level-selection-button" v-on:click="setLevel(d)">{{
+                    diagnostics[d - 1].level
+            }}</button>
         </div>
     </div>
-    <div id="dashboard-custom-ws">
+    <div id="-dashboard-progress-box" class="dashboard-section">
+        <div id="progress-summary">
+            <p>Best chapter: <span class="emphasis-bold">{{userProgress.bestChapter}}</span> where you answered a question with rating {{userProgress.bestRating}}</p>
+            <p>You have answered questions from {{Object.keys(userProgress.listOfChapters).length}} chapters</p>
+            <p>Average rating of chapters: {{userProgress.averageRating}}</p>
+        </div>
+    </div>
+    <div id="dashboard-custom-ws" class="dashboard-section">
         <h3>Custom worksheets</h3>
         <div v-if="store.state.customWorksheets.length === 0">
             <p>You haven't saved any worksheets</p>
@@ -43,7 +53,6 @@ const setLevel = (d) => {
             </div>
         </div>
     </div>
-    <p>Your progress will be shown here once that feature is implemented!</p>
     <p>Work is not saved to the online database until you click 'save'</p>
     <div>
         <h3>Getting started!</h3>
@@ -70,7 +79,7 @@ const setLevel = (d) => {
     background: violet;
 }
 
-#level-statement {
+.emphasis-bold {
     font-weight: bold;
 }
 
@@ -83,5 +92,10 @@ const setLevel = (d) => {
 .level-selection-button {
     width: 25vw;
     margin: 2px 5px;
+}
+
+.dashboard-section {
+    border: 1px solid darkblue;
+    margin: auto;
 }
 </style>

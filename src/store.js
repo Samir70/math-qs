@@ -66,13 +66,12 @@ export const store = createStore({
         /**
          * 
          * @param {*} state 
-         * @param {string} path 
-         * @param {boolean} userCorrect use true if the user got the question correct
+         * @param {object} payload must contain properties path: string, userCorrect: boolean
          */
-        updateProgress(state, path, userCorrect) {
-            console.log('updateUserProgress', path);
+        updateProgress(state, payload) {
+            console.log('updateUserProgress', payload);
             let newProg = ProgressTracker.from(state.userProgress)
-            newProg.trackNewQ(path, userCorrect)
+            newProg.trackNewQ(payload.path, payload.userCorrect)
             state.userProgress = newProg
         }
     }

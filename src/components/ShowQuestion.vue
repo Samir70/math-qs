@@ -21,7 +21,7 @@ const waitForNext = ref(false);
 
 const respondToAns = (ans) => {
   console.log('Need to respond to answer:', ans);
-  store.commit('updateProgress', qList[qNumber.value].join('-'))
+  store.commit('updateProgress', {path: qList[qNumber.value].join('-'), userCorrect: ans.userWasCorrect})
   if (ans.userWasCorrect) {
     console.log('userwascorrect path:', qList[qNumber.value])
     // userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
