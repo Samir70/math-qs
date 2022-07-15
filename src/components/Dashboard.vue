@@ -100,6 +100,7 @@ const setLevel = (d) => {
 
 .dashboard-section {
     border: 1px solid darkblue;
-    margin: auto;
+    margin: 8px auto;
+    box-shadow: 1px 10px 8px darkgray;
 }
 </style>

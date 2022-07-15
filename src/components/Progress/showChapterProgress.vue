@@ -25,7 +25,7 @@ const props = defineProps({
     width: 70vw;
     min-width: 400px;
     margin: 2vh auto;
-    box-shadow: 1px 2px 2px darkgray;
+    box-shadow: 1px 10px 12px darkgray;
 }
 .chapter-progress-summary {
     display: flex;

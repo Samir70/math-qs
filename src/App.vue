@@ -86,5 +86,6 @@ async function saveCWS() {
   text-align: center;
   color: #2c3e50;
   white-space: pre-wrap;
+  width: 95vw;
 }
 </style>
