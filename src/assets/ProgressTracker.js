@@ -112,7 +112,7 @@ export class ProgressTracker {
         for (let chapter in obj.listOfChapters) {
             newChapterList[chapter] = ChapterTracker.from(obj.listOfChapters[chapter])
         }
-        return new ProgressTracker(newChapterList, obj.bestChapter, obj.averageRating)
+        return new ProgressTracker(newChapterList, obj.bestChapter, obj.bestRating, obj.averageRating)
     }
 }
 
