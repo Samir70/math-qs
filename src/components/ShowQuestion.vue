@@ -21,9 +21,9 @@ const waitForNext = ref(false);
 
 const respondToAns = (ans) => {
   console.log('Need to respond to answer:', ans);
+  store.commit('updateProgress', qList[qNumber.value].join('-'))
   if (ans.userWasCorrect) {
     console.log('userwascorrect path:', qList[qNumber.value])
-    store.commit('updateChapterProgress', qList[qNumber.value])
     // userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
     qNumber.value = (qNumber.value + 1) % qList.length
   }
@@ -49,22 +49,16 @@ onMounted(() => {
 
 <template>
   <div id="question-box">
-    <component
-      v-bind:is="qTypes[currentQ.qType]"
-      v-bind:qData="currentQ"
-      v-bind:key="qKey"
-      v-on:user-answered="respondToAns"
-      class="showq-qblock"
-    />
+    <component v-bind:is="qTypes[currentQ.qType]" v-bind:qData="currentQ" v-bind:key="qKey"
+      v-on:user-answered="respondToAns" class="showq-qblock" />
     <button v-if="waitForNext" v-on:click="nextQ">Next Q</button>
     <div v-for="hint of qHints" class="showq-hint-box">
       <p>{{ hint }}</p>
     </div>
     <div id="showq-options-box">
-      <button
-        v-if="qHints.length < currentQ.hints.length"
-        v-on:click="showHint"
-      >{{ qHints.length === 0 ? 'Show Hint' : 'Show another hint' }}</button>
+      <button v-if="qHints.length < currentQ.hints.length" v-on:click="showHint">{{ qHints.length === 0 ? 'Show Hint' :
+          'Show another hint'
+      }}</button>
     </div>
   </div>
 </template>
@@ -83,6 +77,7 @@ onMounted(() => {
   max-width: 480px;
   margin: auto;
 }
+
 .showq-qblock {
   margin: auto;
 }

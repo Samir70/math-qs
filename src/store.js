@@ -1,5 +1,6 @@
 import { createStore } from 'vuex';
 import { worksheets } from './assets/worksheets';
+import { testProgTracker, ProgressTracker } from "./assets/ProgressTracker";
 
 export const store = createStore({
     state() {
@@ -12,7 +13,7 @@ export const store = createStore({
             customWorksheets: [],
             haveUnsyncedCWSchanges: false,
             maxCustomWorksheets: 5,
-            userProgress: { none: new Set() },
+            userProgress: testProgTracker,
             chosenChapter: 'none'
         }
     },
@@ -62,15 +63,17 @@ export const store = createStore({
         setChapter(state, newChapter) {
             state.chosenChapter = newChapter
         },
-        initChapterProgress(state, chapter) {
-            state.userProgress = { ...state.userProgress, [chapter]: new Set() }
-        },
-        updateChapterProgress(state, path) {
-            console.log('updateChapterprogress', [state.userProgress[path[0]], path])
-            state.userProgress = {
-                ...state.userProgress,
-                [path[0]]: new Set(state.userProgress[path[0]] === undefined ? [path.join('-')] : [...state.userProgress[path[0]], path.join('-')])
-            }
+        /**
+         * 
+         * @param {*} state 
+         * @param {string} path 
+         * @param {boolean} userCorrect use true if the user got the question correct
+         */
+        updateProgress(state, path, userCorrect) {
+            console.log('updateUserProgress', path);
+            let newProg = ProgressTracker.from(state.userProgress)
+            newProg.trackNewQ(path, userCorrect)
+            state.userProgress = newProg
         }
     }
 });
