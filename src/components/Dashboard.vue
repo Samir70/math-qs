@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { store } from '../store';
 import { emitActions } from '../helperFuncs/globalConsts';
 import dashboardCWSrow from './dashboardCWSrow.vue';
+import showChapterProgress from "./Progress/showChapterProgress.vue";
 import { diagnostics } from "../assets/diagnostics";
 let userLevel = ref(store.state.userLevel.level);
 let userProgress = store.state.userProgress;
@@ -37,6 +38,9 @@ const setLevel = (d) => {
             <p>Best chapter: <span class="emphasis-bold">{{userProgress.bestChapter}}</span> where you answered a question with rating {{userProgress.bestRating}}</p>
             <p>You have answered questions from {{Object.keys(userProgress.listOfChapters).length}} chapters</p>
             <p>Average rating of chapters: {{userProgress.averageRating}}</p>
+            <div v-for="c in userProgress.listOfChapters">
+                <showChapterProgress v-bind:chapter="c" />
+            </div>
         </div>
     </div>
     <div id="dashboard-custom-ws" class="dashboard-section">

@@ -1,6 +1,6 @@
 
 // track user progress through a single section of a chapter
-class SectionTracker {
+export class SectionTracker {
     constructor(parentChapter = '', sectionName = '', numberOfCorrectAnswers = 0, numberOfQsAnswered = 0, highestRatingAnsweredCorrectly = 0, pathsOfAnsweredQs = []) {
         this.parentChapter = parentChapter;
         this.sectionName = sectionName;
@@ -37,7 +37,7 @@ class SectionTracker {
 }
 
 // track user progress through a single chapter
-class ChapterTracker {
+export class ChapterTracker {
     constructor(chapterName = '', numberOfCorrectAnswers = 0, numberOfQsAnswered = 0, highestRatingAnsweredCorrectly = 0, listOfSections = {}) {
         this.chapterName = chapterName;
         this.numberOfCorrectAnswers = numberOfCorrectAnswers;
