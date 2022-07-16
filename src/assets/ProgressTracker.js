@@ -1,3 +1,4 @@
+import { makeBBList } from "math-q-factory";
 
 // track user progress through a single section of a chapter
 export class SectionTracker {
@@ -79,11 +80,12 @@ export class ChapterTracker {
 }
 // this class is intended so that it will store all user progress
 export class ProgressTracker {
-    constructor(listOfChapters = {}, bestChapter = '', bestRating = 0, averageRating = 0) {
+    constructor(listOfChapters = {}, bestChapter = '', bestRating = 0, averageRating = 0, mistakeList = []) {
         this.listOfChapters = listOfChapters;
         this.bestChapter = bestChapter;
         this.bestRating = bestRating;
         this.averageRating = averageRating; // This is average over chapters, not over questions
+        this.mistakeList = mistakeList;
     }
     trackNewQ(path = '', correct) {
         let [chapter, section, qName, rating] = path.split('-');
@@ -99,9 +101,12 @@ export class ProgressTracker {
         this.listOfChapters[chapter].trackNewQ(path, correct)
         totalOfChapterBests += this.listOfChapters[chapter].highestRatingAnsweredCorrectly
         this.averageRating = totalOfChapterBests / numOfChapters;
-        if (correct && rating >= this.bestRating) {
-            this.bestRating = rating;
-            this.bestChapter = chapter;
+        if (correct) {
+            this.mistakeList.push(path)
+            if (rating >= this.bestRating) {
+                this.bestRating = rating;
+                this.bestChapter = chapter;
+            }
         } 
     }
     static from(obj) {
@@ -112,7 +117,7 @@ export class ProgressTracker {
         for (let chapter in obj.listOfChapters) {
             newChapterList[chapter] = ChapterTracker.from(obj.listOfChapters[chapter])
         }
-        return new ProgressTracker(newChapterList, obj.bestChapter, obj.bestRating, obj.averageRating)
+        return new ProgressTracker(newChapterList, obj.bestChapter, obj.bestRating, obj.averageRating, [...obj.mistakeList])
     }
 }
 
