@@ -1,10 +1,13 @@
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { store } from '../store';
 import { emitActions } from '../helperFuncs/globalConsts';
 import dashboardCWSrow from './dashboardCWSrow.vue';
 import showChapterProgress from "./Progress/showChapterProgress.vue";
 import { diagnostics } from "../assets/diagnostics";
+import { makeWSObject } from "../assets/worksheets";
+const router = useRouter();
 let userLevel = ref(store.state.userLevel.level);
 let userProgress = store.state.userProgress;
 console.log(userProgress)
@@ -17,7 +20,14 @@ const setLevel = (d) => {
     wantsToChangeLevel.value = false;
 }
 const makeWorksheetFromMistakes = () => {
-    console.log('User Wants to make a worksheet from mistakes')
+    if (userProgress.size === 0) {
+        alert("You haven't made any mistakes to list in a worksheet");
+        return
+    }
+    console.log('User Wants to make a worksheet from mistakes');
+    let qs = [...userProgress.mistakeList].map(q => q.split('-')).sort((a, b) => a[3] - b[3]).map(q => q.join('-'));
+    store.commit('setWorksheet', makeWSObject(`Worksheet from ${store.state.user.name}'s mistakes`, "Math-Qs pixies", qs));
+    router.push('/show_worksheet');
 }
 const copyProgressToCSV = () => {
     console.log('User Wants to copy progress')

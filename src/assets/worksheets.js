@@ -33,6 +33,10 @@ const fsl1ExamQs = {
 	]
 }
 
+export const makeWSObject = (name="Worksheet with no name", creator="unknown author", topicList=["examQs-bakeryQ-meanNoBags-210"]) => {
+	return {name, creator, topicList}
+}
+
 export const worksheets = [
 	gcseIA, e3nonCalc, fsl1ExamQs//, ...diagnostics[1].topics
 ]
