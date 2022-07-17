@@ -16,6 +16,12 @@ const setLevel = (d) => {
     userLevel.value = diagnostics[d - 1].level;
     wantsToChangeLevel.value = false;
 }
+const makeWorksheetFromMistakes = () => {
+    console.log('User Wants to make a worksheet from mistakes')
+}
+const copyProgressToCSV = () => {
+    console.log('User Wants to copy progress')
+}
 </script>
 
 <template>
@@ -33,11 +39,23 @@ const setLevel = (d) => {
             }}</button>
         </div>
     </div>
-    <div id="-dashboard-progress-box" class="dashboard-section">
-        <div id="progress-summary">
-            <p>Best chapter: <span class="emphasis-bold">{{userProgress.bestChapter}}</span> where you answered a question with rating {{userProgress.bestRating}}</p>
-            <p>You have answered questions from {{Object.keys(userProgress.listOfChapters).length}} chapters</p>
-            <p>Average rating of chapters: {{userProgress.averageRating}}</p>
+    <div id="dashboard-progress-box" class="dashboard-section">
+        <div id="progress-overview" class="dashboard-flex">
+            <div id="progress-summary">
+                <p>Best chapter: <span class="emphasis-bold">{{ userProgress.bestChapter }}</span> where you answered a
+                    question with rating {{ userProgress.bestRating }}</p>
+                <p>You have answered questions from {{ Object.keys(userProgress.listOfChapters).length }} chapters</p>
+                <p>Average rating of chapters: {{ userProgress.averageRating }}</p>
+            </div>
+            <div id="dashboard-progress-buttons">
+                <button v-if="userProgress.mistakeList.size > 0" title="Make a worksheet from your mistakes"
+                    v-on:click="makeWorksheetFromMistakes">
+                    <img src="../assets/icons/icons8-list-64.png" class="dashboard-button-image" /></button>
+                <button title="Copy progress to CSV" v-on:click="copyProgressToCSV">
+                    <img src="../assets/icons/icons8-copy-50.png" class="dashboard-button-image" /></button>
+            </div>
+        </div>
+        <div id="progress-by-chapter" class="dashboard-flex">
             <div v-for="c in userProgress.listOfChapters">
                 <showChapterProgress v-bind:chapter="c" />
             </div>
@@ -102,5 +120,17 @@ const setLevel = (d) => {
     border: 1px solid darkblue;
     margin: 8px auto;
     box-shadow: 1px 10px 8px darkgray;
+}
+
+.dashboard-flex {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.dashboard-button-image {
+    width: 50px;
+    height: 50px;
 }
 </style>

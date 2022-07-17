@@ -22,7 +22,7 @@ const props = defineProps({
 .chapter-progress-card {
     border: 1px solid darkblue;
     display: block;
-    width: 70vw;
+    width: 45vw;
     min-width: 400px;
     margin: 2vh auto;
     box-shadow: 1px 10px 12px darkgray;
