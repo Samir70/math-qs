@@ -57,10 +57,11 @@ const copyProgressToCSV = () => {
                 <p>Best chapter: <span class="emphasis-bold">{{ userProgress.bestChapter }}</span> where you answered a
                     question with rating {{ userProgress.bestRating }}</p>
                 <p>You have answered questions from {{ Object.keys(userProgress.listOfChapters).length }} chapters</p>
-                <p>Average rating of chapters: {{ userProgress.averageRating }}</p>
+                <p>Average rating of chapters: {{ Math.round(userProgress.averageRating) }}</p>
             </div>
             <div id="dashboard-progress-buttons">
-                <p>You have {{userProgress.mistakeList.size === 0 ? 'no' : userProgress.mistakeList.size}} {{userProgress.mistakeList.size === 1 ? 'mistake' : 'mistakes'}} to correct</p>
+                <p>You have {{ userProgress.mistakeList.size === 0 ? 'no' : userProgress.mistakeList.size }}
+                    {{ userProgress.mistakeList.size === 1 ? 'mistake' : 'mistakes' }} to correct</p>
                 <button v-if="userProgress.mistakeList.size > 0" title="Make a worksheet from your mistakes"
                     v-on:click="makeWorksheetFromMistakes">
                     <img src="../assets/icons/icons8-list-64.png" class="dashboard-button-image" /></button>
