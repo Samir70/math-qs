@@ -80,14 +80,19 @@ export class ChapterTracker {
 }
 // this class is intended so that it will store all user progress
 export class ProgressTracker {
-    constructor(listOfChapters = {}, bestChapter = '', bestRating = 0, averageRating = 0, mistakeList = new Set()) {
+    constructor(
+        listOfChapters = {}, bestChapter = '', bestRating = 0,
+        averageRating = 0, mistakeList = new Set(),
+        history = [['chapter', 'section', 'qName', 'rating', 'correct?']]) {
         this.listOfChapters = listOfChapters;
         this.bestChapter = bestChapter;
         this.bestRating = bestRating;
         this.averageRating = averageRating; // This is average over chapters, not over questions
         this.mistakeList = mistakeList;
+        this.history = history;
     }
     trackNewQ(path = '', correct) {
+        this.history.push([...path.split('-'), correct]);
         let [chapter, section, qName, rating] = path.split('-');
         rating = Number(rating);
         let numOfChapters = Object.keys(this.listOfChapters).length
@@ -111,6 +116,9 @@ export class ProgressTracker {
             this.mistakeList.add(path)
         }
     }
+    copyToCSV() {
+        return this.history.map(h => h.join(', '))
+    }
     static from(obj) {
         if (!(obj instanceof ProgressTracker)) {
             return console.error('ERROR:: Cannot make a ProgressTracker from ', obj)
@@ -119,7 +127,7 @@ export class ProgressTracker {
         for (let chapter in obj.listOfChapters) {
             newChapterList[chapter] = ChapterTracker.from(obj.listOfChapters[chapter])
         }
-        return new ProgressTracker(newChapterList, obj.bestChapter, obj.bestRating, obj.averageRating, new Set([...obj.mistakeList]))
+        return new ProgressTracker(newChapterList, obj.bestChapter, obj.bestRating, obj.averageRating, new Set([...obj.mistakeList]), [...obj.history])
     }
 }
 
@@ -134,14 +142,14 @@ let qList = [
     "ratio-simplify-noUnits2-80", "ratio-simplify-withUnits-150", "ratio-share-givenTotal-200"
 ]
 let correct = [
-    1,1,1,1,0,1,
-    1,1,1,1,0,0,
-    1,0,0,0,1,1
+    1, 1, 1, 1, 0, 1,
+    1, 1, 1, 1, 0, 0,
+    1, 0, 0, 0, 1, 1
 ]
 
 export const testProgTracker = new ProgressTracker()
 for (let i = 0; i < qList.length; i++) {
     let q = qList[i], c = correct[i]
-    testProgTracker.trackNewQ(q, c)
+    testProgTracker.trackNewQ(q, c === 1 ? true : false)
 }
 // console.log(JSON.stringify(testProgTracker, null, 2))

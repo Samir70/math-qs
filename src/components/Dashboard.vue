@@ -31,6 +31,8 @@ const makeWorksheetFromMistakes = () => {
 }
 const copyProgressToCSV = () => {
     console.log('User Wants to copy progress')
+    console.log(userProgress.copyToCSV())
+    navigator.clipboard.writeText(userProgress.copyToCSV().join('\n'))
 }
 </script>
 
