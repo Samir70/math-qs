@@ -21,7 +21,7 @@ const setLevel = (d) => {
 }
 const makeWorksheetFromMistakes = () => {
     if (userProgress.size === 0) {
-        alert("You haven't made any mistakes to list in a worksheet");
+        alert("You haven't got any uncorrected mistakes");
         return
     }
     console.log('User Wants to make a worksheet from mistakes');
@@ -58,6 +58,7 @@ const copyProgressToCSV = () => {
                 <p>Average rating of chapters: {{ userProgress.averageRating }}</p>
             </div>
             <div id="dashboard-progress-buttons">
+                <p>You have {{userProgress.mistakeList.size === 0 ? 'no' : userProgress.mistakeList.size}} {{userProgress.mistakeList.size === 1 ? 'mistake' : 'mistakes'}} to correct</p>
                 <button v-if="userProgress.mistakeList.size > 0" title="Make a worksheet from your mistakes"
                     v-on:click="makeWorksheetFromMistakes">
                     <img src="../assets/icons/icons8-list-64.png" class="dashboard-button-image" /></button>

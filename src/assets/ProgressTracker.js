@@ -102,6 +102,7 @@ export class ProgressTracker {
         totalOfChapterBests += this.listOfChapters[chapter].highestRatingAnsweredCorrectly
         this.averageRating = totalOfChapterBests / numOfChapters;
         if (correct) {
+            this.mistakeList.delete(path)
             if (rating >= this.bestRating) {
                 this.bestRating = rating;
                 this.bestChapter = chapter;
@@ -118,7 +119,7 @@ export class ProgressTracker {
         for (let chapter in obj.listOfChapters) {
             newChapterList[chapter] = ChapterTracker.from(obj.listOfChapters[chapter])
         }
-        return new ProgressTracker(newChapterList, obj.bestChapter, obj.bestRating, obj.averageRating, [...obj.mistakeList])
+        return new ProgressTracker(newChapterList, obj.bestChapter, obj.bestRating, obj.averageRating, new Set([...obj.mistakeList]))
     }
 }
 
