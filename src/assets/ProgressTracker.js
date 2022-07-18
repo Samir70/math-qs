@@ -81,9 +81,10 @@ export class ChapterTracker {
 // this class is intended so that it will store all user progress
 export class ProgressTracker {
     constructor(
-        listOfChapters = {}, bestChapter = '', bestRating = 0,
+        title = "Total Progress", listOfChapters = {}, bestChapter = '', bestRating = 0,
         averageRating = 0, mistakeList = new Set(),
         history = [['chapter', 'section', 'qName', 'rating', 'correct?']]) {
+        this.title = title;
         this.listOfChapters = listOfChapters;
         this.bestChapter = bestChapter;
         this.bestRating = bestRating;
@@ -127,7 +128,10 @@ export class ProgressTracker {
         for (let chapter in obj.listOfChapters) {
             newChapterList[chapter] = ChapterTracker.from(obj.listOfChapters[chapter])
         }
-        return new ProgressTracker(newChapterList, obj.bestChapter, obj.bestRating, obj.averageRating, new Set([...obj.mistakeList]), [...obj.history])
+        return new ProgressTracker(
+            obj.title, newChapterList, obj.bestChapter, obj.bestRating,
+            obj.averageRating, new Set([...obj.mistakeList]), [...obj.history]
+        )
     }
 }
 

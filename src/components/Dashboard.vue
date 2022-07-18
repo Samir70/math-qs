@@ -4,13 +4,11 @@ import { useRouter } from "vue-router";
 import { store } from '../store';
 import { emitActions } from '../helperFuncs/globalConsts';
 import dashboardCWSrow from './dashboardCWSrow.vue';
-import showChapterProgress from "./Progress/showChapterProgress.vue";
 import { diagnostics } from "../assets/diagnostics";
-import { makeWSObject } from "../assets/worksheets";
+import ShowProgress from "../components/Progress/ShowProgress.vue";
 const router = useRouter();
 let userLevel = ref(store.state.userLevel.level);
-let userProgress = store.state.userProgress;
-console.log(userProgress)
+
 let wantsToChangeLevel = ref(false);
 const emits = defineEmits(emitActions)
 const setLevel = (d) => {
@@ -18,21 +16,6 @@ const setLevel = (d) => {
     store.commit('setUserLevel', diagnostics[d - 1]);
     userLevel.value = diagnostics[d - 1].level;
     wantsToChangeLevel.value = false;
-}
-const makeWorksheetFromMistakes = () => {
-    if (userProgress.size === 0) {
-        alert("You haven't got any uncorrected mistakes");
-        return
-    }
-    console.log('User Wants to make a worksheet from mistakes');
-    let qs = [...userProgress.mistakeList].map(q => q.split('-')).sort((a, b) => a[3] - b[3]).map(q => q.join('-'));
-    store.commit('setWorksheet', makeWSObject(`Worksheet from ${store.state.user.name}'s mistakes`, "Math-Qs pixies", qs));
-    router.push('/show_worksheet');
-}
-const copyProgressToCSV = () => {
-    console.log('User Wants to copy progress')
-    console.log(userProgress.copyToCSV())
-    navigator.clipboard.writeText(userProgress.copyToCSV().join('\n'))
 }
 </script>
 
@@ -51,30 +34,7 @@ const copyProgressToCSV = () => {
             }}</button>
         </div>
     </div>
-    <div id="dashboard-progress-box" class="dashboard-section">
-        <div id="progress-overview" class="dashboard-flex">
-            <div id="progress-summary">
-                <p>Best chapter: <span class="emphasis-bold">{{ userProgress.bestChapter }}</span> where you answered a
-                    question with rating {{ userProgress.bestRating }}</p>
-                <p>You have answered questions from {{ Object.keys(userProgress.listOfChapters).length }} chapters</p>
-                <p>Average rating of chapters: {{ Math.round(userProgress.averageRating) }}</p>
-            </div>
-            <div id="dashboard-progress-buttons">
-                <p>You have {{ userProgress.mistakeList.size === 0 ? 'no' : userProgress.mistakeList.size }}
-                    {{ userProgress.mistakeList.size === 1 ? 'mistake' : 'mistakes' }} to correct</p>
-                <button v-if="userProgress.mistakeList.size > 0" title="Make a worksheet from your mistakes"
-                    v-on:click="makeWorksheetFromMistakes">
-                    <img src="../assets/icons/icons8-list-64.png" class="dashboard-button-image" /></button>
-                <button title="Copy progress to CSV" v-on:click="copyProgressToCSV">
-                    <img src="../assets/icons/icons8-copy-50.png" class="dashboard-button-image" /></button>
-            </div>
-        </div>
-        <div id="progress-by-chapter" class="dashboard-flex">
-            <div v-for="c in userProgress.listOfChapters">
-                <showChapterProgress v-bind:chapter="c" />
-            </div>
-        </div>
-    </div>
+    <ShowProgress v-bind:user-progress="store.state.userProgress" />
     <div id="dashboard-custom-ws" class="dashboard-section">
         <h3>Custom worksheets</h3>
         <div v-if="store.state.customWorksheets.length === 0">
@@ -99,10 +59,7 @@ const copyProgressToCSV = () => {
             classroom, but you can have fun on your own too!</p>
     </div>
 
-    <!-- <p
-        v-for="chapter in Object.keys(store.state.userProgress)"
-    >{{ chapter }}:: {{ [...store.state.userProgress[chapter]] }}</p> -->
-    <!-- <p>{{JSON.stringify(topicsToTest)}}</p> -->
+    <a href="https://icons8.com/license">Icons downloaded from icons8.com</a>
 </template>
 
 <style>
@@ -141,10 +98,5 @@ const copyProgressToCSV = () => {
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
-}
-
-.dashboard-button-image {
-    width: 50px;
-    height: 50px;
 }
 </style>
