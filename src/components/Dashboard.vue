@@ -7,14 +7,14 @@ import dashboardCWSrow from './dashboardCWSrow.vue';
 import { diagnostics } from "../assets/diagnostics";
 import ShowProgress from "../components/Progress/ShowProgress.vue";
 const router = useRouter();
-let userLevel = ref(store.state.userLevel.level);
+let userLevel = ref(store.state.userLevel);
 
 let wantsToChangeLevel = ref(false);
 const emits = defineEmits(emitActions)
 const setLevel = (d) => {
     console.log('setting user level', diagnostics[d - 1].level, 'has', diagnostics[d - 1].topics.length, 'worksheets')
     store.commit('setUserLevel', diagnostics[d - 1]);
-    userLevel.value = diagnostics[d - 1].level;
+    userLevel.value = diagnostics[d - 1];
     wantsToChangeLevel.value = false;
 }
 </script>
@@ -22,11 +22,12 @@ const setLevel = (d) => {
 <template>
     <h1>{{ store.state.user.name }}'s Dashboard</h1>
     <div id="dashboard-user-progress">
-        <div v-if="userLevel" id="level-statement-box">
-            <p>Your target level is: <span class="emphasis-bold">{{ userLevel }}</span> </p>
+        <div v-if="userLevel.level" id="level-statement-box">
+            <p>Your target level is: <span class="emphasis-bold">{{ userLevel.level }}</span> </p>
+            <button v-on:click="router.push('/diagnostic')">Take a diagnostic at this level</button>
             <button v-on:click="wantsToChangeLevel = true">Change level</button>
         </div>
-        <div v-if="!userLevel || wantsToChangeLevel">
+        <div v-if="!userLevel.level || wantsToChangeLevel">
             <h2>Pick a user level</h2>
             <div id="level-selection-box"></div>
             <button v-for="d in diagnostics.length" key="d" class="level-selection-button" v-on:click="setLevel(d)">{{

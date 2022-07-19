@@ -6,7 +6,8 @@ export const store = createStore({
     state() {
         return {
             user: { name: 'Unknown User', uid: null },
-            userLevel: 'hello',//{ level: '', topics: [] },
+            userLevel: { level: '', topics: [] },
+            diagnosticResults: [ProgressTracker.from(testProgTracker)],
             loggedIn: false,
             chosenWorksheet: worksheets[0],
             worksheetList: worksheets,
