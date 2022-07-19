@@ -17,7 +17,7 @@ for (let lev in levelLimits) {
     for (let chapter in totalQs) {
         let qs = listQs(chapter, levelLimits[lev].limit)
         if (qs.length) {
-            cur.topics.push(makeWS(`${chapter} questions ${lev}`, qs))
+            cur.topics.push(makeWS(`${chapter} - upto ${levelLimits[lev].name}`, qs))
         }
     }
     diagnostics.push(cur)
