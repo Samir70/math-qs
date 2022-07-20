@@ -25,6 +25,7 @@ const progBar = `linear-gradient(to right, green 0%, green ${percentCorrect}%, r
 
 .section-name {
     width: 25%;
+    overflow-wrap: break-word;
 }
 
 .prog-bar {
