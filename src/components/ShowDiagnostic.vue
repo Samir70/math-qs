@@ -35,17 +35,19 @@ const respondToAns = ans => {
      * {userWasCorrect: true, userAns:'42', qAns:42}
      */
     diagProgTracker.value.trackNewQ(getQSlug(curQ.value), ans);
-    store.commit('updateProgress', {path: getQSlug(curQ.value), userCorrect: ans})
+    store.commit('updateProgress', { path: getQSlug(curQ.value), userCorrect: ans })
     // aim is to find hardest question in this sorted list that the student can answer
     // that Q has to be within left and right.
     if (ans) {
-        left = curQ.value
+        left = curQ.value + 1 // considered: (curQ.value === right ? 1 : 0)
+        // That allows last correct Q to be reasked, so it wasn't a fluke!
     } else {
         right = curQ.value - 1
     }
     console.log({ q: getQSlug(curQ.value), ans, left, right })
-    if (left === right) {
+    if (left > right) {
         // finished this topic in the diagnostic
+        // have to ocntinue if left === right, in order to get asked q[left]
         curTopic.value += 1
         if (curTopic.value === topics.length) {
             curTopic.value = 0;
@@ -55,7 +57,13 @@ const respondToAns = ans => {
         curQ.value = 0
         diagStage.value = 'starting'
     } else {
-        curQ.value = Math.floor((left + right) / 2) + 1
+        curQ.value = left === right ? left : Math.floor((left + right) / 2) + 1
+        /**
+         * this sets curQ to right when right === left + [0, 1, 2]
+         * this is alright since, 
+         *   if the student is down to the last three qs and keeps getting them wrong,
+         * it is good to ask all the remaining qs
+         */
     }
 }
 </script>
@@ -73,7 +81,7 @@ const respondToAns = ans => {
         </div>
     </div>
     <div v-if="diagStage === 'running'" id="run-diagnostic">
-        <p>diagStage is {{diagStage}}</p>
+        <p>diagStage is {{ diagStage }}</p>
         <p>We are on Q{{ curQ }} - {{ getQSlug(curQ) }}</p>
         <button v-on:click="respondToAns(true)">Get it right!</button>
         <button v-on:click="respondToAns(false)">Get it wrong!</button>
