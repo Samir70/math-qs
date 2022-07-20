@@ -40,7 +40,7 @@ export class SectionTracker {
 // track user progress through a single chapter
 export class ChapterTracker {
     constructor(
-        chapterName = '', chapterConfidence= 'unknown',
+        chapterName = '', chapterConfidence = 'unknown',
         numberOfCorrectAnswers = 0, numberOfQsAnswered = 0,
         highestRatingAnsweredCorrectly = 0, listOfSections = {}) {
         this.chapterName = chapterName;
@@ -115,18 +115,20 @@ export class ProgressTracker {
         this.listOfChapters[chapter].trackNewQ(path, correct, chapConfidence)
         totalOfChapterBests += this.listOfChapters[chapter].highestRatingAnsweredCorrectly
         this.averageRating = totalOfChapterBests / numOfChapters;
+        // finding worst chapter. Alternative is to use a heap!
+        this.worstRating = Infinity;
+        for (let chap in this.listOfChapters) {
+            let r = this.listOfChapters[chap].highestRatingAnsweredCorrectly
+            if (r < this.worstRating) {
+                this.worstRating = r;
+                this.worstChapter = chap;
+            }
+        }
         if (correct) {
             this.mistakeList.delete(path)
             if (rating >= this.bestRating) {
                 this.bestRating = rating;
                 this.bestChapter = chapter;
-            }
-            if (chapter === this.worstChapter) {
-                this.worstRating = Math.max(this.worstRating, rating)
-            }
-            if (this.listOfChapters[chapter].highestRatingAnsweredCorrectly <= this.worstRating) {
-                this.worstRating = rating;
-                this.worstChapter = chapter;
             }
         } else {
             this.mistakeList.add(path)
