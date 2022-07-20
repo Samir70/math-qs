@@ -81,13 +81,16 @@ export class ChapterTracker {
 // this class is intended so that it will store all user progress
 export class ProgressTracker {
     constructor(
-        title = "Total Progress", listOfChapters = {}, bestChapter = '', bestRating = 0,
+        title = "Total Progress", listOfChapters = {}, 
+        bestChapter = '', bestRating = 0, worstChapter = '', worstRating = 100000,
         averageRating = 0, mistakeList = new Set(),
         history = [['chapter', 'section', 'qName', 'rating', 'correct?']]) {
         this.title = title;
         this.listOfChapters = listOfChapters;
         this.bestChapter = bestChapter;
         this.bestRating = bestRating;
+        this.worstChapter = worstChapter;
+        this.worstRating = worstRating;
         this.averageRating = averageRating; // This is average over chapters, not over questions
         this.mistakeList = mistakeList;
         this.history = history;
@@ -113,6 +116,13 @@ export class ProgressTracker {
                 this.bestRating = rating;
                 this.bestChapter = chapter;
             }
+            if (chapter === this.worstChapter) {
+                this.worstRating = Math.max(this.worstRating, rating)
+            }
+            if (this.listOfChapters[chapter].highestRatingAnsweredCorrectly <= this.worstRating) {
+                this.worstRating = rating;
+                this.worstChapter = chapter;
+            }
         } else {
             this.mistakeList.add(path)
         }
@@ -129,7 +139,8 @@ export class ProgressTracker {
             newChapterList[chapter] = ChapterTracker.from(obj.listOfChapters[chapter])
         }
         return new ProgressTracker(
-            obj.title, newChapterList, obj.bestChapter, obj.bestRating,
+            obj.title, newChapterList, 
+            obj.bestChapter, obj.bestRating, obj.worstChapter, obj.worstRating,
             obj.averageRating, new Set([...obj.mistakeList]), [...obj.history]
         )
     }

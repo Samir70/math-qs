@@ -30,12 +30,14 @@ const copyProgressToCSV = () => {
 }
 </script>
 <template>
-    <h2>Your {{userProgress.title}}</h2>
+    <h2>Your {{ userProgress.title }}</h2>
     <div id="progress-box" class="progress-section">
         <div id="progress-overview" class="progress-flex">
             <div id="progress-summary">
                 <p>Best chapter: <span class="emphasis-bold">{{ userProgress.bestChapter }}</span> where you answered a
                     question with rating {{ userProgress.bestRating }}</p>
+                <p>Worst chapter: <span class="emphasis-bold">{{ userProgress.worstChapter }}</span> where the hardest
+                    question you answered had a rating of {{ userProgress.worstRating }}</p>
                 <p>You have answered questions from {{ Object.keys(userProgress.listOfChapters).length }} chapters</p>
                 <p>Average rating of chapters: {{ Math.round(userProgress.averageRating) }}</p>
             </div>
