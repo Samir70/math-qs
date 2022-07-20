@@ -39,18 +39,23 @@ export class SectionTracker {
 
 // track user progress through a single chapter
 export class ChapterTracker {
-    constructor(chapterName = '', numberOfCorrectAnswers = 0, numberOfQsAnswered = 0, highestRatingAnsweredCorrectly = 0, listOfSections = {}) {
+    constructor(
+        chapterName = '', chapterConfidence= 'unknown',
+        numberOfCorrectAnswers = 0, numberOfQsAnswered = 0,
+        highestRatingAnsweredCorrectly = 0, listOfSections = {}) {
         this.chapterName = chapterName;
+        this.chapterConfidence = chapterConfidence;
         this.numberOfCorrectAnswers = numberOfCorrectAnswers;
         this.numberOfQsAnswered = numberOfQsAnswered;
         this.highestRatingAnsweredCorrectly = highestRatingAnsweredCorrectly;
         this.listOfSections = listOfSections
     }
-    trackNewQ(path = '', correct = false) {
+    trackNewQ(path = '', correct = false, chapConfidence = 'unknown') {
         let [chapter, section, qName, rating] = path.split('-');
         if (chapter !== this.chapterName) {
             return console.error(`ERROR: attempt to update ${this.parentChapter + '-' + this.sectionName} tracker with q: ${path}`);
         }
+        this.chapterConfidence = chapConfidence;
         this.numberOfQsAnswered++
         if (correct) {
             this.numberOfCorrectAnswers++
@@ -72,7 +77,7 @@ export class ChapterTracker {
             newSectionList[section] = SectionTracker.from(obj.listOfSections[section])
         }
         return new ChapterTracker(
-            obj.chapterName,
+            obj.chapterName, obj.chapterConfidence,
             obj.numberOfCorrectAnswers, obj.numberOfQsAnswered,
             obj.highestRatingAnsweredCorrectly, newSectionList
         )
@@ -81,7 +86,7 @@ export class ChapterTracker {
 // this class is intended so that it will store all user progress
 export class ProgressTracker {
     constructor(
-        title = "Total Progress", listOfChapters = {}, 
+        title = "Total Progress", listOfChapters = {},
         bestChapter = '', bestRating = 0, worstChapter = '', worstRating = 100000,
         averageRating = 0, mistakeList = new Set(),
         history = [['chapter', 'section', 'qName', 'rating', 'correct?']]) {
@@ -95,7 +100,7 @@ export class ProgressTracker {
         this.mistakeList = mistakeList;
         this.history = history;
     }
-    trackNewQ(path = '', correct) {
+    trackNewQ(path = '', correct, chapConfidence) {
         this.history.push([...path.split('-'), correct]);
         let [chapter, section, qName, rating] = path.split('-');
         rating = Number(rating);
@@ -107,7 +112,7 @@ export class ProgressTracker {
         } else {
             totalOfChapterBests -= this.listOfChapters[chapter].highestRatingAnsweredCorrectly
         }
-        this.listOfChapters[chapter].trackNewQ(path, correct)
+        this.listOfChapters[chapter].trackNewQ(path, correct, chapConfidence)
         totalOfChapterBests += this.listOfChapters[chapter].highestRatingAnsweredCorrectly
         this.averageRating = totalOfChapterBests / numOfChapters;
         if (correct) {
@@ -139,7 +144,7 @@ export class ProgressTracker {
             newChapterList[chapter] = ChapterTracker.from(obj.listOfChapters[chapter])
         }
         return new ProgressTracker(
-            obj.title, newChapterList, 
+            obj.title, newChapterList,
             obj.bestChapter, obj.bestRating, obj.worstChapter, obj.worstRating,
             obj.averageRating, new Set([...obj.mistakeList]), [...obj.history]
         )

@@ -15,6 +15,7 @@ const diagStage = ref('starting');
 const curTopic = ref(0);
 const curQ = ref(0);
 const diagProgTracker = ref(new ProgressTracker(`${level} Diagnostic`));
+const chapterConfidence = ref('unknown')
 
 let left = 0, right = 0
 
@@ -25,6 +26,7 @@ const setFirstQ = confidence => {
     console.log({ len, lowerQ, mid, upperQ })
     curQ.value = confidence === 'low' ? lowerQ : confidence === 'high' ? upperQ : mid
     diagStage.value = 'running'
+    chapterConfidence.value = confidence;
 }
 
 const getQSlug = n => topics[curTopic.value].topicList[curQ.value]
@@ -34,7 +36,7 @@ const respondToAns = ans => {
      * Normally get an ans object like
      * {userWasCorrect: true, userAns:'42', qAns:42}
      */
-    diagProgTracker.value.trackNewQ(getQSlug(curQ.value), ans);
+    diagProgTracker.value.trackNewQ(getQSlug(curQ.value), ans, chapterConfidence.value);
     store.commit('updateProgress', { path: getQSlug(curQ.value), userCorrect: ans })
     // aim is to find hardest question in this sorted list that the student can answer
     // that Q has to be within left and right.
