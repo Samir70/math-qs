@@ -13,7 +13,7 @@ const toggleShowSections = () => showSections.value = !showSections.value
         <div class="chapter-progress-summary">
             <h2>{{ chapter.chapterName }}</h2>
             <p class="score-summary">{{ chapter.numberOfCorrectAnswers }} / {{ chapter.numberOfQsAnswered }} correct</p>
-            <p class="best-q-rating">Highest rating: {{ chapter.highestRatingAnsweredCorrectly }}</p>
+            <p class="best-q-rating">User rating: {{ Math.round(chapter.userRating) }}</p>
         </div>
         <div v-if="chapter.chapterConfidence !== 'unknown'">You said your confidence on this topic was {{chapter.chapterConfidence}}</div>
         <div class="section-scores" v-on:click="toggleShowSections">

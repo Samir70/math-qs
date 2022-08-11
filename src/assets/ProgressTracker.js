@@ -1,4 +1,5 @@
-import { makeBBList } from "math-q-factory";
+// import { makeBBList } from "math-q-factory";
+import { newRating } from "./ratings";
 
 // track user progress through a single section of a chapter
 export class SectionTracker {
@@ -39,12 +40,13 @@ export class ChapterTracker {
     constructor(
         chapterName = '', chapterConfidence = 'unknown',
         numberOfCorrectAnswers = 0, numberOfQsAnswered = 0,
-        highestRatingAnsweredCorrectly = 0, listOfSections = {}) {
+        userRating = 100, listOfSections = {}) {
         this.chapterName = chapterName;
         this.chapterConfidence = chapterConfidence;
         this.numberOfCorrectAnswers = numberOfCorrectAnswers;
         this.numberOfQsAnswered = numberOfQsAnswered;
-        this.highestRatingAnsweredCorrectly = highestRatingAnsweredCorrectly;
+        // removing highestRatingAnsweredCorrectly to use userRating
+        this.userRating = userRating;
         this.listOfSections = listOfSections
     }
     trackNewQ(path = '', correct = false, chapConfidence = 'unknown') {
@@ -56,12 +58,13 @@ export class ChapterTracker {
         this.numberOfQsAnswered++
         if (correct) {
             this.numberOfCorrectAnswers++
-            this.highestRatingAnsweredCorrectly = Math.max(this.highestRatingAnsweredCorrectly, rating)
         }
+        this.userRating = newRating(this.userRating, Number(rating), correct)
         if (this.listOfSections[section] === undefined) {
             this.listOfSections[section] = new SectionTracker(chapter, section)
         }
         this.listOfSections[section].trackNewQ(path, correct)
+        console.log(`Tracked ${path}, correct:${correct}, userRating:${this.userRating}`)
     }
 
     // to make a copy of a ChapterTracker
@@ -76,7 +79,7 @@ export class ChapterTracker {
         return new ChapterTracker(
             obj.chapterName, obj.chapterConfidence,
             obj.numberOfCorrectAnswers, obj.numberOfQsAnswered,
-            obj.highestRatingAnsweredCorrectly, newSectionList
+            obj.userRating, newSectionList
         )
     }
 }
