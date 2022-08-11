@@ -8,13 +8,30 @@ import { diagnostics } from "../assets/diagnostics";
 import ShowProgress from "../components/Progress/ShowProgress.vue";
 const router = useRouter();
 let userLevel = ref(store.state.userLevel);
+const emits = defineEmits(emitActions)
+
+let diagProgressStatement = ref(''), takeDiagStatement = ref('')
+const setStatements = () => {
+    let diagnosticResults = store.state.diagnosticResults;
+    console.log(diagnosticResults)
+    let [a, b] = diagnosticResults.completion;
+    diagProgressStatement.value = b === -1 ?
+        'Why not take a diagnostic?' : a < b ?
+            `You have completed ${a} out of ${b} parts of the diagnostic` : ''
+    takeDiagStatement.value = diagnosticResults.level === '' ?
+        'Take a diagnostic at this level' : a === b ? 'Retake diagnostic' : 'Finish Diagnostic'
+}
+setStatements()
+
+const diagHistory = store.state.diagnosticHistory;
 
 let wantsToChangeLevel = ref(false);
-const emits = defineEmits(emitActions)
 const setLevel = (d) => {
     console.log('setting user level', diagnostics[d - 1].level, 'has', diagnostics[d - 1].topics.length, 'worksheets')
     store.commit('setUserLevel', diagnostics[d - 1]);
     userLevel.value = diagnostics[d - 1];
+    store.commit('updateDiagnosticResults', null);
+    setStatements();
     wantsToChangeLevel.value = false;
 }
 </script>
@@ -24,7 +41,8 @@ const setLevel = (d) => {
     <div id="dashboard-user-progress">
         <div v-if="userLevel.level" id="level-statement-box">
             <p>Your target level is: <span class="emphasis-bold">{{ userLevel.level }}</span> </p>
-            <button v-on:click="router.push('/diagnostic')">Take a diagnostic at this level</button>
+            <p v-if="diagProgressStatement">{{ diagProgressStatement }}</p>
+            <button v-on:click="router.push('/diagnostic')">{{ takeDiagStatement }}</button>
             <button v-on:click="wantsToChangeLevel = true">Change level</button>
         </div>
         <div v-if="!userLevel.level || wantsToChangeLevel">
@@ -33,6 +51,10 @@ const setLevel = (d) => {
             <button v-for="d in diagnostics.length" key="d" class="level-selection-button" v-on:click="setLevel(d)">{{
                     diagnostics[d - 1].level
             }}</button>
+        </div>
+        <div id="diagnostic-history">
+            <p v-for="item of diagHistory" key="item.date + item.level">
+                {{ item.title }} ({{item.dateOfLastQ.toDateString()}}) you achieved a rating of {{Math.round(item.averageRating)}} </p>
         </div>
     </div>
     <ShowProgress v-bind:user-progress="store.state.userProgress" />

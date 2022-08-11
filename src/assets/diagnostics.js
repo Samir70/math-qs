@@ -13,11 +13,11 @@ const listQs = (chapter, limit) => {
 export const diagnostics = []
 
 for (let lev in levelLimits) {
-    let cur = { level: levelLimits[lev].name, topics: [] }
+    let cur = { level: levelLimits[lev].name, topics: {} }
     for (let chapter in totalQs) {
         let qs = listQs(chapter, levelLimits[lev].limit)
         if (qs.length) {
-            cur.topics.push(makeWS(`${chapter} - upto ${levelLimits[lev].name}`, qs))
+            cur.topics[chapter] = makeWS(`${chapter} - upto ${levelLimits[lev].name}`, qs)
         }
     }
     diagnostics.push(cur)

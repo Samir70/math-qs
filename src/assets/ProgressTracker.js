@@ -93,8 +93,11 @@ export class ProgressTracker {
         this.averageRating = averageRating; // This is average over chapters, not over questions
         this.mistakeList = mistakeList;
         this.history = history;
+
+        this.dateOfLastQ = new Date()
     }
     trackNewQ(path = '', correct, chapConfidence) {
+        this.dateOfLastQ = new Date();
         this.history.push([...path.split('-'), correct]);
         let [chapter, section, qName, rating] = path.split('-');
         rating = Number(rating);

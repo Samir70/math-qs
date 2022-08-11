@@ -9,18 +9,27 @@ const emits = defineEmits(emitActions);
 const router = useRouter();
 
 const { level, topics } = store.state.userLevel
-if (!level || topics.length === 0) { router.push('/') }
+const numTopics = Object.keys(topics).length;
+if (!level || numTopics === 0) { router.push('/') }
 
-const diagStage = ref('starting');
-const curTopic = ref(0);
-const curQ = ref(0);
-const diagProgTracker = ref(new ProgressTracker(`${level} Diagnostic`));
+const diagStage = ref('chooseTopic');
 const chapterConfidence = ref('unknown')
+const curQ = ref(0);
+const curChapter = ref('');
+const completedChapters = ref(new Set())
+const diagProgTracker = ref(new ProgressTracker(`${level} Diagnostic`));
+if (store.state.diagnosticResults.level === level) {
+    let [a, b] = store.state.diagnosticResults.completion;
+    completedChapters.value = store.state.diagnosticResults.completedChapters
+    diagProgTracker.value = ProgressTracker.from(
+        store.state.diagnosticResults.results
+    );
+}
 
 let left = 0, right = 0
 
 const setFirstQ = confidence => {
-    let len = topics[curTopic.value].topicList.length;
+    let len = topics[curChapter.value].topicList.length;
     left = 0, right = len - 1;
     let lowerQ = Math.floor(len / 4), mid = Math.floor(len / 2), upperQ = Math.floor(3 * len / 4);
     console.log({ len, lowerQ, mid, upperQ })
@@ -29,7 +38,13 @@ const setFirstQ = confidence => {
     chapterConfidence.value = confidence;
 }
 
-const getQSlug = n => topics[curTopic.value].topicList[curQ.value]
+const setChapter = topic => {
+    console.log(`user wants to do ${topic} diagnostic`)
+    curChapter.value = topic;
+    diagStage.value = 'starting';
+}
+
+const getQSlug = n => topics[curChapter.value].topicList[curQ.value]
 
 const respondToAns = ans => {
     /**
@@ -50,14 +65,20 @@ const respondToAns = ans => {
     if (left > right) {
         // finished this topic in the diagnostic
         // have to ocntinue if left === right, in order to get asked q[left]
-        curTopic.value += 1
-        if (curTopic.value === topics.length) {
-            curTopic.value = 0;
+        completedChapters.value.add(curChapter.value);
+        store.commit('updateDiagnosticResults', {
+            level, date: Date(),
+            completion: [completedChapters.value.size, numTopics], 
+            completedChapters,
+            results: diagProgTracker.value
+        })
+        if (completedChapters.value.size === numTopics) {
             diagStage.value = 'finished'
+            store.commit('addToDiagHistory', diagProgTracker.value)
             return
         }
         curQ.value = 0
-        diagStage.value = 'starting'
+        diagStage.value = 'chooseTopic'
     } else {
         curQ.value = left === right ? left : Math.floor((left + right) / 2) + 1
         /**
@@ -72,9 +93,16 @@ const respondToAns = ans => {
 
 <template>
     <h1>{{ level }} Diagnostic</h1>
+    <div v-if="diagStage === 'chooseTopic'" id="choose-topic">
+        <h3>Choose a topic</h3>
+        <div id="topic-selector">
+            <button v-for="t in Object.keys(topics).filter(x => !completedChapters.has(x))" class="diagnostic-topic-button"
+                v-on:click="setChapter(t)">{{ t }}</button>
+        </div>
+    </div>
     <div v-if="diagStage === 'starting'" id="find-student-confidence-level">
-        <h2>The next worksheet of this diagnostic is {{ topics[curTopic].name.split('-')[0] }} <br /> it has
-            {{ topics[curTopic].topicList.length }} questions</h2>
+        <h2>The {{ topics[curChapter].name.split('-')[0] }} diagnostic has
+            {{ topics[curChapter].topicList.length }} questions</h2>
         <p>How confident are you on this topic?</p>
         <div id="confidence-level-buttons">
             <button v-on:click="setFirstQ('low')">Low</button>
@@ -98,5 +126,17 @@ const respondToAns = ans => {
 #confidence-level-buttons {
     display: flex;
     justify-content: space-around;
+}
+
+#topic-selector {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 50vw;
+    margin: auto;
+}
+
+.diagnostic-topic-button {
+    margin: 1px 5px;
 }
 </style>

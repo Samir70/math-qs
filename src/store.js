@@ -7,7 +7,10 @@ export const store = createStore({
         return {
             user: { name: 'Unknown User', uid: null },
             userLevel: { level: '', topics: [] },
-            diagnosticResults: [ProgressTracker.from(testProgTracker)],
+            diagnosticResults: { level: '', date: '', completion: [0, -1], results: null },
+            diagnosticHistory: [],
+            //This will be array ofobjects:
+            //  { level: '', date: Date, completion: [5,9], results: ProgressTracker}
             loggedIn: false,
             chosenWorksheet: worksheets[0],
             worksheetList: worksheets,
@@ -74,6 +77,25 @@ export const store = createStore({
             let newProg = ProgressTracker.from(state.userProgress)
             newProg.trackNewQ(payload.path, payload.userCorrect)
             state.userProgress = newProg
+        },
+        /**
+         * 
+         * @param {*} state 
+         * @param {*} payload must contain properties level, date, completion and results
+         */
+        updateDiagnosticResults(state, payload) {
+            state.diagnosticResults = payload === null ? 
+            { level: '', date: '', completion: [0, -1], completedChapters: new Set(), results: null } :
+            {
+                level: payload.level,
+                date: payload.date,
+                completion: payload.completion,
+                completedChapters: payload.completedChapters,
+                results: ProgressTracker.from(payload.results)
+            }
+        },
+        addToDiagHistory(state, newDiag) {
+            state.diagnosticHistory = [...state.diagnosticHistory, ProgressTracker.from(newDiag)]
         }
     }
 });
