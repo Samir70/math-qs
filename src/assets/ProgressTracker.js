@@ -2,13 +2,12 @@ import { makeBBList } from "math-q-factory";
 
 // track user progress through a single section of a chapter
 export class SectionTracker {
-    constructor(parentChapter = '', sectionName = '', numberOfCorrectAnswers = 0, numberOfQsAnswered = 0, highestRatingAnsweredCorrectly = 0, pathsOfAnsweredQs = []) {
+    constructor(parentChapter = '', sectionName = '', numberOfCorrectAnswers = 0, numberOfQsAnswered = 0, highestRatingAnsweredCorrectly = 0) {
         this.parentChapter = parentChapter;
         this.sectionName = sectionName;
         this.numberOfCorrectAnswers = numberOfCorrectAnswers;
         this.numberOfQsAnswered = numberOfQsAnswered;
         this.highestRatingAnsweredCorrectly = highestRatingAnsweredCorrectly;
-        this.pathsOfAnsweredQs = new Set(pathsOfAnsweredQs)
     }
     trackNewQ(path = '', correct = false) {
         let [chapter, section, qName, rating] = path.split('-')
@@ -20,7 +19,6 @@ export class SectionTracker {
             this.numberOfCorrectAnswers++
             this.highestRatingAnsweredCorrectly = Math.max(this.highestRatingAnsweredCorrectly, rating)
         }
-        this.pathsOfAnsweredQs.add(path)
     }
 
     // to make a copy of a SectionTracker
@@ -32,7 +30,6 @@ export class SectionTracker {
             obj.parentChapter, obj.sectionName,
             obj.numberOfCorrectAnswers, obj.numberOfQsAnswered,
             obj.highestRatingAnsweredCorrectly,
-            [...obj.pathsOfAnsweredQs]
         )
     }
 }
