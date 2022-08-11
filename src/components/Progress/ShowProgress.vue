@@ -13,6 +13,7 @@ console.log(props.userProgress)
 const router = useRouter();
 const emits = defineEmits(emitActions)
 
+const bestAndWorst = props.userProgress.getBestAndWorst();
 const makeWorksheetFromMistakes = () => {
     if (props.userProgress.size === 0) {
         alert("You haven't got any uncorrected mistakes");
@@ -34,12 +35,12 @@ const copyProgressToCSV = () => {
     <div id="progress-box" class="progress-section">
         <div id="progress-overview" class="progress-flex">
             <div id="progress-summary">
-                <p>Best chapter: <span class="emphasis-bold">{{ userProgress.bestChapter }}</span> where you answered a
-                    question with rating {{ userProgress.bestRating }}</p>
-                <p>Worst chapter: <span class="emphasis-bold">{{ userProgress.worstChapter }}</span> where the hardest
-                    question you answered had a rating of {{ userProgress.worstRating }}</p>
                 <p>You have answered questions from {{ Object.keys(userProgress.listOfChapters).length }} chapters</p>
                 <p>Average rating of chapters: {{ Math.round(userProgress.averageRating) }}</p>
+                <p>Best chapter: <span class="emphasis-bold">{{ bestAndWorst.best.chapter }}</span>
+                    where your rating is {{ bestAndWorst.best.rating }}</p>
+                <p>Worst chapter: <span class="emphasis-bold">{{ bestAndWorst.worst.chapter }}</span>
+                    where your rating is {{ bestAndWorst.worst.rating }}</p>
             </div>
             <div id="progress-buttons">
                 <p>You have {{ userProgress.mistakeList.size === 0 ? 'no' : userProgress.mistakeList.size }}

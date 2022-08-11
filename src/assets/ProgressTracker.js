@@ -45,7 +45,6 @@ export class ChapterTracker {
         this.chapterConfidence = chapterConfidence;
         this.numberOfCorrectAnswers = numberOfCorrectAnswers;
         this.numberOfQsAnswered = numberOfQsAnswered;
-        // removing highestRatingAnsweredCorrectly to use userRating
         this.userRating = userRating;
         this.listOfSections = listOfSections
     }
@@ -64,7 +63,7 @@ export class ChapterTracker {
             this.listOfSections[section] = new SectionTracker(chapter, section)
         }
         this.listOfSections[section].trackNewQ(path, correct)
-        console.log(`Tracked ${path}, correct:${correct}, userRating:${this.userRating}`)
+        // console.log(`Tracked ${path}, correct:${correct}, userRating:${this.userRating}`)
     }
 
     // to make a copy of a ChapterTracker
@@ -87,15 +86,10 @@ export class ChapterTracker {
 export class ProgressTracker {
     constructor(
         title = "Total Progress", listOfChapters = {},
-        bestChapter = '', bestRating = 0, worstChapter = '', worstRating = 100000,
         averageRating = 0, mistakeList = new Set(),
         history = [['chapter', 'section', 'qName', 'rating', 'correct?']]) {
         this.title = title;
         this.listOfChapters = listOfChapters;
-        this.bestChapter = bestChapter;
-        this.bestRating = bestRating;
-        this.worstChapter = worstChapter;
-        this.worstRating = worstRating;
         this.averageRating = averageRating; // This is average over chapters, not over questions
         this.mistakeList = mistakeList;
         this.history = history;
@@ -105,34 +99,33 @@ export class ProgressTracker {
         let [chapter, section, qName, rating] = path.split('-');
         rating = Number(rating);
         let numOfChapters = Object.keys(this.listOfChapters).length
-        let totalOfChapterBests = this.averageRating * numOfChapters
+        let totalOfChapterRatings = this.averageRating * numOfChapters
         if (this.listOfChapters[chapter] === undefined) {
             this.listOfChapters[chapter] = new ChapterTracker(chapter)
             numOfChapters++
         } else {
-            totalOfChapterBests -= this.listOfChapters[chapter].highestRatingAnsweredCorrectly
+            totalOfChapterRatings -= this.listOfChapters[chapter].userRating
         }
         this.listOfChapters[chapter].trackNewQ(path, correct, chapConfidence)
-        totalOfChapterBests += this.listOfChapters[chapter].highestRatingAnsweredCorrectly
-        this.averageRating = totalOfChapterBests / numOfChapters;
-        // finding worst chapter. Alternative is to use a heap!
-        this.worstRating = Infinity;
-        for (let chap in this.listOfChapters) {
-            let r = this.listOfChapters[chap].highestRatingAnsweredCorrectly
-            if (r < this.worstRating) {
-                this.worstRating = r;
-                this.worstChapter = chap;
-            }
-        }
+        totalOfChapterRatings += this.listOfChapters[chapter].userRating
+        this.averageRating = totalOfChapterRatings / numOfChapters;
         if (correct) {
             this.mistakeList.delete(path)
-            if (rating >= this.bestRating) {
-                this.bestRating = rating;
-                this.bestChapter = chapter;
-            }
         } else {
             this.mistakeList.add(path)
         }
+    }
+    getBestAndWorst() {
+        let best = { chapter: '', rating: 0 }, worst = { chapter: '', rating: Infinity }
+        for (let c in this.listOfChapters) {
+            if (this.listOfChapters[c].userRating > best.rating) {
+                best = { chapter: c, rating: Math.round(this.listOfChapters[c].userRating) }
+            }
+            if (this.listOfChapters[c].userRating < worst.rating) {
+                worst = { chapter: c, rating: Math.round(this.listOfChapters[c].userRating) }
+            }
+        }
+        return { best, worst }
     }
     copyToCSV() {
         return this.history.map(h => h.join(', '))
@@ -147,7 +140,6 @@ export class ProgressTracker {
         }
         return new ProgressTracker(
             obj.title, newChapterList,
-            obj.bestChapter, obj.bestRating, obj.worstChapter, obj.worstRating,
             obj.averageRating, new Set([...obj.mistakeList]), [...obj.history]
         )
     }
