@@ -1,17 +1,11 @@
 <script setup>
 import { store } from "../store";
 import { getMathsQs } from 'math-q-factory';
-import { ShortAnswerQ, MultipleChoiceQ, SortQ } from "q-show";
 import { ref, onMounted, nextTick } from 'vue';
 import { emitActions } from '../helperFuncs/globalConsts';
+import ShowQuestion from "./ShowQuestion.vue";
 const emits = defineEmits(emitActions)
-const qTypes = {
-  // classify: ClassifyQ,
-  // match: MatchQ,
-  multiChoice: MultipleChoiceQ,
-  shortAnswer: ShortAnswerQ,
-  sort: SortQ
-}
+
 const qList = store.state.chosenWorksheet.topicList.map(t => t.split('-'));
 const currentQ = ref(getMathsQs(...qList[0]));
 const qNumber = ref(0);
@@ -19,17 +13,13 @@ const qKey = ref(0);
 const qHints = ref([]);
 const waitForNext = ref(false);
 
-const respondToAns = (ans) => {
-  console.log('Need to respond to answer:', ans);
-  store.commit('updateProgress', {path: qList[qNumber.value].join('-'), userCorrect: ans.userWasCorrect})
-  if (ans.userWasCorrect) {
+const quizResponse = (correctness) => {
+  if (correctness) {
     console.log('userwascorrect path:', qList[qNumber.value])
-    // userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
     qNumber.value = (qNumber.value + 1) % qList.length
   }
   qHints.value = [`${currentQ.value.qFeedback || currentQ.value.a}`, ...qHints.value]
   waitForNext.value = true;
-  //   console.log({ userProg: userProgress.value })
   nextTick(() => MathJax.typeset())
 }
 const nextQ = () => {
@@ -49,8 +39,7 @@ onMounted(() => {
 
 <template>
   <div id="question-box">
-    <component v-bind:is="qTypes[currentQ.qType]" v-bind:qData="currentQ" v-bind:key="qKey"
-      v-on:user-answered="respondToAns" class="showq-qblock" />
+    <ShowQuestion v-bind:currentQ="currentQ" v-bind:qKey="qKey" v-on:q-finished="quizResponse"/>
     <button v-if="waitForNext" v-on:click="nextQ">Next Q</button>
     <div v-for="hint of qHints" class="showq-hint-box">
       <p>{{ hint }}</p>
