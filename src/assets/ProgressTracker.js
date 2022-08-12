@@ -1,4 +1,3 @@
-// import { makeBBList } from "math-q-factory";
 import { newRating } from "./ratings";
 
 // track user progress through a single section of a chapter
@@ -24,7 +23,10 @@ export class SectionTracker {
 
     // to make a copy of a SectionTracker
     static from(obj) {
-        if (!(obj instanceof SectionTracker)) {
+        if (
+            !obj.parentChapter || !obj.sectionName ||
+            obj.numberOfCorrectAnswers === undefined || obj.numberOfQsAnswered === undefined ||
+            obj.highestRatingAnsweredCorrectly === undefined) {
             return console.error('ERROR:: Cannot make a SectionTracker from ', obj)
         }
         return new SectionTracker(
@@ -39,12 +41,9 @@ export class SectionTracker {
 export class ChapterTracker {
     constructor(
         chapterName = '', chapterConfidence = 'unknown',
-        numberOfCorrectAnswers = 0, numberOfQsAnswered = 0,
         userRating = 100, listOfSections = {}) {
         this.chapterName = chapterName;
         this.chapterConfidence = chapterConfidence;
-        this.numberOfCorrectAnswers = numberOfCorrectAnswers;
-        this.numberOfQsAnswered = numberOfQsAnswered;
         this.userRating = userRating;
         this.listOfSections = listOfSections
     }
@@ -54,10 +53,6 @@ export class ChapterTracker {
             return console.error(`ERROR: attempt to update ${this.parentChapter + '-' + this.sectionName} tracker with q: ${path}`);
         }
         this.chapterConfidence = chapConfidence;
-        this.numberOfQsAnswered++
-        if (correct) {
-            this.numberOfCorrectAnswers++
-        }
         this.userRating = newRating(this.userRating, Number(rating), correct)
         if (this.listOfSections[section] === undefined) {
             this.listOfSections[section] = new SectionTracker(chapter, section)
@@ -68,7 +63,7 @@ export class ChapterTracker {
 
     // to make a copy of a ChapterTracker
     static from(obj) {
-        if (!(obj instanceof ChapterTracker)) {
+        if (!obj.chapterName || obj.userRating === undefined || obj.listOfSections === undefined) {
             return console.error('ERROR:: Cannot make a ChapterTracker from ', obj)
         }
         let newSectionList = {}
@@ -77,7 +72,6 @@ export class ChapterTracker {
         }
         return new ChapterTracker(
             obj.chapterName, obj.chapterConfidence,
-            obj.numberOfCorrectAnswers, obj.numberOfQsAnswered,
             obj.userRating, newSectionList
         )
     }
@@ -87,14 +81,14 @@ export class ProgressTracker {
     constructor(
         title = "Total Progress", listOfChapters = {},
         averageRating = 0, mistakeList = new Set(),
-        history = [['chapter', 'section', 'qName', 'rating', 'correct?']]) {
+        history = [['chapter', 'section', 'qName', 'rating', 'correct?']],
+        dateOfLastQ = new Date()) {
         this.title = title;
         this.listOfChapters = listOfChapters;
         this.averageRating = averageRating; // This is average over chapters, not over questions
         this.mistakeList = mistakeList;
         this.history = history;
-
-        this.dateOfLastQ = new Date()
+        this.dateOfLastQ = dateOfLastQ;
     }
     trackNewQ(path = '', correct, chapConfidence) {
         this.dateOfLastQ = new Date();
@@ -134,7 +128,8 @@ export class ProgressTracker {
         return this.history.map(h => h.join(', '))
     }
     static from(obj) {
-        if (!(obj instanceof ProgressTracker)) {
+        if (!obj.title || obj.listOfChapters === undefined || obj.averageRating === undefined ||
+            obj.mistakeList === undefined || obj.history === undefined) {
             return console.error('ERROR:: Cannot make a ProgressTracker from ', obj)
         }
         let newChapterList = {}
@@ -143,7 +138,8 @@ export class ProgressTracker {
         }
         return new ProgressTracker(
             obj.title, newChapterList,
-            obj.averageRating, new Set([...obj.mistakeList]), [...obj.history]
+            obj.averageRating, new Set([...obj.mistakeList]), [...obj.history],
+            obj.dateOfLastQ
         )
     }
 }
@@ -170,3 +166,6 @@ for (let i = 0; i < qList.length; i++) {
     testProgTracker.trackNewQ(q, c === 1 ? true : false)
 }
 // console.log(JSON.stringify(testProgTracker, null, 2))
+
+// below is used when testing through node
+// module.exports = { testProgTracker, ProgressTracker, SectionTracker, ChapterTracker }
