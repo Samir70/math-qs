@@ -68,13 +68,17 @@ const respondToAns = ans => {
         completedChapters.value.add(curChapter.value);
         store.commit('updateDiagnosticResults', {
             level, date: Date(),
-            completion: [completedChapters.value.size, numTopics], 
+            completion: [completedChapters.value.size, numTopics],
             completedChapters,
             results: diagProgTracker.value
         })
         if (completedChapters.value.size === numTopics) {
             diagStage.value = 'finished'
-            store.commit('addToDiagHistory', diagProgTracker.value)
+            store.commit('addToDiagHistory', {
+                title: diagProgTracker.value.title,
+                date: diagProgTracker.value.dateOfLastQ.toDateString(),
+                averageRating: Math.round(diagProgTracker.value.averageRating)
+            })
             return
         }
         curQ.value = 0
@@ -96,8 +100,8 @@ const respondToAns = ans => {
     <div v-if="diagStage === 'chooseTopic'" id="choose-topic">
         <h3>Choose a topic</h3>
         <div id="topic-selector">
-            <button v-for="t in Object.keys(topics).filter(x => !completedChapters.has(x))" class="diagnostic-topic-button"
-                v-on:click="setChapter(t)">{{ t }}</button>
+            <button v-for="t in Object.keys(topics).filter(x => !completedChapters.has(x))"
+                class="diagnostic-topic-button" v-on:click="setChapter(t)">{{ t }}</button>
         </div>
     </div>
     <div v-if="diagStage === 'starting'" id="find-student-confidence-level">

@@ -94,8 +94,11 @@ export const store = createStore({
                 results: ProgressTracker.from(payload.results)
             }
         },
-        addToDiagHistory(state, newDiag) {
-            state.diagnosticHistory = [...state.diagnosticHistory, ProgressTracker.from(newDiag)]
+        addToDiagHistory(state, newDiagSummary) {
+            // summary has {title, dateAsString, averageRating}
+            // Old version saved the entire ProgressTracker object
+            // state.diagnosticHistory = [...state.diagnosticHistory, ProgressTracker.from(newDiag)]
+            state.diagnosticHistory = [...state.diagnosticHistory, newDiagSummary]
         }
     }
 });

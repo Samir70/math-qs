@@ -34,6 +34,12 @@ const setLevel = (d) => {
     setStatements();
     wantsToChangeLevel.value = false;
 }
+const goToDiagnostic = () => {
+    if (takeDiagStatement.value === 'Retake diagnostic') {
+        store.commit('updateDiagnosticResults', null)
+    }
+    router.push('/diagnostic')
+}
 </script>
 
 <template>
@@ -41,8 +47,12 @@ const setLevel = (d) => {
     <div id="dashboard-user-progress">
         <div v-if="userLevel.level" id="level-statement-box">
             <p>Your target level is: <span class="emphasis-bold">{{ userLevel.level }}</span> </p>
+            <div id="diagnostic-history">
+                <p v-for="item of diagHistory" key="item.date + item.level">
+                    {{ item.title }} ({{ item.date }}) you achieved a rating of {{ item.averageRating }} </p>
+            </div>
             <p v-if="diagProgressStatement">{{ diagProgressStatement }}</p>
-            <button v-on:click="router.push('/diagnostic')">{{ takeDiagStatement }}</button>
+            <button v-on:click="goToDiagnostic">{{ takeDiagStatement }}</button>
             <button v-on:click="wantsToChangeLevel = true">Change level</button>
         </div>
         <div v-if="!userLevel.level || wantsToChangeLevel">
@@ -51,10 +61,6 @@ const setLevel = (d) => {
             <button v-for="d in diagnostics.length" key="d" class="level-selection-button" v-on:click="setLevel(d)">{{
                     diagnostics[d - 1].level
             }}</button>
-        </div>
-        <div id="diagnostic-history">
-            <p v-for="item of diagHistory" key="item.date + item.level">
-                {{ item.title }} ({{item.dateOfLastQ.toDateString()}}) you achieved a rating of {{Math.round(item.averageRating)}} </p>
         </div>
     </div>
     <ShowProgress v-bind:user-progress="store.state.userProgress" />
