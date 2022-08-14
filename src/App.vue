@@ -105,7 +105,7 @@ async function saveCWS() {
 async function saveProgress() {
   const prog = ProgressTracker.from(store.state.userProgress)
   prog.mistakeList = [...prog.mistakeList]; //JSON.stringify doesn't handle Sets
-  let diagRes = store.state.diagnosticResults;
+  let diagRes = {...store.state.diagnosticResults};
   if (diagRes.level === '') {
     diagRes = null
   } else {
