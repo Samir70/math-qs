@@ -1,10 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { store } from '../store';
+import { getMathsQs } from 'math-q-factory';
 import { emitActions } from '../helperFuncs/globalConsts';
 import { ProgressTracker } from "../assets/ProgressTracker";
 import ShowProgress from "../components/Progress/ShowProgress.vue";
+import ShowQuestion from "./ShowQuestion.vue";
 const emits = defineEmits(emitActions);
 const router = useRouter();
 
@@ -14,7 +16,7 @@ if (!level || numTopics === 0) { router.push('/') }
 
 const diagStage = ref('chooseTopic');
 const chapterConfidence = ref('unknown')
-const curQ = ref(0);
+const curQNum = ref(0);
 const curChapter = ref('');
 const completedChapters = ref(new Set())
 const diagProgTracker = ref(new ProgressTracker(`${level} Diagnostic`));
@@ -28,40 +30,47 @@ if (store.state.diagnosticResults.level === level) {
 
 let left = 0, right = 0
 
+const currentQ = ref('');
+const qKey = ref(0);
 const setFirstQ = confidence => {
     let len = topics[curChapter.value].topicList.length;
     left = 0, right = len - 1;
     let lowerQ = Math.floor(len / 4), mid = Math.floor(len / 2), upperQ = Math.floor(3 * len / 4);
     console.log({ len, lowerQ, mid, upperQ })
-    curQ.value = confidence === 'low' ? lowerQ : confidence === 'high' ? upperQ : mid
+    curQNum.value = confidence === 'low' ? lowerQ : confidence === 'high' ? upperQ : mid
+    currentQ.value = getMathsQs(...getQSlug().split('-'));
     diagStage.value = 'running'
     chapterConfidence.value = confidence;
+    nextTick(() => MathJax.typeset())
 }
 
 const setChapter = topic => {
     console.log(`user wants to do ${topic} diagnostic`)
     curChapter.value = topic;
-    diagStage.value = 'starting';
+    diagStage.value = 'running';
+    setFirstQ('medium')
 }
 
-const getQSlug = n => topics[curChapter.value].topicList[curQ.value]
+// returns data needed to get a question from getMathQs, eg: data-median-odd-130
+const getQSlug = () => topics[curChapter.value].topicList[curQNum.value]
 
-const respondToAns = ans => {
+
+const diagResponse = ans => {
     /**
      * Normally get an ans object like
      * {userWasCorrect: true, userAns:'42', qAns:42}
      */
-    diagProgTracker.value.trackNewQ(getQSlug(curQ.value), ans, chapterConfidence.value);
-    store.commit('updateProgress', { path: getQSlug(curQ.value), userCorrect: ans })
+    diagProgTracker.value.trackNewQ(getQSlug(curQNum.value), ans, chapterConfidence.value);
+    store.commit('updateProgress', { path: getQSlug(curQNum.value), userCorrect: ans })
     // aim is to find hardest question in this sorted list that the student can answer
     // that Q has to be within left and right.
     if (ans) {
-        left = curQ.value + 1 // considered: (curQ.value === right ? 1 : 0)
+        left = curQNum.value + 1 // considered: (curQNum.value === right ? 1 : 0)
         // That allows last correct Q to be reasked, so it wasn't a fluke!
     } else {
-        right = curQ.value - 1
+        right = curQNum.value - 1
     }
-    console.log({ q: getQSlug(curQ.value), ans, left, right })
+    console.log('showDiagnostic:', { q: getQSlug(curQNum.value), ans, left, right })
     if (left > right) {
         // finished this topic in the diagnostic
         // have to ocntinue if left === right, in order to get asked q[left]
@@ -81,18 +90,25 @@ const respondToAns = ans => {
             })
             return
         }
-        curQ.value = 0
+        curQNum.value = 0
         diagStage.value = 'chooseTopic'
     } else {
-        curQ.value = left === right ? left : Math.floor((left + right) / 2) + 1
+        curQNum.value = left === right ? left : Math.floor((left + right) / 2) + 1
         /**
-         * this sets curQ to right when right === left + [0, 1, 2]
+         * this sets curQNum to right when right === left + [0, 1, 2]
          * this is alright since, 
          *   if the student is down to the last three qs and keeps getting them wrong,
          * it is good to ask all the remaining qs
          */
     }
+    currentQ.value = getMathsQs(...getQSlug().split('-'));
+    qKey.value = qKey.value + 1
+    // console.log("showDiag-DiagResponse: newQ is", currentQ)
+    nextTick(() => MathJax.typeset())
 }
+onMounted(() => {
+    MathJax.typeset()
+})
 </script>
 
 <template>
@@ -115,10 +131,12 @@ const respondToAns = ans => {
         </div>
     </div>
     <div v-if="diagStage === 'running'" id="run-diagnostic">
-        <p>diagStage is {{ diagStage }}</p>
-        <p>We are on Q{{ curQ }} - {{ getQSlug(curQ) }}</p>
-        <button v-on:click="respondToAns(true)">Get it right!</button>
-        <button v-on:click="respondToAns(false)">Get it wrong!</button>
+        <!-- <p>diagStage is {{ diagStage }}</p> -->
+        <!-- <p>We are on Q{{ curQNum }} - {{ getQSlug(curQNum) }}</p> -->
+        <ShowQuestion v-bind:currentQ="currentQ" v-bind:qKey="qKey" v-on:q-finished="diagResponse" />
+        <!-- <p>For testing</p> -->
+        <!-- <button v-on:click="diagResponse(true)">Get it right!</button> -->
+        <!-- <button v-on:click="diagResponse(false)">Get it wrong!</button> -->
     </div>
     <div v-if="diagStage === 'finished'">
         <p>You have finished the diagnostic! <br /> See the results below</p>
