@@ -1,4 +1,4 @@
-const { SectionTracker, ChapterTracker, ProgressTracker } = require('./ProgressTracker')
+import { SectionTracker, ChapterTracker, ProgressTracker } from './ProgressTracker';
 
 const obj2Chapter = (obj) => {
     const sections = {}
@@ -13,7 +13,7 @@ const obj2Chapter = (obj) => {
     }
 }
 
-const obj2Tracker = (obj) => {
+export const obj2Tracker = (obj) => {
     // console.log('Wanting to convert ', obj, 'to a ProgressTracker');
     const chapters = {};
     for (let c in obj.listOfChapters) {
@@ -30,4 +30,4 @@ const obj2Tracker = (obj) => {
     })
 }
 
-module.exports = { obj2Tracker }
+// module.exports = { obj2Tracker }

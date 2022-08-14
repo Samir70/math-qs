@@ -7,7 +7,6 @@ import dashboardCWSrow from './dashboardCWSrow.vue';
 import { diagnostics } from "../assets/diagnostics";
 import ShowProgress from "../components/Progress/ShowProgress.vue";
 const router = useRouter();
-let userLevel = ref(store.state.userLevel);
 const emits = defineEmits(emitActions)
 
 let diagProgressStatement = ref(''), takeDiagStatement = ref('')
@@ -22,6 +21,14 @@ const setStatements = () => {
         'Take a diagnostic at this level' : a === b ? 'Retake diagnostic' : 'Finish Diagnostic'
 }
 setStatements()
+const makeProgStatement = (a, b) => {
+    return b === -1 ? 'Why not take a diagnostic?' : a < b ?
+        `You have completed ${a} out of ${b} parts of the diagnostic` : ''
+}
+const makeTakeDiagStatement = (level, a, b) => {
+    return level === '' ? 'Take a diagnostic at this level' : a === b ?
+        'Retake diagnostic' : 'Finish Diagnostic'
+}
 
 const diagHistory = store.state.diagnosticHistory;
 
@@ -29,7 +36,6 @@ let wantsToChangeLevel = ref(false);
 const setLevel = (d) => {
     console.log('setting user level', diagnostics[d - 1].level, 'has', diagnostics[d - 1].topics.length, 'worksheets')
     store.commit('setUserLevel', diagnostics[d - 1]);
-    userLevel.value = diagnostics[d - 1];
     store.commit('updateDiagnosticResults', null);
     setStatements();
     wantsToChangeLevel.value = false;
@@ -45,17 +51,17 @@ const goToDiagnostic = () => {
 <template>
     <h1>{{ store.state.user.name }}'s Dashboard</h1>
     <div id="dashboard-user-progress">
-        <div v-if="userLevel.level" id="level-statement-box">
-            <p>Your target level is: <span class="emphasis-bold">{{ userLevel.level }}</span> </p>
+        <div v-if="store.state.userLevel.level" id="level-statement-box">
+            <p>Your target level is: <span class="emphasis-bold">{{ store.state.userLevel.level }}</span> </p>
             <div id="diagnostic-history">
                 <p v-for="item of diagHistory" key="item.date + item.level">
                     {{ item.title }} ({{ item.date }}) you achieved a rating of {{ item.averageRating }} </p>
             </div>
-            <p v-if="diagProgressStatement">{{ diagProgressStatement }}</p>
-            <button v-on:click="goToDiagnostic">{{ takeDiagStatement }}</button>
+            <p>{{ makeProgStatement(...store.state.diagnosticResults.completion) }}</p>
+            <button v-on:click="goToDiagnostic">{{ makeTakeDiagStatement(store.state.diagnosticResults.level, ...store.state.diagnosticResults.completion) }}</button>
             <button v-on:click="wantsToChangeLevel = true">Change level</button>
         </div>
-        <div v-if="!userLevel.level || wantsToChangeLevel">
+        <div v-if="!store.state.userLevel.level || wantsToChangeLevel">
             <h2>Pick a user level</h2>
             <div id="level-selection-box"></div>
             <button v-for="d in diagnostics.length" key="d" class="level-selection-button" v-on:click="setLevel(d)">{{
@@ -63,7 +69,8 @@ const goToDiagnostic = () => {
             }}</button>
         </div>
     </div>
-    <ShowProgress v-bind:user-progress="store.state.userProgress" />
+
+    <ShowProgress v-bind:user-progress="store.state.userProgress" v-on:click-save-prog="emits('save-progress')" />
     <div id="dashboard-custom-ws" class="dashboard-section">
         <h3>Custom worksheets</h3>
         <div v-if="store.state.customWorksheets.length === 0">

@@ -16,6 +16,7 @@ export const store = createStore({
             worksheetList: worksheets,
             customWorksheets: [],
             haveUnsyncedCWSchanges: false,
+            unsavedProgress: false,
             maxCustomWorksheets: 5,
             userProgress: testProgTracker,
             chosenChapter: 'none'
@@ -67,6 +68,9 @@ export const store = createStore({
         setChapter(state, newChapter) {
             state.chosenChapter = newChapter
         },
+        setUnsavedProgressFlag(state, flag) {
+            state.unsavedProgress = flag
+        },
         /**
          * 
          * @param {*} state 
@@ -78,21 +82,24 @@ export const store = createStore({
             newProg.trackNewQ(payload.path, payload.userCorrect)
             state.userProgress = newProg
         },
+        setProgress(state, newProg) {
+            state.userProgress = newProg;
+        },
         /**
          * 
          * @param {*} state 
          * @param {*} payload must contain properties level, date, completion and results
          */
         updateDiagnosticResults(state, payload) {
-            state.diagnosticResults = payload === null ? 
-            { level: '', date: '', completion: [0, -1], completedChapters: new Set(), results: null } :
-            {
-                level: payload.level,
-                date: payload.date,
-                completion: payload.completion,
-                completedChapters: payload.completedChapters,
-                results: ProgressTracker.from(payload.results)
-            }
+            state.diagnosticResults = payload === null ?
+                { level: '', date: '', completion: [0, -1], completedChapters: new Set(), results: null } :
+                {
+                    level: payload.level,
+                    date: payload.date,
+                    completion: payload.completion,
+                    completedChapters: payload.completedChapters,
+                    results: ProgressTracker.from(payload.results)
+                }
         },
         addToDiagHistory(state, newDiagSummary) {
             // summary has {title, dateAsString, averageRating}
