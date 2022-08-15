@@ -56,12 +56,7 @@ const getQSlug = () => topics[curChapter.value].topicList[curQNum.value]
 
 
 const diagResponse = ans => {
-    /**
-     * Normally get an ans object like
-     * {userWasCorrect: true, userAns:'42', qAns:42}
-     */
     diagProgTracker.value.trackNewQ(getQSlug(curQNum.value), ans, chapterConfidence.value);
-    store.commit('updateProgress', { path: getQSlug(curQNum.value), userCorrect: ans })
     // aim is to find hardest question in this sorted list that the student can answer
     // that Q has to be within left and right.
     if (ans) {
