@@ -9,18 +9,6 @@ import ShowProgress from "../components/Progress/ShowProgress.vue";
 const router = useRouter();
 const emits = defineEmits(emitActions)
 
-let diagProgressStatement = ref(''), takeDiagStatement = ref('')
-const setStatements = () => {
-    let diagnosticResults = store.state.diagnosticResults;
-    console.log(diagnosticResults)
-    let [a, b] = diagnosticResults.completion;
-    diagProgressStatement.value = b === -1 ?
-        'Why not take a diagnostic?' : a < b ?
-            `You have completed ${a} out of ${b} parts of the diagnostic` : ''
-    takeDiagStatement.value = diagnosticResults.level === '' ?
-        'Take a diagnostic at this level' : a === b ? 'Retake diagnostic' : 'Finish Diagnostic'
-}
-setStatements()
 const makeProgStatement = (a, b) => {
     return b === -1 ? 'Why not take a diagnostic?' : a < b ?
         `You have completed ${a} out of ${b} parts of the diagnostic` : ''
@@ -41,7 +29,8 @@ const setLevel = (d) => {
     wantsToChangeLevel.value = false;
 }
 const goToDiagnostic = () => {
-    if (takeDiagStatement.value === 'Retake diagnostic') {
+    let [a, b] = store.state.diagnosticResults.completion;
+    if (a === b) {
         store.commit('updateDiagnosticResults', null)
     }
     router.push('/diagnostic')
