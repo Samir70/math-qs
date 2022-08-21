@@ -1,6 +1,6 @@
 import { createStore } from 'vuex';
 import { worksheets } from './assets/worksheets';
-import { testProgTracker, ProgressTracker } from "./assets/ProgressTracker";
+import { ProgressTracker } from "./assets/ProgressTracker";
 
 export const store = createStore({
     state() {
@@ -18,7 +18,7 @@ export const store = createStore({
             haveUnsyncedCWSchanges: false,
             unsavedProgress: false,
             maxCustomWorksheets: 5,
-            userProgress: testProgTracker,
+            userProgress: new ProgressTracker(),
             chosenChapter: 'none'
         }
     },

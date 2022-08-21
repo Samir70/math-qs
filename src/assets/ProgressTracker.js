@@ -145,26 +145,26 @@ export class ProgressTracker {
 }
 
 // to be moved to another file eventually!!
-let qList = [
-    "number-multiplying-ab*c-90", "number-multiplying-ab*cd-95", "number-multiplying-ab*c.d-110",
-    "number-dividing-tablesWithRemainder-80", "number-busStop-noCarry2-110", "number-busStop-noRemainder-150",
-    "fraction-simplify-composite-90", "fraction-ofAmount-manySlices-120",
-    "fraction-add-sameDenom-80", "fraction-add-diffDenomChangeBoth-230", "fraction-add-mixedNumbers-250",
-    "percent-ofAmount-multiplesOf10%-80", "percent-ofAmount-multiplesOf5%-100",
-    "number-multiplying-cubeDigit-65", "number-multiplying-squareEndIn5-70",
-    "ratio-simplify-noUnits2-80", "ratio-simplify-withUnits-150", "ratio-share-givenTotal-200"
-]
-let correct = [
-    1, 1, 1, 1, 0, 1,
-    1, 1, 1, 1, 0, 0,
-    1, 0, 0, 0, 1, 1
-]
+// let qList = [
+//     "number-multiplying-ab*c-90", "number-multiplying-ab*cd-95", "number-multiplying-ab*c.d-110",
+//     "number-dividing-tablesWithRemainder-80", "number-busStop-noCarry2-110", "number-busStop-noRemainder-150",
+//     "fraction-simplify-composite-90", "fraction-ofAmount-manySlices-120",
+//     "fraction-add-sameDenom-80", "fraction-add-diffDenomChangeBoth-230", "fraction-add-mixedNumbers-250",
+//     "percent-ofAmount-multiplesOf10%-80", "percent-ofAmount-multiplesOf5%-100",
+//     "number-multiplying-cubeDigit-65", "number-multiplying-squareEndIn5-70",
+//     "ratio-simplify-noUnits2-80", "ratio-simplify-withUnits-150", "ratio-share-givenTotal-200"
+// ]
+// let correct = [
+//     1, 1, 1, 1, 0, 1,
+//     1, 1, 1, 1, 0, 0,
+//     1, 0, 0, 0, 1, 1
+// ]
 
-export const testProgTracker = new ProgressTracker()
-for (let i = 0; i < qList.length; i++) {
-    let q = qList[i], c = correct[i]
-    testProgTracker.trackNewQ(q, c === 1 ? true : false)
-}
+// export const testProgTracker = new ProgressTracker()
+// for (let i = 0; i < qList.length; i++) {
+//     let q = qList[i], c = correct[i]
+//     testProgTracker.trackNewQ(q, c === 1 ? true : false)
+// }
 // console.log(JSON.stringify(testProgTracker, null, 2))
 
 // below is used when testing through node
