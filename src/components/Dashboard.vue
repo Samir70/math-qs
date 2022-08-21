@@ -47,7 +47,9 @@ const goToDiagnostic = () => {
                     {{ item.title }} ({{ item.date }}) you achieved a rating of {{ item.averageRating }} </p>
             </div>
             <p>{{ makeProgStatement(...store.state.diagnosticResults.completion) }}</p>
-            <button v-on:click="goToDiagnostic">{{ makeTakeDiagStatement(store.state.diagnosticResults.level, ...store.state.diagnosticResults.completion) }}</button>
+            <button v-on:click="goToDiagnostic">{{ makeTakeDiagStatement(store.state.diagnosticResults.level,
+                    ...store.state.diagnosticResults.completion)
+            }}</button>
             <button v-on:click="wantsToChangeLevel = true">Change level</button>
         </div>
         <div v-if="!store.state.userLevel.level || wantsToChangeLevel">
@@ -59,7 +61,9 @@ const goToDiagnostic = () => {
         </div>
     </div>
 
-    <ShowProgress v-bind:user-progress="store.state.userProgress" v-on:click-save-prog="emits('save-progress')" />
+    <ShowProgress v-bind:user-progress="store.state.userProgress"
+        v-bind:best-and-worst="store.state.userProgress.getBestAndWorst()"
+        v-on:click-save-prog="emits('save-progress')" />
     <div id="dashboard-custom-ws" class="dashboard-section">
         <h3>Custom worksheets</h3>
         <div v-if="store.state.customWorksheets.length === 0">

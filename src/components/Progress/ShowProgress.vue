@@ -7,13 +7,13 @@ import showChapterProgress from "./showChapterProgress.vue";
 import { makeWSObject } from "../../assets/worksheets";
 
 const props = defineProps({
-    userProgress: ProgressTracker
+    userProgress: ProgressTracker,
+    bestAndWorst: Object
 })
-console.log(props.userProgress)
+console.log(props.userProgress, props.bestAndWorst)
 const router = useRouter();
 const emits = defineEmits(['click-save-prog'])
 
-const bestAndWorst = props.userProgress.getBestAndWorst();
 const makeWorksheetFromMistakes = () => {
     if (props.userProgress.size === 0) {
         alert("You haven't got any uncorrected mistakes");
@@ -37,9 +37,11 @@ const copyProgressToCSV = () => {
             <div id="progress-summary">
                 <p>You have answered questions from {{ Object.keys(userProgress.listOfChapters).length }} chapters</p>
                 <p>Average rating of chapters: {{ Math.round(userProgress.averageRating) }}</p>
-                <p>Best chapter: <span class="emphasis-bold">{{ bestAndWorst.best.chapter }}</span>
+                <p v-if="bestAndWorst.best.chapter !== ''">Best chapter: <span class="emphasis-bold">{{ bestAndWorst.best.chapter }}</span>
                     where your rating is {{ bestAndWorst.best.rating }}</p>
-                <p>Worst chapter: <span class="emphasis-bold">{{ bestAndWorst.worst.chapter }}</span>
+                <p v-if="bestAndWorst.worst.chapter !== ''">Worst chapter: <span class="emphasis-bold">{{
+                        bestAndWorst.worst.chapter
+                }}</span>
                     where your rating is {{ bestAndWorst.worst.rating }}</p>
             </div>
             <div id="progress-buttons">

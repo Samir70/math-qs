@@ -136,7 +136,8 @@ onMounted(() => {
     <div v-if="diagStage === 'finished'">
         <p>You have finished the diagnostic! <br /> See the results below</p>
     </div>
-    <ShowProgress v-bind:user-progress="diagProgTracker" />
+    <ShowProgress v-bind:user-progress="diagProgTracker"
+        v-bind:best-and-worst="diagProgTracker.getBestAndWorst()" />
 </template>
 
 <style>
