@@ -25,7 +25,6 @@ const setLevel = (d) => {
     console.log('setting user level', diagnostics[d - 1].level, 'has', diagnostics[d - 1].topics.length, 'worksheets')
     store.commit('setUserLevel', diagnostics[d - 1]);
     store.commit('updateDiagnosticResults', null);
-    setStatements();
     wantsToChangeLevel.value = false;
 }
 const goToDiagnostic = () => {
