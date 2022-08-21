@@ -2,7 +2,6 @@
 import { useRouter } from "vue-router";
 import { store } from '../../store';
 import { ProgressTracker } from "../../assets/ProgressTracker";
-import { emitActions } from '../../helperFuncs/globalConsts';
 import showChapterProgress from "./showChapterProgress.vue";
 import { makeWSObject } from "../../assets/worksheets";
 
@@ -10,7 +9,7 @@ const props = defineProps({
     userProgress: ProgressTracker,
     bestAndWorst: Object
 })
-console.log(props.userProgress, props.bestAndWorst)
+console.log('ShowProgress from', props.userProgress)
 const router = useRouter();
 const emits = defineEmits(['click-save-prog'])
 
