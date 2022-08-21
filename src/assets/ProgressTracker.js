@@ -80,12 +80,13 @@ export class ChapterTracker {
 export class ProgressTracker {
     constructor(
         title = "Total Progress", listOfChapters = {},
-        averageRating = 0, mistakeList = new Set(),
+        averageRating = 0, studentRating = 100, mistakeList = new Set(),
         history = [['chapter', 'section', 'qName', 'rating', 'correct?']],
         dateOfLastQ = new Date()) {
         this.title = title;
         this.listOfChapters = listOfChapters;
         this.averageRating = averageRating; // This is average over chapters, not over questions
+        this.studentRating = studentRating; // This is the student's rating over all questions
         this.mistakeList = mistakeList;
         this.history = history;
         this.dateOfLastQ = dateOfLastQ;
@@ -95,6 +96,7 @@ export class ProgressTracker {
         this.history.push([...path.split('-'), correct]);
         let [chapter, section, qName, rating] = path.split('-');
         rating = Number(rating);
+        this.studentRating = newRating(this.studentRating, rating, correct)
         let numOfChapters = Object.keys(this.listOfChapters).length
         let totalOfChapterRatings = this.averageRating * numOfChapters
         if (this.listOfChapters[chapter] === undefined) {
@@ -129,7 +131,7 @@ export class ProgressTracker {
     }
     static from(obj) {
         if (!obj.title || obj.listOfChapters === undefined || obj.averageRating === undefined ||
-            obj.mistakeList === undefined || obj.history === undefined) {
+            obj.studentRating === undefined || obj.mistakeList === undefined || obj.history === undefined) {
             return console.error('ERROR:: Cannot make a ProgressTracker from ', obj)
         }
         let newChapterList = {}
@@ -138,7 +140,7 @@ export class ProgressTracker {
         }
         return new ProgressTracker(
             obj.title, newChapterList,
-            obj.averageRating, new Set([...obj.mistakeList]), [...obj.history],
+            obj.averageRating, obj.studentRating, new Set([...obj.mistakeList]), [...obj.history],
             obj.dateOfLastQ
         )
     }

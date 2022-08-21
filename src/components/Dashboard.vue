@@ -43,7 +43,7 @@ const goToDiagnostic = () => {
             <p>Your target level is: <span class="emphasis-bold">{{ store.state.userLevel.level }}</span> </p>
             <div id="diagnostic-history">
                 <p v-for="item of diagHistory" key="item.date + item.level">
-                    {{ item.title }} ({{ item.date }}) you achieved a rating of {{ item.averageRating }} </p>
+                    {{ item.title }} ({{ item.date }}) with an average chapter rating of {{ item.averageRating }} </p>
             </div>
             <p>{{ makeProgStatement(...store.state.diagnosticResults.completion) }}</p>
             <button v-on:click="goToDiagnostic">{{ makeTakeDiagStatement(store.state.diagnosticResults.level,

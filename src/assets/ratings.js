@@ -1,5 +1,3 @@
-const transformRating = r => 10 ** (r / 400);
-
 /**
  * 
  * @param {Number} userRating 
@@ -7,6 +5,8 @@ const transformRating = r => 10 ** (r / 400);
  * @param {Boolean} result 
  */
 export const newRating = (userRating, qRating, result) => {
+    let m = Math.max(userRating, qRating)
+    const transformRating = r => 100 ** (r / m);
     let r1 = transformRating(userRating), r2 = transformRating(qRating);
     let ratingSum = r1 + r2;
     // work out expected win/lose result for user
