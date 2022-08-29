@@ -138,7 +138,8 @@ onMounted(() => {
         <p>You have finished the diagnostic! <br /> See the results below</p>
     </div>
     <ShowProgress v-bind:user-progress="diagProgTracker"
-        v-bind:best-and-worst="diagProgTracker.getBestAndWorst()" />
+        v-bind:best-and-worst="diagProgTracker.getBestAndWorst()"
+        v-on:click-save-prog="emits('save-progress')" />
 </template>
 
 <style>
