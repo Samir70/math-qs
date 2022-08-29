@@ -24,6 +24,7 @@ export const obj2Tracker = (obj) => {
         title: obj.title,
         listOfChapters: chapters,
         averageRating: obj.averageRating,
+        studentRating: obj.studentRating,
         mistakeList: new Set(obj.mistakeList),
         history: obj.history,
         dateOfLastQ: obj.dateOfLastQ,

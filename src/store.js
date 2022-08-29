@@ -106,6 +106,10 @@ export const store = createStore({
             // Old version saved the entire ProgressTracker object
             // state.diagnosticHistory = [...state.diagnosticHistory, ProgressTracker.from(newDiag)]
             state.diagnosticHistory = [...state.diagnosticHistory, newDiagSummary]
+        },
+        setDiagHistory(state, newHistory) {
+            console.log('setDiagHistory:', newHistory)
+            state.diagnosticHistory = [...newHistory]
         }
     }
 });

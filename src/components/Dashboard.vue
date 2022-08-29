@@ -18,7 +18,7 @@ const makeTakeDiagStatement = (level, a, b) => {
         'Retake diagnostic' : 'Finish Diagnostic'
 }
 
-const diagHistory = store.state.diagnosticHistory;
+// const diagHistory = ref(store.state.diagnosticHistory);
 
 let wantsToChangeLevel = ref(false);
 const setLevel = (d) => {
@@ -42,7 +42,7 @@ const goToDiagnostic = () => {
         <div v-if="store.state.userLevel.level" id="level-statement-box">
             <p>Your target level is: <span class="emphasis-bold">{{ store.state.userLevel.level }}</span> </p>
             <div id="diagnostic-history">
-                <p v-for="item of diagHistory" key="item.date + item.level">
+                <p v-for="item of store.state.diagnosticHistory" key="item.date + item.level">
                     {{ item.title }} ({{ item.date }}) with an average chapter rating of {{ item.averageRating }} </p>
             </div>
             <p>{{ makeProgStatement(...store.state.diagnosticResults.completion) }}</p>

@@ -131,7 +131,8 @@ export class ProgressTracker {
     }
     static from(obj) {
         if (!obj.title || obj.listOfChapters === undefined || obj.averageRating === undefined ||
-            obj.studentRating === undefined || obj.mistakeList === undefined || obj.history === undefined) {
+            obj.studentRating === undefined || obj.dateOfLastQ === undefined ||
+            obj.mistakeList === undefined || obj.history === undefined) {
             return console.error('ERROR:: Cannot make a ProgressTracker from ', obj)
         }
         let newChapterList = {}

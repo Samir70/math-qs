@@ -59,6 +59,7 @@ const getProgress = async () => {
       store.commit('updateDiagnosticResults', diagRes);
     }
     store.commit('setProgress', obj2Tracker(JSON.parse(userProgress)));
+    store.commit('setDiagHistory', diagHistory);
   } else {
     console.log("didn't get progress report for user")
   }
@@ -79,6 +80,7 @@ firebase.auth().onAuthStateChanged(user => {
     store.commit('updateDiagnosticResults', null);
     store.commit('setUserLevel', { level: '', topics: [] });
     store.commit('setProgress', new ProgressTracker());
+    store.commit('setDiagHistory', []);
   }
   console.log('from onAuthStateChanged:', store.state.user.name)
 })

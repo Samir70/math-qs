@@ -108,6 +108,7 @@ onMounted(() => {
 
 <template>
     <h1>{{ level }} Diagnostic</h1>
+    <p v-if="!store.state.loggedIn">Work done while not logged in is not saved!</p>
     <div v-if="diagStage === 'chooseTopic'" id="choose-topic">
         <h3>Choose a topic</h3>
         <div id="topic-selector">
