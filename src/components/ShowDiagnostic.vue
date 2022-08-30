@@ -85,6 +85,7 @@ const diagResponse = ans => {
             })
             return
         }
+        emits('save-progress');
         curQNum.value = 0
         diagStage.value = 'chooseTopic'
     } else {
