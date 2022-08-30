@@ -83,6 +83,7 @@ const diagResponse = ans => {
                 date: diagProgTracker.value.dateOfLastQ.toDateString(),
                 averageRating: Math.round(diagProgTracker.value.averageRating)
             })
+            emits('save-progress');
             return
         }
         emits('save-progress');
