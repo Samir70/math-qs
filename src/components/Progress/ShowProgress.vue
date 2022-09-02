@@ -7,7 +7,8 @@ import { makeWSObject } from "../../assets/worksheets";
 
 const props = defineProps({
     userProgress: ProgressTracker,
-    bestAndWorst: Object
+    bestAndWorst: Object,
+    allowSave: Boolean
 })
 console.log('ShowProgress from', props.userProgress)
 const router = useRouter();
@@ -49,7 +50,7 @@ const copyProgressToCSV = () => {
             <div id="progress-buttons">
                 <p>You have {{ userProgress.mistakeList.size === 0 ? 'no' : userProgress.mistakeList.size }}
                     {{ userProgress.mistakeList.size === 1 ? 'mistake' : 'mistakes' }} to correct</p>
-                <button v-on:click="emits('click-save-prog')" title="Save progress to cloud"><img
+                <button v-if="allowSave" v-on:click="emits('click-save-prog')" title="Save progress to cloud"><img
                         src="../../assets/icons/icons8-save-100.png" class="progress-button-image" /></button>
                 <button v-if="userProgress.mistakeList.size > 0" title="Make a worksheet from your mistakes"
                     v-on:click="makeWorksheetFromMistakes">

@@ -141,6 +141,7 @@ onMounted(() => {
     </div>
     <ShowProgress v-bind:user-progress="diagProgTracker"
         v-bind:best-and-worst="diagProgTracker.getBestAndWorst()"
+        v-bind:allow-save="false"
         v-on:click-save-prog="emits('save-progress')" />
 </template>
 

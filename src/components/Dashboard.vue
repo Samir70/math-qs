@@ -62,6 +62,7 @@ const goToDiagnostic = () => {
 
     <ShowProgress v-bind:user-progress="store.state.userProgress"
         v-bind:best-and-worst="store.state.userProgress.getBestAndWorst()"
+        v-bind:allow-save="true"
         v-on:click-save-prog="emits('save-progress')" />
     <div id="dashboard-custom-ws" class="dashboard-section">
         <h3>Custom worksheets</h3>
