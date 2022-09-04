@@ -121,7 +121,9 @@ const saveTopiclist = () => {
 <style>
 #ws-lists {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    max-width: 1000px;
+    margin: auto;
 }
 
 .ws-name {

@@ -1,17 +1,24 @@
 import { createStore } from 'vuex';
 import { worksheets } from './assets/worksheets';
+import { ProgressTracker } from "./assets/ProgressTracker";
 
 export const store = createStore({
     state() {
         return {
             user: { name: 'Unknown User', uid: null },
+            userLevel: { level: '', topics: [] },
+            diagnosticResults: { level: '', date: '', completion: [0, -1], results: null },
+            diagnosticHistory: [],
+            //This will be array ofobjects:
+            //  { level: '', date: Date, completion: [5,9], results: ProgressTracker}
             loggedIn: false,
             chosenWorksheet: worksheets[0],
             worksheetList: worksheets,
             customWorksheets: [],
             haveUnsyncedCWSchanges: false,
+            unsavedProgress: false,
             maxCustomWorksheets: 5,
-            userProgress: { none: new Set() },
+            userProgress: new ProgressTracker(),
             chosenChapter: 'none'
         }
     },
@@ -43,6 +50,9 @@ export const store = createStore({
         setWorksheet(state, newWorksheet) {
             state.chosenWorksheet = newWorksheet
         },
+        setUserLevel(state, newLevel) {
+            state.userLevel = newLevel
+        },
         addToWorksheet(state, newItem) {
             state.chosenWorksheet = {
                 name: state.chosenWorksheet.name,
@@ -58,15 +68,48 @@ export const store = createStore({
         setChapter(state, newChapter) {
             state.chosenChapter = newChapter
         },
-        initChapterProgress(state, chapter) {
-            state.userProgress = { ...state.userProgress, [chapter]: new Set() }
+        setUnsavedProgressFlag(state, flag) {
+            state.unsavedProgress = flag
         },
-        updateChapterProgress(state, path) {
-            console.log('updateChapterprogress', [state.userProgress[path[0]], path])
-            state.userProgress = {
-                ...state.userProgress,
-                [path[0]]: new Set(state.userProgress[path[0]] === undefined ? [path.join('-')] : [...state.userProgress[path[0]], path.join('-')])
-            }
+        /**
+         * 
+         * @param {*} state 
+         * @param {object} payload must contain properties path: string, userCorrect: boolean
+         */
+        updateProgress(state, payload) {
+            console.log('updateUserProgress', payload);
+            let newProg = ProgressTracker.from(state.userProgress)
+            newProg.trackNewQ(payload.path, payload.userCorrect)
+            state.userProgress = newProg
+        },
+        setProgress(state, newProg) {
+            state.userProgress = newProg;
+        },
+        /**
+         * 
+         * @param {*} state 
+         * @param {*} payload must contain properties level, date, completion and results
+         */
+        updateDiagnosticResults(state, payload) {
+            state.diagnosticResults = payload === null ?
+                { level: '', date: '', completion: [0, -1], completedChapters: new Set(), results: null } :
+                {
+                    level: payload.level,
+                    date: payload.date,
+                    completion: payload.completion,
+                    completedChapters: payload.completedChapters,
+                    results: ProgressTracker.from(payload.results)
+                }
+        },
+        addToDiagHistory(state, newDiagSummary) {
+            // summary has {title, dateAsString, averageRating}
+            // Old version saved the entire ProgressTracker object
+            // state.diagnosticHistory = [...state.diagnosticHistory, ProgressTracker.from(newDiag)]
+            state.diagnosticHistory = [...state.diagnosticHistory, newDiagSummary]
+        },
+        setDiagHistory(state, newHistory) {
+            console.log('setDiagHistory:', newHistory)
+            state.diagnosticHistory = [...newHistory]
         }
     }
 });

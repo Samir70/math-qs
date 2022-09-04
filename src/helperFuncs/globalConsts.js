@@ -1,1 +1,1 @@
-export const emitActions = ['save-cws'] // old action was save-worksheet
+export const emitActions = ['save-cws', 'save-progress'] // old action was save-worksheet

@@ -1,10 +1,13 @@
 <script setup>
-import { store } from "../store";
-import { getMathsQs } from 'math-q-factory';
+import { store } from '../store';
 import { ShortAnswerQ, MultipleChoiceQ, SortQ } from "q-show";
-import { ref, onMounted, nextTick } from 'vue';
-import { emitActions } from '../helperFuncs/globalConsts';
-const emits = defineEmits(emitActions)
+
+const props = defineProps({
+    currentQ: Object,
+    qKey: Number
+})
+const emits = defineEmits(['q-finished'])
+
 const qTypes = {
   // classify: ClassifyQ,
   // match: MatchQ,
@@ -12,78 +15,18 @@ const qTypes = {
   shortAnswer: ShortAnswerQ,
   sort: SortQ
 }
-const qList = store.state.chosenWorksheet.topicList.map(t => t.split('-'));
-const currentQ = ref(getMathsQs(...qList[0]));
-const qNumber = ref(0);
-const qKey = ref(0);
-const qHints = ref([]);
-const waitForNext = ref(false);
-
 const respondToAns = (ans) => {
-  console.log('Need to respond to answer:', ans);
-  if (ans.userWasCorrect) {
-    console.log('userwascorrect path:', qList[qNumber.value])
-    store.commit('updateChapterProgress', qList[qNumber.value])
-    // userProgress.value[chosenChapter.value] = Math.max(qNumber.value + 1, (userProgress.value[chosenChapter.value] || 0))
-    qNumber.value = (qNumber.value + 1) % qList.length
-  }
-  qHints.value = [`${currentQ.value.qFeedback || currentQ.value.a}`, ...qHints.value]
-  waitForNext.value = true;
-  //   console.log({ userProg: userProgress.value })
-  nextTick(() => MathJax.typeset())
+  console.log('ShowQuestion needs to respond to answer:', ans);
+  store.commit('updateProgress', {path: props.currentQ.qPath, userCorrect: ans.userWasCorrect})
+  emits("q-finished", ans.userWasCorrect)
 }
-const nextQ = () => {
-  currentQ.value = getMathsQs(...qList[qNumber.value])
-  qHints.value = []
-  qKey.value++
-  waitForNext.value = false;
-  nextTick(() => MathJax.typeset())
-}
-const showHint = () => {
-  qHints.value = currentQ.value.hints.slice(0, qHints.value.length + 1)
-}
-onMounted(() => {
-  MathJax.typeset()
-})
 </script>
 
 <template>
-  <div id="question-box">
-    <component
-      v-bind:is="qTypes[currentQ.qType]"
-      v-bind:qData="currentQ"
-      v-bind:key="qKey"
-      v-on:user-answered="respondToAns"
-      class="showq-qblock"
-    />
-    <button v-if="waitForNext" v-on:click="nextQ">Next Q</button>
-    <div v-for="hint of qHints" class="showq-hint-box">
-      <p>{{ hint }}</p>
-    </div>
-    <div id="showq-options-box">
-      <button
-        v-if="qHints.length < currentQ.hints.length"
-        v-on:click="showHint"
-      >{{ qHints.length === 0 ? 'Show Hint' : 'Show another hint' }}</button>
-    </div>
-  </div>
+<!-- <p> current question is {{props.currentQ}} has key {{props.qKey}}</p> -->
+<component v-bind:is="qTypes[currentQ.qType]" v-bind:qData="currentQ" v-bind:key="qKey"
+      v-on:user-answered="respondToAns" class="showq-qblock" />
 </template>
 
 <style>
-#showq-options-box {
-  display: flex;
-  justify-content: space-around;
-  margin: auto;
-}
-
-.showq-hint-box {
-  border: 1px solid blue;
-  padding: 3px;
-  width: 90vw;
-  max-width: 480px;
-  margin: auto;
-}
-.showq-qblock {
-  margin: auto;
-}
 </style>
