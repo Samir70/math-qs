@@ -4,7 +4,7 @@ import { topicLevels } from "../assets/topicLevels";
 const props = defineProps({
     title: String,
     totalQs: Number,
-    completedQs: Number,
+    userRating: Number,
     minLevel: Number,
     maxLevel: Number
 })
@@ -18,7 +18,7 @@ const levelCol = `linear-gradient(to right, ${minL[2]} 0%, ${minL[2]} 50%, ${max
 <template>
     <div class="chapter-card">
         <h2>{{ props.title }}</h2>
-        <p>Completed {{ props.completedQs }}/{{ props.totalQs }} questions</p>
+        <p v-if="userRating > 0">Your rating on this chapter is {{ props.userRating }}</p>
         <div id="chapter-level">
             <p id="level-dot" v-bind:style="{ backgroundImage: levelCol }">LL</p>
             <p>{{ levelText }}</p>

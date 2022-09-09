@@ -27,7 +27,7 @@ const setLearnChapter = (title) => {
     <div class="chapter-card-list">
         <!-- Chapter card no longer making use of contents attribute, which used to list sections -->
         <ChapterCard v-for="chapter of chapterSet" v-bind:title="chapter"
-            v-bind:completedQs="store.state.userProgress[chapter] === undefined ? 0 : store.state.userProgress[chapter].size"
+            v-bind:userRating="store.state.userProgress.listOfChapters[chapter] === undefined ? 0 : Math.floor(store.state.userProgress.listOfChapters[chapter].userRating)"
             v-bind:totalQs="totalQs[chapter].qCount || 0" v-bind:minLevel="totalQs[chapter].min"
             v-bind:maxLevel="totalQs[chapter].max" v-on:click="setLearnChapter(chapter)" />
     </div>
